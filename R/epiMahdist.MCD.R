@@ -1,3 +1,4 @@
+#' @export
 epiMahdist.MCD<-function(beta.values, nsamp = c("best", "exact", "deterministic"), sample)
 {
   if(is.null(beta.values))

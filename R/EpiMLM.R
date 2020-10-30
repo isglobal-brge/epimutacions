@@ -1,3 +1,4 @@
+#' @export
 epiMLM<-function(beta.values, model)
 {
   #select "model" variable columns (unique(model[,i])!= 1)

@@ -1,3 +1,4 @@
+#' @export
 EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01, 
                        cutoff =0.1, outlier.score = 0.5, 
                        nsamp = "deterministic",method = "manova")

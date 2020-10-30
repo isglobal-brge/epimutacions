@@ -14,9 +14,6 @@ knitr::opts_chunk$set(comment="", warning=FALSE, message=FALSE, cache=TRUE)
 
 ```
 
-```{r library, include= FALSE}
-devtools::document()
-```
 
 # Purpose
 
@@ -39,6 +36,7 @@ The available datasets correspond to CpGs beta values measured in whole blood sa
 Finally, we created  `GenomicRatioSet` and `ExpressionSet` type datasets, for both, control and case. These can be distinguished  by the  acronyms  `grs.`  and `es.` at the beginning of the file names. 
 
 ```{r}
+library(EpiMutations)
 #Control samples
 ##GenomicRatioSet
 data(grs.control.panel)
@@ -69,8 +67,8 @@ Here we illustrate how to identify outlier methylated regions in the case sample
 
 First, we create the `disease` variable with only one case sample, in order to compare it againts all the probes in the control panel: 
 
-```{r}
-(disease<-grs.diseases[,4])
+```{r }
+disease<-es.diseases[,4]
 dim(disease)[2]
 ```
 
