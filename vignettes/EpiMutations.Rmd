@@ -1,0 +1,106 @@
+---
+title: "Epi-mutations detection in suspected rare disease samples"
+author: "Leire Abarrategui"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Epi-mutations detection in suspected rare disease samples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(comment="", warning=FALSE, message=FALSE, cache=TRUE)
+
+```
+
+```{r library, include= FALSE}
+devtools::document()
+```
+
+# Purpose
+
+The `EpiMutations` package provides a set of functions for epi-mutation identification in DNA methylation samples.
+It is designed for `GenomicRatioSet` and `ExpressionSet` data types, containing CpGs beta values.
+
+The detection of outliers CpG sites is done in two steps: (1) the differentially methylated regions (DMRs) in the given sample are identified by bump-hunter approach using `bumphunter()` function. (2) CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel (control samples). To this end, different anomaly detection statistical approaches are used. Those include: [`manova()`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/manova), [`mlm()`](https://github.com/dgarrimar/mlm),
+[`isolation.forest()`](https://rdrr.io/cran/isotree/man/isolation.forest.html) and  [`covMcd()`](https://www.rdocumentation.org/packages/robustbase/versions/0.93-6/topics/covMcd)
+
+# Available data
+
+The `EpiMutations` package includes control and case datasets obtained from [GEO](https://www.ncbi.nlm.nih.gov/geo/).
+
+The control panel corresponds to the accession number [GSE104812](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104812) 
+which includes DNA methylation profiling (Illumina 450K BeadChip array) of 48 healthy children. The case probes were obtained from  [GSE97362](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE97362). This dataset contains DNA methylation 
+signatures of 8 children with CHARGE and Kabuki syndromes. 
+
+The available datasets correspond to CpGs beta values measured in whole blood samples. These were downloaded as `RGChannelSet` using `GEOquery` package. Then, the datasets preprocessing have been performed to remove existing Copy Number Variants (CNVs). 
+
+Finally, we created  `GenomicRatioSet` and `ExpressionSet` type datasets, for both, control and case. These can be distinguished  by the  acronyms  `grs.`  and `es.` at the beginning of the file names. 
+
+```{r}
+#Control samples
+##GenomicRatioSet
+data(grs.control.panel)
+##ExpressionSet
+data(es.control.panel)
+
+#Case samples
+##GenomicRatioSet
+data(grs.diseases)
+##ExpressionSet
+data(es.diseases)
+```
+
+# Epi-mutations detection
+
+The primary function of this package is `EpiMutations()`. 
+First, it selects the DMRs. Then, it calls the function for 
+robust outlier detection, which is selected by the user
+within the `method` parameter. This can be set as: 
+
+* `"manova"`: Multivariate analysis of variance 
+* `"mlm"`: Multivariate linear model
+* `"iso.forest"`: Isolation forest
+* `"Mahdist.MCD"`: Robust Mahalanobis distance 
+
+
+Here we illustrate how to identify outlier methylated regions in the case sample. 
+
+First, we create the `disease` variable with only one case sample, in order to compare it againts all the probes in the control panel: 
+
+```{r}
+(disease<-grs.diseases[,4])
+dim(disease)[2]
+```
+
+Then, we run `EpiMutations()` function for each method. Must be mentioned that in  `manova` and `mlm`  the p-value 
+can be specified through `pValue.cutoff` parameter as a cutoff. However,  The `iso.forest` uses the anomaly score indicated by `outlier.score` parameter. In the robust Mahalanobis distance, the threshold is set by chi-square distribution, but this is established by the function. Also,
+the minimum number of CpGs in each identified bumps can be selected through `num.cpgs`. In the below examples the default p-value, outlier score and number of CpGs are used.  
+
+
+```{r}
+#manova (default method)
+
+EpiMutations(diseases = disease)
+```
+
+```{r}
+#Multivariate inear model
+
+EpiMutations(diseases = disease, method = "mlm")
+```
+
+```{r}
+#Isolation forest
+
+EpiMutations(diseases = disease, method = "iso.forest")
+```
+
+```{r}
+#Robust mahalanobis distance
+
+EpiMutations(diseases = disease, method = "Mahdist.MCD")
+```
+
+
