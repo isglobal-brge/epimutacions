@@ -2,8 +2,18 @@
 knitr::opts_chunk$set(comment="", warning=FALSE, message=FALSE, cache=TRUE)
 
 
-## -----------------------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
+#  #install the package brgedata (control panels)
+#  BiocManager::install("brgedata")
+#  #install EpiMutations packages
+#  devtools::install_github("isglobal-brge/EpiMutations")
+
+## ----echo = FALSE-------------------------------------------------------------
+#load the necessary packages
+library(brgedata)
 library(EpiMutations)
+
+## -----------------------------------------------------------------------------
 #Control samples
 ##GenomicRatioSet
 data(grs.control.panel)
