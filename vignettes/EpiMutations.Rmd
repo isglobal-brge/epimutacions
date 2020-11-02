@@ -23,9 +23,9 @@ It is designed for `GenomicRatioSet` and `ExpressionSet` data types, containing 
 The detection of outliers CpG sites is done in two steps: (1) the differentially methylated regions (DMRs) in the given sample are identified by bump-hunter approach using `bumphunter()` function. (2) CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel (control samples). To this end, different anomaly detection statistical approaches are used. Those include: [`manova()`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/manova), [`mlm()`](https://github.com/dgarrimar/mlm),
 [`isolation.forest()`](https://rdrr.io/cran/isotree/man/isolation.forest.html) and  [`covMcd()`](https://www.rdocumentation.org/packages/robustbase/versions/0.93-6/topics/covMcd)
 
-# Available data
+# Required packages
 
-The `EpiMutations` package includes control and case datasets obtained from [GEO](https://www.ncbi.nlm.nih.gov/geo/).
+The `EpiMutations` package uses control and case datasets obtained from [GEO](https://www.ncbi.nlm.nih.gov/geo/).
 
 The control panel corresponds to the accession number [GSE104812](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104812) 
 which includes DNA methylation profiling (Illumina 450K BeadChip array) of 48 healthy children. The case probes were obtained from  [GSE97362](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE97362). This dataset contains DNA methylation 
@@ -35,8 +35,28 @@ The available datasets correspond to CpGs beta values measured in whole blood sa
 
 Finally, we created  `GenomicRatioSet` and `ExpressionSet` type datasets, for both, control and case. These can be distinguished  by the  acronyms  `grs.`  and `es.` at the beginning of the file names. 
 
-```{r}
+The access to control panels can be obtained through  [brgedata](http://bioconductor.org/packages/release/data/experiment/html/brgedata.html)
+package. 
+
+Consequentely, for the correct functionality `brgedata` and `EpiMutations` packages must be installed and loaded: 
+
+```{r eval = FALSE}
+#install the package brgedata (control panels)
+BiocManager::install("brgedata")
+#install EpiMutations packages
+devtools::install_github("isglobal-brge/EpiMutations")
+```
+
+
+
+```{r echo = FALSE}
+#load the necessary packages
+library(brgedata)
 library(EpiMutations)
+```
+
+
+```{r}
 #Control samples
 ##GenomicRatioSet
 data(grs.control.panel)
@@ -65,7 +85,7 @@ within the `method` parameter. This can be set as:
 
 Here we illustrate how to identify outlier methylated regions in the case sample. 
 
-First, we create the `disease` variable with only one case sample, in order to compare it againts all the probes in the control panel: 
+First, we create the `disease` variable with only one case sample, in order to compare it against all the probes in the control panel: 
 
 ```{r }
 disease<-es.diseases[,4]
