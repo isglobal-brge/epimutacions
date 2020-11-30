@@ -1,22 +1,22 @@
 #' @export
-EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01, 
+EpiMutations<-function(methy, min_cpg = 10, pValue.cutoff = 0.01, 
                        cutoff =0.1, outlier.score = 0.5, 
                        nsamp = "deterministic",method = "manova")
 {
   
   #Correct parameter verification
   
-  if(is.null(diseases))
+  if(is.null(methy))
   {
-    stop("'Diseases' parameter must be introduced")
+    stop("'methy' parameter must be introduced")
   }
   
-  #Diseases length(diseases) ==1
-  num.sample.diseases<-dim(diseases)[2]
+  #Methy length(methy) ==1
+  num.sample.methy <- dim(methy)[2]
   
-  if (num.sample.diseases !=1)
+  if (num.sample.methy != 1)
   {
-    stop("'diseases' parameter sample number must be 1")
+    stop("'methy' parameter sample number must be 1")
   }
   
   if (length(method)!=1)
@@ -25,7 +25,7 @@ EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01,
   }
   
   #dataset type (GenomicRatioSet or ExpressionSet)
-  type <- charmatch(class(diseases), c("GenomicRatioSet", "ExpressionSet"))
+  type <- charmatch(class(methy), c("GenomicRatioSet", "ExpressionSet"))
   
   if(is.na(type))
   {
@@ -47,7 +47,7 @@ EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01,
   if(type == 1)
   {
     
-    set <- minfi::combineArrays(grs.control.panel, diseases,
+    set <- minfi::combineArrays(grs.control.panel, methy,
                                 outType = c("IlluminaHumanMethylation450k",
                                             "IlluminaHumanMethylationEPIC",
                                             "IlluminaHumanMethylation27k"),
@@ -59,7 +59,7 @@ EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01,
   {
     
     set <- a4Base::combineTwoExpressionSet(es.control.panel,
-                                           diseases)
+                                           methy)
     
     exprs.mat<-Biobase::exprs(set)
     fdata<-Biobase::fData(set)
@@ -67,7 +67,7 @@ EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01,
   
   #Obtain Phenotypic data  
   pdata <- Biobase::pData(set)
-  sample<-colnames(diseases)
+  sample<-colnames(methy)
   
   #create a variable 0,0,0,0...0,0,1  
   pdata$samp <- pdata$sampleID == sample
@@ -99,8 +99,8 @@ EpiMutations<-function(diseases, num.cpgs = 10, pValue.cutoff = 0.01,
     
     bumps$sample <- sample
     
-    #delect bumps with at least selected "num.cpgs"
-    bumps <- subset(bumps, L >= num.cpgs)
+    #delect bumps with at least selected "min_cpg"
+    bumps <- subset(bumps, L >= min_cpg)
     
     #Find beta value matrix for each bump
     
