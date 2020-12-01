@@ -10,6 +10,7 @@ epimutacions <- function(methy, method, min_cpg = 3, verbose = TRUE) #, num.cpgs
 	
 	bump_cutoff <-  0.1
 	nsamp <- "exact"
+	qn_th <- 3
 	
 	
 	# Identify type of input and extract required data:
@@ -35,9 +36,10 @@ epimutacions <- function(methy, method, min_cpg = 3, verbose = TRUE) #, num.cpgs
 	}
 	
 	# Identify the method to be used
-	avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa")
+	avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
 	method <- charmatch(method, avail)
 	method <- avail[method]
+	if(is.na(method)) stop("Invalid method was selected'")
 	if(verbose) message("Selected epimutation detection method '", method, "'")
 	#if(method %in% c()) {
 	#	stop("Method not implemented yet")
@@ -97,7 +99,7 @@ epimutacions <- function(methy, method, min_cpg = 3, verbose = TRUE) #, num.cpgs
 		# rownames(rst) <- seq_len(nrow(rst))
 		# 
 		# return(rst[ , c(11, 10, 1:9)])
-	} else { # if(method == "barbosa") {
+	} else if(method == "barbosa") {
 		# Compute reference statistics
 		if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
 		bctr_min <- apply(betas[ , ctr_sam], 1, min, na.rm = TRUE)
@@ -124,6 +126,15 @@ epimutacions <- function(methy, method, min_cpg = 3, verbose = TRUE) #, num.cpgs
 		# rownames(rst) <- seq_len(nrow(rst))
 		# 
 		# return(rst[ , c(11, 10, 1:9)])
+	} else { # if(method == "qn") {
+		nbetas <- qn_norm(betas, qn = TRUE)
+		regions <- qn_bump(nbetas[ , cas_sam], fd, window = window_sz, cutoff = bump_cutoff)
+		rst <- do.call(rbind, lapply(cas_sam, function(case) {
+			x <- qn_outlier(case, regions, nbetas, fd, min_cpg, qn_th)
+			x$sample <- case
+			x
+		}))
+		rst <- rst[rst$outlier_direction != "", ]
 	}
 	
 	rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
