@@ -1,3 +1,21 @@
+#' @title  Create DMRs and outlier CpGs plot
+#' @description This function plots DMRs, outlier CpGs, 
+#' methylation in beta values and UCSC annotations for a specified epi-mutation
+#' @param methy a \code{GenomicRatioSet} or \code{ExpressionSet}
+#' @param epi_res \link{\code{epimutacions} function result
+#' @param sam A character specifying the sample to plot
+#' @param chr A character specifying the chromosome of the epi-mutation to be plotted  
+#' @param genome The genome of reference. 
+#' It can be set as \code{"hg18"} and \code{"hg19"}. Default \code{"hg19"}. 
+#' @param from,to Scalar, specifying the range of genomic coordinates of the plot.
+#' If \code{NULL} the plotting ranges are derived from the individual track. 
+#' Note that from cannot be larger than to. 
+#' 
+#' @details 
+#' The tracks are plotted vertically. Each track is separate 
+#' 
+#' 
+#' 
 #' @export
 plot_epi <- function(methy, epi_res, sam, chr, genome = "hg19", from = NULL, to = NULL) {
 	if(length(chr) != 1) {
@@ -19,6 +37,7 @@ plot_epi <- function(methy, epi_res, sam, chr, genome = "hg19", from = NULL, to 
 	Gviz::displayPars(dmrs_track) <- list(background.title = "#AAAADD", background.panel = "#EEEEFF", col = "#AAAADD", fill = "#AAAADD")
 	
 	gr <- create_GRanges_class(methy, epi_res, sam, chr)
+	
 	cpgs_track <- Gviz::AnnotationTrack(gr, name = "CpGs")
 	Gviz::displayPars(cpgs_track) <- list(background.title = "#DDAAAA", background.panel = "#FFEEEE", col = "#DDAAAA", fill = "#DDAAAA")
 	
@@ -43,7 +62,7 @@ plot_epi <- function(methy, epi_res, sam, chr, genome = "hg19", from = NULL, to 
 		
 		
 		if(is.null(from) & is.null(to)){
-			Gviz::plotTracks(list(ideo_track, genome_track, dmrs_track, cpgs_track, betas_track, gene_track), from = min(start(gr)), to = max(end(gr)))
+			Gviz::plotTracks(list(ideo_track, genome_track, dmrs_track, cpgs_track, betas_track, gene_track), from = min(start(gr)), to = max(end(gr))+2)
 		}else{
 			Gviz::plotTracks(list(ideo_track, genome_track, dmrs_track, cpgs_track, betas_track, gene_track), from = from, to = to+2)	
 		}

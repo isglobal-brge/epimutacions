@@ -1,4 +1,3 @@
-#' @export
 UCSC_annotation <- function(genome){
 	if(genome == "hg19" & requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
 		txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
