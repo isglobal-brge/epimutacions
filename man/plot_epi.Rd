@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_epi.R
 \name{plot_epi}
 \alias{plot_epi}
-\title{Create DMRs and outlier CpGs plot}
+\title{Creates DMRs and outlier CpGs plot}
 \usage{
 plot_epi(methy, epi_res, sam, chr, genome = "hg19", from = NULL, to = NULL)
 }
@@ -14,16 +14,40 @@ plot_epi(methy, epi_res, sam, chr, genome = "hg19", from = NULL, to = NULL)
 \item{chr}{A character specifying the chromosome of the epi-mutation to be plotted}
 
 \item{genome}{The genome of reference.
-It can be set as \code{"hg18"} and \code{"hg19"}. Default \code{"hg19"}.}
+It can be set as \code{"hg18"} and \code{"hg19"}. The default is \code{"hg19"}.}
 
 \item{from, to}{Scalar, specifying the range of genomic coordinates of the plot.
 If \code{NULL} the plotting ranges are derived from the individual track.
 Note that from cannot be larger than to.}
+}
+\value{
+A genomic graphic including different tracks specified by the user.
 }
 \description{
 This function plots DMRs, outlier CpGs,
 methylation in beta values and UCSC annotations for a specified epi-mutation
 }
 \details{
-The tracks are plotted vertically. Each track is separate
+The tracks are plotted vertically. Each track is separated by different background
+colour and a section title.
+
+Note that if you want to see the UCSC annotations maybe you need to take a bigger
+genomic region. However, if there are many DMRs can be difficult to see the
+methylation values plot for each CpGs, in this case, you need to take a smaller genomic region.
+The mentioned can be adjusted using \code{from} and \code{to} parameters.
+}
+\examples{
+ 
+
+\dontrun{
+data(methy)
+# Find epi-mutations in a specific sample
+
+epi_manova <- epimutacions(methy, method = "manova")
+
+# Plot the identified epi-mutations
+
+plot_epi(methy, epi_res = epi_manova, sam = "GSM2562699", chr = "chr7", genome = "hg19") 
+}
+
 }
