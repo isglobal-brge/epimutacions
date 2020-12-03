@@ -1,7 +1,5 @@
 #' @export
 create_GRanges_class <- function(methy, epi_res, sam, chr){
-	
-	
 	if(class(methy) == "GenomicRatioSet") {
 		betas <- minfi::getBeta(methy)
 		pd <- as.data.frame(SummarizedExperiment::colData(methy))

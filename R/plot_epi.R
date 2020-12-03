@@ -1,36 +1,43 @@
-#' @title  Creates DMRs and outlier CpGs plot
+#' @title  Plots epimutations results
 #' @description This function plots DMRs, outlier CpGs, 
-#' methylation in beta values and UCSC annotations for a specified epi-mutation
+#' methylation in beta values and UCSC annotations for the specified 
+#' sample and genomic region.
 #' @param methy a \code{GenomicRatioSet} or \code{ExpressionSet}
-#' @param epi_res \link{\code{epimutacions} function result
+#' @param epi_res \code{epimutacions} function result
 #' @param sam A character specifying the sample to plot
 #' @param chr A character specifying the chromosome of the epi-mutation to be plotted  
 #' @param genome The genome of reference. 
 #' It can be set as \code{"hg18"} and \code{"hg19"}. The default is \code{"hg19"}. 
 #' @param from,to Scalar, specifying the range of genomic coordinates of the plot.
 #' If \code{NULL} the plotting ranges are derived from the individual track. 
-#' Note that from cannot be larger than to. 
+#' Note that \code{from} cannot be larger than \code{to}. 
 #' 
 #' @details 
 #' The tracks are plotted vertically. Each track is separated by different background
-#' colour and a section title. 
+#' colour and a section title. The colours and titles are preset and cannot be set by 
+#' the user. 
 #' 
 #' Note that if you want to see the UCSC annotations maybe you need to take a bigger
-#' genomic region. However, if there are many DMRs can be difficult to see the 
-#' methylation values plot for each CpGs, in this case, you need to take a smaller genomic region. 
-#' The mentioned can be adjusted using \code{from} and \code{to} parameters. 
+#' genomic region. However, if there are many DMRs can be difficult to distinguish the 
+#' methylation values plot for each CpGs. Thus, you need to take a smaller genomic region. 
+#' These can be adjusted using \code{from} and \code{to} parameters. 
 #' 
-#' @return A genomic graphic including different tracks specified by the user. 
+#' @return A genomic graphic including DMRs, outlier CpGs, 
+#' methylation in beta values comparing control and case samples 
+#' and UCSC annotations for a specified epi-mutation. 
 #' 
 #' @examples  
 #' 
 #' \dontrun{
+#' 
+#' library(EpiMutations)
 #' data(methy)
+#' 
 #' # Find epi-mutations in a specific sample
 #' 
 #' epi_manova <- epimutacions(methy, method = "manova")
 #' 
-#' # Plot the identified epi-mutations
+#' # Plot the identified epimutations
 #'
 #' plot_epi(methy, epi_res = epi_manova, sam = "GSM2562699", chr = "chr7", genome = "hg19") 
 #' }
