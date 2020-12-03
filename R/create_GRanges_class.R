@@ -18,6 +18,6 @@ create_GRanges_class <- function(methy, epi_res, sam, chr){
 	betas <- jitter(betas[cpg_ids,])
 	df <- data.frame(seqnames = fd$seqnames, start = fd$start, end = fd$end, strand =  fd$strand)
 	gr <- GenomicRanges::makeGRangesFromDataFrame(df)
-	values(gr) <- betas
+	S4Vectors::values(gr) <- betas
 	return(gr)
 }
