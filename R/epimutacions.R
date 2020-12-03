@@ -29,7 +29,7 @@ epimutacions <- function(methy, method, min_cpg = 3, verbose = TRUE) #, num.cpgs
 		pd <- Biobase::pData(methy)
 		fd <- Biobase::fData(methy)
 	} else {
-		stop("Input data 'methy' must be a GenomicRatioSet or an ExpressionSet")
+		stop("Input data 'methy' must be a 'GenomicRatioSet' or an 'ExpressionSet'")
 	}
 	if(!"status" %in% colnames(pd)) {
 		stop("epimutacions function required of column 'status' in sample's description with case/control labels")

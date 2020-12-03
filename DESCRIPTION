@@ -14,7 +14,11 @@ Imports:
 	isotree,
 	robustbase,
 	rrcovHD,
-	Gviz
+	Gviz,
+	GenomicRanges,
+	IRanges,
+	AnnotationDbi,
+	GenomicFeatures
 Suggests: 
     knitr,
     rmarkdown,

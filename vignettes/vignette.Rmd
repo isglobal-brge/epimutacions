@@ -49,7 +49,7 @@ BiocManager::install("epimutacions")
 ## Loading libraries
 
 ```{r, message=FALSE}
-library(epimutacions)
+library(EpiMutations)
 library(SummarizedExperiment)
 library(minfi)
 ```
@@ -155,8 +155,8 @@ rst_mvo[1:2, c(1, 12:14)]
 
 A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epi`, already included in `epimutacions`.
 
-```{r, plot_mvo, fig.width=7}
-plot_epi(epi_mvo, "manova", "GSM2562701", "chr19")
+```{r, plot_mvo, fig.width=7, message=FALSE}
+plot_epi(methy, epi_mvo, "GSM2562699","chr7", "hg19")
 ```
 
 # Acknowledgements

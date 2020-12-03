@@ -1,4 +1,4 @@
 library(testthat)
-library(epimutacions)
+library(EpiMutations)
 
-test_check("epimutacions")
+test_check("EpiMutations")
