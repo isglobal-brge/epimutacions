@@ -16,10 +16,8 @@ create_GRanges_class <- function(methy, epi_res, sam, chr){
 	cpg_ids <- unlist(strsplit(cpg_ids, ","))
 	fd <- fd[cpg_ids,]
 	betas <- jitter(betas[cpg_ids,])
-	ranges <- .Call("C_solve_user_SEW0", as.integer(fd$start), end = as.integer(fd$end), width = as.integer(fd$width), 
-					PACKAGE = "IRanges")
-
-	gr <- GenomicRanges::GRanges(seqnames= fd$seqnames, ranges = ranges, strand = fd$strand, metadata = betas)
-	names(GenomicRanges::mcols(gr)) <- colnames(betas)
+	df <- data.frame(seqnames = fd$seqnames, start = fd$start, end = fd$end, strand =  fd$strand)
+	gr <- GenomicRanges::makeGRangesFromDataFrame(df)
+	S4Vectors::values(gr) <- betas
 	return(gr)
 }
