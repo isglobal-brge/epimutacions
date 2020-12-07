@@ -1,156 +1,151 @@
 #' @export
-EpiMutations<-function(methy, min_cpg = 10, pValue.cutoff = 0.01, 
-                       cutoff =0.1, outlier.score = 0.5, 
-                       nsamp = "deterministic",method = "manova")
+EpiMutations<-function(case_sample, contro_panel = NULL, min_cpg = 3, method = "manova", verbose = TRUE)
 {
   
-  #Correct parameter verification
+  # Identify type of input and extract required data:
+  #	* betas
+  #	* sample's classification
+  #	* feature annotation
   
-  if(is.null(methy))
+  if(is.null(case_sample))
   {
-    stop("'methy' parameter must be introduced")
-  }
-  
-  #Methy length(methy) ==1
-  num.sample.methy <- dim(methy)[2]
-  
-  if (num.sample.methy != 1)
-  {
-    stop("'methy' parameter sample number must be 1")
-  }
-  
-  if (length(method)!=1)
-  {
-    stop(" Only one 'method' can be chosen at a time")
-  }
-  
-  #dataset type (GenomicRatioSet or ExpressionSet)
-  type <- charmatch(class(methy), c("GenomicRatioSet", "ExpressionSet"))
-  
-  if(is.na(type))
-  {
-    stop("The data type must be 'GenomicRatioSet' or 'ExpressionSet'")  
-  }
-  
-  #Select one of the available methods
-  
-  method.selected<-charmatch(method,c("manova","mlm","iso.forest","Mahdist.MCD"))
-  
-  if(is.na(method.selected))
-  {
-    stop("The selected method must be 'manova', 'mlm','iso.forest','Mahdist.MCD'")  
-  }
-  
-  
-  #Combine control panel with the disease sample
-  #GenomicRatioSets
-  if(type == 1)
-  {
+    stop("The argument 'case_sample' must be introduced")
     
-    set <- minfi::combineArrays(grs.control.panel, methy,
-                                outType = c("IlluminaHumanMethylation450k",
-                                            "IlluminaHumanMethylationEPIC",
-                                            "IlluminaHumanMethylation27k"),
-                                verbose = TRUE)
-  }
-  
-  #ExpressionSet   
-  else if (type == 2)
-  {
+  }else{
     
-    set <- a4Base::combineTwoExpressionSet(es.control.panel,
-                                           methy)
-    
-    exprs.mat<-Biobase::exprs(set)
-    fdata<-Biobase::fData(set)
-  }
-  
-  #Obtain Phenotypic data  
-  pdata <- Biobase::pData(set)
-  sample<-colnames(methy)
-  
-  #create a variable 0,0,0,0...0,0,1  
-  pdata$samp <- pdata$sampleID == sample
-  
-  #Create the model matrix
-  model <- stats::model.matrix(~ samp, pdata)
-  
-  #Bumphunter function from bumphunter package
-  #GenomicRatioSet    
-  if(type == 1)
-  {
-    bumps <- bumphunter::bumphunter(set, model, cutoff = 0.1)$table
-  }
-  
-  #ExpressionSet 
-  else if (type == 2)
-  {
-    bumps <- bumphunter::bumphunter(object = exprs.mat,
-                                    design = model,
-                                    pos = fdata$RANGE_START,
-                                    chr = fdata$CHR,
-                                    cutoff = 0.1)$table
-  }
-  
-  #Outlier identification using multiple methods
-  
-  if(!is.na(bumps[1,1]))
-  {
-    
-    bumps$sample <- sample
-    
-    #delect bumps with at least selected "min_cpg"
-    bumps <- subset(bumps, L >= min_cpg)
-    
-    #Find beta value matrix for each bump
-    
-    #Outlier identification using multiple statistical approach 
-    for( i in 1:dim(bumps)[1])
-    {
-      #Find beta value matrix for each bump
-      beta.values<-BumpBetaMatrix(bumps[i,],set)
-      #manova
-      if(method == "manova")
-      {
-        bumps$manova[i]<-EpiMANOVA(beta.values,model) 
+    if(ncol(case_sample) != 1){
+      stop("The argument 'case_sample' must have 1 sample")
+    }
+    if(class(case_sample) == "GenomicRatioSet") {
+      if(verbose) message("Input of type 'GeomicRatioSet'")
+      if (is.null(control_panel)){
+        #Combine control panel and case sample
+        set <- minfi::combineArrays(grs_control_panel, case_sample,
+                                    outType = c("IlluminaHumanMethylation450k",
+                                                "IlluminaHumanMethylationEPIC",
+                                                "IlluminaHumanMethylation27k"),
+                                    verbose = TRUE)
+      }else{
+        if(class(control_panel)!= "GenomicRatioSet"){
+          stop("The type of the arguments 'control_panel' and 'case_sample' must be the same,'GeomicRatioSet'")
+        }
+        set <- minfi::combineArrays(control_panel, case_sample,
+                                    outType = c("IlluminaHumanMethylation450k",
+                                                "IlluminaHumanMethylationEPIC",
+                                                "IlluminaHumanMethylation27k"),
+                                    verbose = TRUE)
       }
-      #mlm
-      if(method == "mlm")
-      {
-        bumps$mlm[i]<-epiMLM(beta.values,model)  
-      }
-      if(method == "iso.forest")
-      {
-        bumps$iso[i]<-epiIsolationForest(beta.values, sample)
         
       }
-      if(method == "Mahdist.MCD")
-      {
-        bumps$MahMCD[i]<-epiMahdist.MCD(beta.values, nsamp, sample)
-      }
-    }
-    
-    #Subset bumps using p value
-    
-    if(method == "manova")
-    {
-      outliers.epi.mutations <- subset(bumps, manova < pValue.cutoff)
-    }
-    if(method == "mlm")
-    {
-      outliers.epi.mutations <- subset(bumps, mlm < pValue.cutoff)
-    }
-    if(method == "iso.forest")
-    {
-      outliers.epi.mutations <- subset(bumps, iso > outlier.score)
+
+      betas <- minfi::getBeta(set)
+      pd <- as.data.frame(SummarizedExperiment::colData(set))
+      fd <- as.data.frame(SummarizedExperiment::rowRanges(set))
+      rownames(fd) <- rownames(set)
       
+    } else if(class(methy) == "ExpressionSet") {
+      if(verbose) message("Input of type 'ExpressionSet")
+      if (is.null(control_panel)){
+        #Combine control panel and case sample
+        set <- a4Base::combineTwoExpressionSet(es_control_panel, case_sample)
+      }else{
+        if(class(control_panel)!= "ExpressionSet"){
+          stop("The type of the arguments 'control_panel' and 'case_sample' must be the same,'ExpressionSet'")
+        }
+        set <- a4Base::combineTwoExpressionSet(control_panel, case_sample)
+      }
+      betas <- Biobase::exprs(set)
+      pd <- Biobase::pData(set)
+      fd <- Biobase::fData(set)
+    } else {
+      stop("Input data 'case_sample' must be a 'GenomicRatioSet' or an 'ExpressionSet'")
     }
-    if(method == "Mahdist.MCD")
-    {
-      outliers.epi.mutations <- subset(bumps, MahMCD == TRUE)
-    }
-  }
+  # Identify the method to be used
   
-  outliers.epi.mutations<-tibble::as_tibble(outliers.epi.mutations)
-  return(outliers.epi.mutations)
+  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
+  method <- charmatch(method, avail)
+  method <- avail[method]
+  if(is.na(method)) stop("Invalid method was selected'")
+  if(verbose) message("Selected epimutation detection method '", method, "'")
+  #if(method %in% c()) {
+  #	stop("Method not implemented yet")
+  #}
+
+  # Identify cases and controls
+  sample <- colnames(case_sample)
+  pd$status <- pd$sampleID == sample
+  ctr_sam <- rownames(pd)[pd$status == 0]
+  cas_sam <- rownames(pd)[pd$status == 1]
+  
+  # Differentiate between methods that required region detection that the ones
+  # that finds outliers to identify regions
+  if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
+    if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
+      # Prepare model to be evaluated
+      model <- stats::model.matrix(~status, pd)
+      
+      # Run bumphunter for region partitioning
+      bumps <- bumphunter::bumphunter(object = betas, design = model,
+                                      pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
+      bumps <- bumps[bumps$L >= min_cpg, ]
+      #bumps$sz <- bumps$end - bumps$start
+      #bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
+      if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
+      
+      # Identify outliers according to selected method
+      bump_out <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
+        bump <- bumps[ii, ]
+        beta_bump <- betas_from_bump(bump, fd, betas)
+        
+        if(method == "mahdistmcd") {
+          dst <- epi_mahdistmcd(beta_bump, nsamp)
+          threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
+          outliers <- which(dst$statistic >= threshold)
+          return(res_mahdistmcd(case, bump, beta_bump, outliers))
+        } else if(method == "mlm") {
+          sts <- epi_mlm(beta_bump, model)
+          return(res_mlm(bump, beta_bump, sts, case))
+        } else if(method == "manova") {
+          sts <- epi_manova(beta_bump, model, case)
+          return(res_manova(bump, beta_bump, sts, case))
+        } else if(method == "isoforest") {
+          sts <- epi_isoforest(beta_bump, case)
+          return(res_isoforest(bump, beta_bump, sts, case))
+        }
+        
+      }))
+  }else if(method == "barbosa") {
+    # Compute reference statistics
+    if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
+    bctr_min <- apply(betas[ , ctr_sam], 1, min, na.rm = TRUE)
+    bctr_max <- apply(betas[ , ctr_sam], 1, max, na.rm = TRUE)
+    bctr_mean <- apply(betas[ , ctr_sam], 1, mean, na.rm = TRUE)
+    bctr_prc <- suppressWarnings(apply(betas[ , ctr_sam], 1, quantile, probs = c(0.01, 0.99), na.rm = TRUE))
+    bctr_pmin <- bctr_prc[1, ]
+    bctr_pmax <- bctr_prc[2, ]
+    rm(bctr_prc)
+    #case <- betas[ , cas_sam[1], drop=FALSE]
+    
+    # Run region detection
+      x <- epi_barbosa(betas[ , cas_sam, drop=FALSE], fd, bctr_min, bctr_max, bctr_mean, 
+                       bctr_pmin, bctr_pmax, window_sz, min_cpg, offset_mean, offset_abs)
+      x$sample <- cas_sam
+      x
+    
+    # rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+    # colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
+    # 	   "outlier_score", "outlier_significance", "outlier_direction", 
+    # 	   "sample", "epi_id")
+    # rownames(rst) <- seq_len(nrow(rst))
+    # 
+    # return(rst[ , c(11, 10, 1:9)])
+  } else { # if(method == "qn") {
+    nbetas <- qn_norm(betas, qn = TRUE)
+    regions <- qn_bump(nbetas[ , cas_sam], fd, window = window_sz, cutoff = bump_cutoff)
+    x <- qn_outlier(cas_sam, regions, nbetas, fd, min_cpg, qn_th)
+    x$sample <- cas_sam
+    x
+    rst <- rst[rst$outlier_direction != "", ]
+  }
 }
+  
