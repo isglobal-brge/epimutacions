@@ -1,6 +1,13 @@
 #' @export
-EpiMutations<-function(case_sample, contro_panel = NULL, min_cpg = 3, method = "manova", verbose = TRUE)
+EpiMutations<-function(case_sample, control_panel = NULL, min_cpg = 3, method = "manova", verbose = TRUE)
 {
+  window_sz = 10
+  offset_mean = 0.15
+  offset_abs = 0.1
+  
+  bump_cutoff <-  0.1
+  nsamp <- "exact"
+  qn_th <- 3
   
   # Identify type of input and extract required data:
   #	* betas
@@ -35,19 +42,15 @@ EpiMutations<-function(case_sample, contro_panel = NULL, min_cpg = 3, method = "
                                                 "IlluminaHumanMethylation27k"),
                                     verbose = TRUE)
       }
-        
-      }
-
       betas <- minfi::getBeta(set)
       pd <- as.data.frame(SummarizedExperiment::colData(set))
       fd <- as.data.frame(SummarizedExperiment::rowRanges(set))
-      rownames(fd) <- rownames(set)
-      
-    } else if(class(methy) == "ExpressionSet") {
-      if(verbose) message("Input of type 'ExpressionSet")
-      if (is.null(control_panel)){
-        #Combine control panel and case sample
-        set <- a4Base::combineTwoExpressionSet(es_control_panel, case_sample)
+      rownames(fd) <- rownames(set) 
+      }else if(class(case_sample) == "ExpressionSet") {
+        if(verbose) message("Input of type 'ExpressionSet")
+        if (is.null(control_panel)){
+          #Combine control panel and case sample
+          set <- a4Base::combineTwoExpressionSet(es_control_panel, case_sample)
       }else{
         if(class(control_panel)!= "ExpressionSet"){
           stop("The type of the arguments 'control_panel' and 'case_sample' must be the same,'ExpressionSet'")
@@ -60,6 +63,7 @@ EpiMutations<-function(case_sample, contro_panel = NULL, min_cpg = 3, method = "
     } else {
       stop("Input data 'case_sample' must be a 'GenomicRatioSet' or an 'ExpressionSet'")
     }
+  }
   # Identify the method to be used
   
   avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
@@ -90,7 +94,7 @@ EpiMutations<-function(case_sample, contro_panel = NULL, min_cpg = 3, method = "
       bumps <- bumps[bumps$L >= min_cpg, ]
       #bumps$sz <- bumps$end - bumps$start
       #bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
-      if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
+      if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", cas_sam, "'"))
       
       # Identify outliers according to selected method
       bump_out <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
@@ -101,16 +105,16 @@ EpiMutations<-function(case_sample, contro_panel = NULL, min_cpg = 3, method = "
           dst <- epi_mahdistmcd(beta_bump, nsamp)
           threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
           outliers <- which(dst$statistic >= threshold)
-          return(res_mahdistmcd(case, bump, beta_bump, outliers))
+          return(res_mahdistmcd(cas_sam, bump, beta_bump, outliers))
         } else if(method == "mlm") {
           sts <- epi_mlm(beta_bump, model)
-          return(res_mlm(bump, beta_bump, sts, case))
+          return(res_mlm(bump, beta_bump, sts, cas_sam))
         } else if(method == "manova") {
-          sts <- epi_manova(beta_bump, model, case)
-          return(res_manova(bump, beta_bump, sts, case))
+          sts <- epi_manova(beta_bump, model, cas_sam)
+          return(res_manova(bump, beta_bump, sts, cas_sam))
         } else if(method == "isoforest") {
-          sts <- epi_isoforest(beta_bump, case)
-          return(res_isoforest(bump, beta_bump, sts, case))
+          sts <- epi_isoforest(beta_bump, cas_sam)
+          return(res_isoforest(bump, beta_bump, sts, cas_sam))
         }
         
       }))
