@@ -1,5 +1,5 @@
 #' @export
-EpiMutations<-function(case_sample, control_panel = NULL, min_cpg = 3, method = "manova", verbose = TRUE)
+EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr = NULL, min_cpg = 3, verbose = TRUE)
 {
   window_sz = 10
   offset_mean = 0.15
@@ -76,10 +76,9 @@ EpiMutations<-function(case_sample, control_panel = NULL, min_cpg = 3, method = 
   #}
 
   # Identify cases and controls
-  sample <- colnames(case_sample)
-  pd$status <- pd$sampleID == sample
+  cas_sam <- colnames(case_sample)
+  pd$status <- pd$sampleID == cas_sam
   ctr_sam <- rownames(pd)[pd$status == 0]
-  cas_sam <- rownames(pd)[pd$status == 1]
   
   # Differentiate between methods that required region detection that the ones
   # that finds outliers to identify regions
@@ -87,17 +86,24 @@ EpiMutations<-function(case_sample, control_panel = NULL, min_cpg = 3, method = 
     if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
       # Prepare model to be evaluated
       model <- stats::model.matrix(~status, pd)
+      # Select chromosome
+      if(!is.null(chr)){
+       fd <- fd[fd$seqnames == chr,]
+       betas <- betas[rownames(fd),]
+      }
+      
       
       # Run bumphunter for region partitioning
-      bumps <- bumphunter::bumphunter(object = betas, design = model,
-                                      pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
+        bumps <- bumphunter::bumphunter(object = betas, design = model,
+                                        pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
+      
       bumps <- bumps[bumps$L >= min_cpg, ]
-      #bumps$sz <- bumps$end - bumps$start
+      bumps$sz <- bumps$end - bumps$start
       #bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
       if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", cas_sam, "'"))
       
       # Identify outliers according to selected method
-      bump_out <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
+      rst <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
         bump <- bumps[ii, ]
         beta_bump <- betas_from_bump(bump, fd, betas)
         
@@ -151,5 +157,11 @@ EpiMutations<-function(case_sample, control_panel = NULL, min_cpg = 3, method = 
     x
     rst <- rst[rst$outlier_direction != "", ]
   }
+  rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+  colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
+                     "outlier_score", "outlier_significance", "outlier_direction", 
+                     "sample", "epi_id")
+  rownames(rst) <- seq_len(nrow(rst))
+  return(rst[ , c(11, 10, 1:9)])
 }
   
