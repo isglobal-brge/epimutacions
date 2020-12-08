@@ -65,7 +65,9 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     }
   }
   # Identify the method to be used
-  
+  if(!("start" %in%  colnames(fd)) & !("seqnames" %in%  colnames(fd))){
+    stop("In feature data variable 'seqnames' and 'start' must be introduced specifying the chromosome and start position")
+  }
   avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
   method <- charmatch(method, avail)
   method <- avail[method]
@@ -77,8 +79,8 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
 
   # Identify cases and controls
   cas_sam <- colnames(case_sample)
-  pd$status <- pd$sampleID == cas_sam
-  ctr_sam <- rownames(pd)[pd$status == 0]
+  pd$status <- ifelse(rownames(pd) == cas_sam, "case", "control") == cas_sam
+  ctr_sam <- rownames(pd)[pd$status == "control"]
   
   # Differentiate between methods that required region detection that the ones
   # that finds outliers to identify regions
@@ -96,6 +98,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
       # Run bumphunter for region partitioning
         bumps <- bumphunter::bumphunter(object = betas, design = model,
                                         pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
+        if(!is.na(bumps)){
       
       bumps <- bumps[bumps$L >= min_cpg, ]
       bumps$sz <- bumps$end - bumps$start
@@ -124,6 +127,10 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
         }
         
       }))
+        }else{
+          rst <- NA
+          warning("No bumps found!")
+        }
   }else if(method == "barbosa") {
     # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
@@ -157,11 +164,15 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     x
     rst <- rst[rst$outlier_direction != "", ]
   }
-  rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
-  colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
-                     "outlier_score", "outlier_significance", "outlier_direction", 
-                     "sample", "epi_id")
-  rownames(rst) <- seq_len(nrow(rst))
-  return(rst[ , c(11, 10, 1:9)])
+  if(is.na(rst)){
+    return(rst)
+  }else{
+    rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+    colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
+                       "outlier_score", "outlier_significance", "outlier_direction", 
+                       "sample", "epi_id")
+    rownames(rst) <- seq_len(nrow(rst))
+    return(rst[ , c(11, 10, 1:9)])
+  }
 }
   
