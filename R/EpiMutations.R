@@ -6,7 +6,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
   offset_abs = 0.1
   
   bump_cutoff <-  0.1
-  nsamp <- "exact"
+  nsamp <- "deterministic"
   qn_th <- 3
   
   # Identify type of input and extract required data:
@@ -79,8 +79,8 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
 
   # Identify cases and controls
   cas_sam <- colnames(case_sample)
-  pd$status <- ifelse(rownames(pd) == cas_sam, "case", "control") == cas_sam
-  ctr_sam <- rownames(pd)[pd$status == "control"]
+  pd$status <- ifelse(rownames(pd) == cas_sam, 1, 0)
+  ctr_sam <- rownames(pd)[pd$status == 1]
   
   # Differentiate between methods that required region detection that the ones
   # that finds outliers to identify regions
@@ -114,6 +114,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
           dst <- epi_mahdistmcd(beta_bump, nsamp)
           threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
           outliers <- which(dst$statistic >= threshold)
+          outliers <- dst$ID[outliers]
           return(res_mahdistmcd(cas_sam, bump, beta_bump, outliers))
         } else if(method == "mlm") {
           sts <- epi_mlm(beta_bump, model)
@@ -172,7 +173,9 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
                        "outlier_score", "outlier_significance", "outlier_direction", 
                        "sample", "epi_id")
     rownames(rst) <- seq_len(nrow(rst))
-    return(rst[ , c(11, 10, 1:9)])
+    #rst <- rst[ , c(11, 10, 1:9)]
+    rst <- rst[apply(rst, 1, function(x) !all(is.na(x))),]
+    return(rst)
   }
 }
   
