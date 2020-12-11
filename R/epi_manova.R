@@ -1,7 +1,7 @@
 epi_manova <-  function(mixture, model, case_id){
 	mixture <- t(mixture)
 	mod <- manova(mixture ~ model)
-	mod_summary <- summary(mod)$stats
+	mod_summary <- summary(mod, tol = 0)$stats
 	statistics <- mod_summary[1, c("approx F", "Pillai","Pr(>F)")]
 	
 	# Calculate the beta mean difference
