@@ -17,6 +17,10 @@
 #'
 add_ensemble_regulatory <- function(epimutations, build = "37"){
 	
+	
+	## Remove chr from chromosome
+	epimutations$chromosome <- gsub("chr", "", epimutations$chromosome)
+	
 	## Create connection to ENSEMBL 
 	mart <- biomaRt::useEnsembl(biomart = "regulation", GRCh = build)
 	ensembl <- biomaRt::useDataset(dataset = "hsapiens_regulatory_feature", 
