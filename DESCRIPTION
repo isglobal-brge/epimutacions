@@ -14,7 +14,13 @@ Imports:
 	isotree,
 	robustbase,
 	rrcovHD,
-	tibble
+	tibble,
+	ggplot2,
+	ggrepel,
+	Gviz,
+	gridExtra,
+	S4Vectors,
+	GenomicRanges
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 Encoding: UTF-8

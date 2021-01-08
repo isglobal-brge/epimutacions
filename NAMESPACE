@@ -3,5 +3,5 @@
 export(EpiMutations)
 export(annotate_epimutations)
 export(create_GRanges_class)
-export(plot_epi)
+export(epi_params)
 export(simulations)

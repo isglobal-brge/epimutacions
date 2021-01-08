@@ -28,4 +28,3 @@ simulations <- function(cohort, n = 100, methods = c("manova", "mlm", "mahdistmc
    }
   return(rst)
 }
-

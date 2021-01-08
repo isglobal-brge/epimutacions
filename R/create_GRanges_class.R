@@ -1,5 +1,5 @@
 #' @export
-create_GRanges_class <- function(methy, epi_res, sam, chr){
+create_GRanges_class <- function(methy, cpg_ids){
 	if(class(methy) == "GenomicRatioSet") {
 		betas <- minfi::getBeta(methy)
 		pd <- as.data.frame(SummarizedExperiment::colData(methy))
@@ -12,11 +12,11 @@ create_GRanges_class <- function(methy, epi_res, sam, chr){
 	} else {
 		stop("Input data 'methy' must be a 'GenomicRatioSet' or an 'ExpressionSet'")
 	}
-	cpg_ids <- epi_res[,"cpg_ids"]
 	cpg_ids <- unlist(strsplit(cpg_ids, ","))
 	fd <- fd[cpg_ids,]
 	betas <- jitter(betas[cpg_ids,])
 	df <- data.frame(seqnames = fd$seqnames, start = fd$start, end = fd$end, strand =  fd$strand)
+	rownames(df) <- rownames(betas)
 	gr <- GenomicRanges::makeGRangesFromDataFrame(df)
 	S4Vectors::values(gr) <- betas
 	return(gr)

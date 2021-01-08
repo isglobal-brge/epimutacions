@@ -1,5 +1,5 @@
 #' @export
-EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr = NULL, start = NULL, end = NULL,  min_cpg = 3, pvalue_cutoff = 0.01, outlier_score_cutoff = 0.5, verbose = TRUE)
+EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_params(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {
   window_sz = 10
   offset_mean = 0.15
@@ -97,9 +97,9 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
   # Select chromosome and coordenates
   if(!is.null(chr)){
     if(!is.null(start) & !is.null(end)){
-      fd <- fd[fd$seqnames == chr & fd$start >= start & fd$end <= end,]
+      fd <- fd[fd$seqnames %in% chr & fd$start >= start & fd$end <= end,]
     }else{
-      fd <- fd[fd$seqnames == chr,]
+      fd <- fd[fd$seqnames %in% chr,]
     }
     betas <- betas[rownames(fd),]
     #pd <- pd[which(rownames(pd) %in% colnames(betas)),]
@@ -130,7 +130,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
         beta_bump <- betas_from_bump(bump, fd, betas)
         
         if(method == "mahdistmcd") {
-          dst <- epi_mahdistmcd(beta_bump, nsamp)
+          dst <- epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp)
           threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
           outliers <- which(dst$statistic >= threshold)
           outliers <- dst$ID[outliers]
@@ -167,7 +167,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     
     # Run region detection
       x <- epi_barbosa(betas[ , cas_sam, drop=FALSE], fd, bctr_min, bctr_max, bctr_mean, 
-                       bctr_pmin, bctr_pmax, window_sz, min_cpg, offset_mean, offset_abs)
+                       bctr_pmin, bctr_pmax, epi_params$barbosa$window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
       if(nrow(x) != 0){
         x$sample <- cas_sam
         rst <- x
@@ -185,8 +185,8 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     # return(rst[ , c(11, 10, 1:9)])
   } else { # if(method == "qn") {
     nbetas <- qn_norm(betas, qn = TRUE)
-    regions <- qn_bump(nbetas[ , cas_sam], fd, window = window_sz, cutoff = bump_cutoff)
-    x <- qn_outlier(cas_sam, regions, nbetas, fd, min_cpg, qn_th)
+    regions <- qn_bump(nbetas[ , cas_sam], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
+    x <- qn_outlier(cas_sam, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
     
     if(nrow(x) != 0){
       x$sample <- cas_sam
@@ -207,7 +207,13 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
                        "sample", "epi_id")
     rownames(rst) <- seq_len(nrow(rst))
     rst <- rst[ , c(11, 10, 1:9)]
-    rst <- filter_results(rst, method, pvalue_cutoff, outlier_score_cutoff)
+    if(method == "manova"){
+      pvalue_cutoff <- epi_params$manova$pvalue_cutoff
+    }else if(method == "mlm"){
+      pvalue_cutoff <- epi_params$mlm$pvalue_cutoff
+      
+    }
+    rst <- filter_results(rst, method, pvalue_cutoff, epi_params$isoforest$outlier_score_cutoff)
     rst <- tibble::as_tibble(rst)
     return(rst)
   }
