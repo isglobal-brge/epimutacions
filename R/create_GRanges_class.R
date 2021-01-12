@@ -15,9 +15,9 @@ create_GRanges_class <- function(methy, cpg_ids){
 	cpg_ids <- unlist(strsplit(cpg_ids, ","))
 	fd <- fd[cpg_ids,]
 	betas <- jitter(betas[cpg_ids,])
-	df <- data.frame(seqnames = fd$seqnames, start = fd$start, end = fd$end, strand =  fd$strand)
-	rownames(df) <- rownames(betas)
-	gr <- GenomicRanges::makeGRangesFromDataFrame(df)
+	fd  <- fd_cols(fd)
+	rownames(fd) <- rownames(betas)
+	gr <- GenomicRanges::makeGRangesFromDataFrame(fd)
 	S4Vectors::values(gr) <- betas
 	return(gr)
 }

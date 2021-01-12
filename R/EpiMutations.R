@@ -1,14 +1,7 @@
 #' @export
 EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_params(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {
-  window_sz = 10
-  offset_mean = 0.15
-  offset_abs = 0.1
-  
-  bump_cutoff <-  0.1
-  nsamp <- "deterministic"
-  qn_th <- 3
-  
+
   # Identify type of input and extract required data:
   #	* betas
   #	* sample's classification
@@ -64,10 +57,10 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
       stop("Input data 'case_sample' must be a 'GenomicRatioSet' or an 'ExpressionSet'")
     }
   }
-  # Identify the method to be used
-  if(!("start" %in%  colnames(fd)) & !("seqnames" %in%  colnames(fd)) & !("end" %in%  colnames(fd))){
-    stop("In feature data variable 'seqnames', 'start'  and 'end' must be introduced specifying the chromosome, start and end position")
-  }
+  # Check introduced parameters
+  
+  fd <- .fd_cols(fd)
+
   if(!is.null(start) & !is.null(end)){
     if(is.null(chr)){
       stop("Argument 'chr' must be inroduced with 'start' and 'end' parameters")
@@ -81,6 +74,8 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     stop("'start' and 'end' arguments must be introduced together")
     
   }
+  # Identify the method to be used
+  
   avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
   method <- charmatch(method, avail)
   method <- avail[method]
@@ -93,7 +88,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
   # Identify cases and controls
   cas_sam <- colnames(case_sample)
   pd$status <- ifelse(rownames(pd) == cas_sam, 1, 0)
-  ctr_sam <- rownames(pd)[pd$status == 1]
+  ctr_sam <- rownames(pd)[pd$status == 0]
   # Select chromosome and coordenates
   if(!is.null(chr)){
     if(!is.null(start) & !is.null(end)){
@@ -110,49 +105,46 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
   if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
     if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
      # Prepare model to be evaluated
-     model <- stats::model.matrix(~status, pd)
+          model <- stats::model.matrix(~status, pd)
+          # Run bumphunter for region partitioning
+            bumps <- bumphunter::bumphunter(object = betas, design = model,
+                                            pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
       
+            suppressWarnings(
+            if(!is.na(bumps) | nrow(bumps) != 0){
+            
+            bumps <- bumps[bumps$L >= min_cpg, ]
+            bumps$sz <- bumps$end - bumps$start
+         # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
+          if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", cas_sam, "'"))
       
-      # Run bumphunter for region partitioning
-        bumps <- bumphunter::bumphunter(object = betas, design = model,
-                                        pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
-      
-      if(!is.na(bumps)){
-      bumps <- bumps[bumps$L >= min_cpg, ]
-      if(nrow(bumps)!=0){
-      bumps$sz <- bumps$end - bumps$start
-      #bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
-      if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", cas_sam, "'"))
-      
-      # Identify outliers according to selected method
-      rst <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
-        bump <- bumps[ii, ]
-        beta_bump <- betas_from_bump(bump, fd, betas)
+        # Identify outliers according to selected method
+          rst  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
+            bump <- bumps[ii, ]
+            beta_bump <- betas_from_bump(bump, fd, betas)
         
-        if(method == "mahdistmcd") {
-          dst <- epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp)
-          threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
-          outliers <- which(dst$statistic >= threshold)
-          outliers <- dst$ID[outliers]
-          return(res_mahdistmcd(cas_sam, bump, beta_bump, outliers))
-        } else if(method == "mlm") {
-          sts <- epi_mlm(beta_bump, model)
-          return(res_mlm(bump, beta_bump, sts, cas_sam))
-        } else if(method == "manova") {
-          sts <- epi_manova(beta_bump, model, cas_sam)
-          return(res_manova(bump, beta_bump, sts, cas_sam))
-        } else if(method == "isoforest") {
-          sts <- epi_isoforest(beta_bump, cas_sam)
-          return(res_isoforest(bump, beta_bump, sts, cas_sam))
-        }
+            if(method == "mahdistmcd") {
+              dst <- epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp)
+              threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
+              outliers <- which(dst$statistic >= threshold)
+              outliers <- dst$ID[outliers]
+              return(res_mahdistmcd(cas_sam, bump, beta_bump, outliers))
+            } else if(method == "mlm") {
+              sts <- epi_mlm(beta_bump, model)
+              return(res_mlm(bump, beta_bump, sts, cas_sam))
+            } else if(method == "manova") {
+              sts <- epi_manova(beta_bump, model, cas_sam)
+              return(res_manova(bump, beta_bump, sts, cas_sam))
+            } else if(method == "isoforest") {
+              sts <- epi_isoforest(beta_bump, cas_sam)
+            return(res_isoforest(bump, beta_bump, sts, cas_sam))
+          }
         
-      }))
+          }))
+           })
       if(nrow(rst) == 0){
         rst <- NA
       }
-        }else{rst <- NA}}else{
-          rst <- NA
-        }
   }else if(method == "barbosa") {
     # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
@@ -197,6 +189,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     }
     
   }
+  suppressWarnings(
   if(is.na(rst)){
     return(message("No outliers found"))
     
@@ -216,6 +209,48 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     rst <- filter_results(rst, method, pvalue_cutoff, epi_params$isoforest$outlier_score_cutoff)
     rst <- tibble::as_tibble(rst)
     return(rst)
-  }
+  })
+}
+
+# Helper functions
+
+.fd_cols <- function(fd){
+    seqnames_field <- c("seqnames", "seqname",
+                      "chromosome", "chrom",
+                      "chr", "chromosome_name",
+                      "seqid")
+    start_field <- "start"
+    end_field <- c("end", "stop")
+    strand_field <- c("strand")
+  
+  
+    if(seqnames_field[1] %in% colnames(fd) | seqnames_field[2] %in% colnames(fd) | seqnames_field[3] %in% colnames(fd) | seqnames_field[4] %in% colnames(fd) | seqnames_field[5] %in% colnames(fd) | seqnames_field[6] %in% colnames(fd) | seqnames_field[7] %in% colnames(fd)){
+      seqnames_pos <- which(colnames(fd) %in% seqnames_field)
+      seqnames <- fd[,seqnames_pos]
+    }else{
+      stop("In feature dataset chromosome column name must be specified as: 'seqnames', 'seqname', 'chromosome', 'chrom', 'chr', 'chromosome_name' or 'seqid'")
+    }
+    if(start_field %in% colnames(fd)){
+      start_pos <- which(colnames(fd) %in% start_field)
+      start <- fd[,start_pos]
+    }else{
+      stop("In feature dataset start column name must be specified as: 'start'")
+    }
+    if(end_field[1] %in% colnames(fd) | end_field[2] %in% colnames(fd)){
+      end_pos <- which(colnames(fd) %in% end_field)
+      end <- fd[,end_pos]
+    }else{
+      stop("In feature dataset end column name  must be specified as: 'end' or 'stop'")
+    }
+    if( strand_field %in% colnames(fd)){
+      strand_pos <- which(colnames(fd) %in% strand_field)
+      strand <- fd[,strand_pos]
+    }else{
+      stop("In feature dataset strand column name  must be specified as: 'strand'")
+    }
+    fd_rownames <- rownames(fd)
+    fd <- data.frame("seqnames" = seqnames, "start" = start, "end" = end, "strand" = strand)
+    rownames(fd) <- fd_rownames
+    return(fd)
 }
   
