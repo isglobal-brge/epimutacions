@@ -80,10 +80,14 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
+  if(method == "barbosa" & ncol(case_sample) <= 1){
+    warning("More than 1 case sample must be introduced to use barbosa")
+  }
   if(verbose) message("Selected epimutation detection method '", method, "'")
   #if(method %in% c()) {
   #	stop("Method not implemented yet")
   #}
+
 
   # Identify cases and controls
   cas_sam <- colnames(case_sample)
@@ -177,7 +181,7 @@ EpiMutations<-function(case_sample, control_panel = NULL, method = "manova", chr
     # return(rst[ , c(11, 10, 1:9)])
   } else { # if(method == "qn") {
     nbetas <- qn_norm(betas, qn = TRUE)
-    regions <- qn_bump(nbetas[ , cas_sam], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
+    regions <- qn_bump(nbetas[ ,cas_sam], cas_sam, fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
     x <- qn_outlier(cas_sam, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
     
     if(nrow(x) != 0){

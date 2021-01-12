@@ -24,15 +24,15 @@ qn_norm <- function(betas, fd, qn = TRUE) {
 	return(scaled)
 }
 
-qn_bump <- function(nbetas, fd, window_sz = 1000, cutoff = 0.05) {
+qn_bump <- function(nbetas, cas_sam, fd, window_sz = 1000, cutoff = 0.05) {
 	chr <- as.character(fd$seqnames)
 	pos <- as.numeric(fd$start)
 	cl <- bumphunter::clusterMaker(chr, pos, maxGap = window_sz)
-	reg <- lapply(colnames(nbetas), function(sam) {
-		suppressMessages(regionFinder(nbetas[ , sam], chr, pos, cl, cutoff = cutoff))
+	reg <- lapply(as.data.frame(nbetas), function(sam) {
+		suppressMessages(bumphunter::regionFinder(sam, chr, pos, cl, cutoff = cutoff))
 	})
-	names(reg) <- colnames(nbetas)
-	reg
+	names(reg) <- cas_sam
+	return(reg)
 }
 
 qn_outlier <- function(case, reg, nbetas, fd, min_cpg = 3, th = 3) {
