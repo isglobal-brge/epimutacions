@@ -24,14 +24,14 @@ qn_norm <- function(betas, fd, qn = TRUE) {
 	return(scaled)
 }
 
-qn_bump <- function(nbetas, cas_sam, fd, window_sz = 1000, cutoff = 0.05) {
+qn_bump <- function(nbetas, fd, window_sz = 1000, cutoff = 0.05) {
 	chr <- as.character(fd$seqnames)
 	pos <- as.numeric(fd$start)
 	cl <- bumphunter::clusterMaker(chr, pos, maxGap = window_sz)
 	reg <- lapply(as.data.frame(nbetas), function(sam) {
 		suppressMessages(bumphunter::regionFinder(sam, chr, pos, cl, cutoff = cutoff))
 	})
-	names(reg) <- cas_sam
+	names(reg) <- colnames(nbetas)
 	return(reg)
 }
 
