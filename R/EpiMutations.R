@@ -23,7 +23,6 @@ EpiMutations<-function(case_samples, control_panel, fd, method = "manova", chr =
     stop("'control_panel' must be a matrix or data frame")
   }
   fd <- .fd_cols(fd)
-  betas <- cbind(control_panel, case_samples)
   
   if(!is.null(start) & !is.null(end)){
     if(is.null(chr)){
@@ -56,7 +55,7 @@ EpiMutations<-function(case_samples, control_panel, fd, method = "manova", chr =
     }else{
       fd <- fd[fd$seqnames %in% chr,]
     }
-    case_sample <- case_sample[rownames(fd),]
+    case_samples <- case_sample[rownames(fd),]
     control_panel <- control_panel[rownames(fd),]
     betas <- betas[rownames(fd),]
     #pd <- pd[which(rownames(pd) %in% colnames(betas)),]
