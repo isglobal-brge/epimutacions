@@ -1,5 +1,5 @@
 #' @export
-EpiMutations<-function(case_samples, control_panel, fd, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_params(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
+EpiMutations <- function(case_samples, control_panel, fd, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {
   
   # Identify type of input and extract required data:
@@ -55,9 +55,8 @@ EpiMutations<-function(case_samples, control_panel, fd, method = "manova", chr =
     }else{
       fd <- fd[fd$seqnames %in% chr,]
     }
-    case_samples <- case_sample[rownames(fd),]
+    case_samples <- case_samples[rownames(fd),]
     control_panel <- control_panel[rownames(fd),]
-    betas <- betas[rownames(fd),]
     #pd <- pd[which(rownames(pd) %in% colnames(betas)),]
   }
   
@@ -186,6 +185,7 @@ EpiMutations<-function(case_samples, control_panel, fd, method = "manova", chr =
 # Helper functions
 
 .fd_cols <- function(fd){
+  
   if(class(fd) != "data.frame"){
     stop("'fd' must be a data frame")
   }
