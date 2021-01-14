@@ -78,7 +78,7 @@ epi_plot <- function(dmr, methy, genome = "hg19", from = NULL, to = NULL){
 
   plot_cpg_names <- plot_mean +
                     ggrepel::geom_text_repel() + 
-                    ggplot2::annotate(geom="text", x=names$start, y=names$value + 0.03, label=names$id, color="black")
+                    ggplot2::annotate(geom="text", x=names$start, y=names$value + 0.05, label=names$id, color="black")
 
   plot <- plot_cpg_names + 
           ggplot2::ylim(0,1) +  

@@ -55,6 +55,7 @@ simulations <- function(cohort, status, fd, n = 100, methods = c("manova", "mlm"
   
   results <- as.data.frame(cbind(total,chr5,chr17,chr19))
   rownames(results) <- method
+  return(list(rst,results))
   
   return(results)
 }
