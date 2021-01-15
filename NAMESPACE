@@ -3,7 +3,6 @@
 export(annotate_epimutations)
 export(create_GRanges_class)
 export(epi_parameters)
-export(epimutacions)
 export(epimutations)
 export(epimutations_one_leave_out)
 export(plot_epi)
