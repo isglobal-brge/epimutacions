@@ -45,5 +45,8 @@ res_mahdistmcd <- function(case, bump, beta_bump, outliers) {
 	bump$CpG_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
 	bump$sample <- case
 	bump <- bump[bump$outlier, ]
-	bump[ , c("chr", "start", "end", "sz", "L", "CpG_ids", "outlier_score", "outlier_significance", "outlier_direction", "sample")]
+	bump <- bump[ , c("chr", "start", "end", "sz", "L", "CpG_ids", "outlier_score", "outlier_significance", "outlier_direction", "sample")]
+	
+	return(bump)
 }
+

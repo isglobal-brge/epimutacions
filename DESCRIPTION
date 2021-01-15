@@ -19,7 +19,12 @@ Imports:
 	IRanges,
 	AnnotationDbi,
 	GenomicFeatures,
-	S4Vectors
+	S4Vectors,
+	tibble,
+	ggplot2,
+	ggrepel,
+	gridExtra
+	
 Suggests: 
     knitr,
     rmarkdown,

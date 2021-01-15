@@ -6,7 +6,7 @@
 #'  variations in congenital disorders. Nat Commun. 2018;9(1):2064. Published 
 #'  2018 May 25. doi:10.1038/s41467-018-04540-x
 epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin, 
-	bctr_pmax, window_sz = 1000, N = 3, offset_mean = 0.15, offset_abs = 0.1) {
+						bctr_pmax, window_sz = 1000, N = 3, offset_mean = 0.15, offset_abs = 0.1) {
 	# Check that there is a single proband
 	if(ncol(case) != 1) {
 		stop("Epimutation detection with barbosa approach can only works with a singe proband")
@@ -148,6 +148,3 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
 	
 	return(rbind(clean_inf, clean_sup))
 }
-
-
-

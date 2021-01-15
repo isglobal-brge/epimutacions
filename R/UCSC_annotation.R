@@ -1,4 +1,4 @@
-UCSC_annotation <- function(genome){
+UCSC_annotation <- function(genome = "hg19"){
 	if(genome == "hg19" & requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
 		txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
 	} else if(genome == "hg18" & requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){

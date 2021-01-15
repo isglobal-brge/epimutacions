@@ -29,7 +29,7 @@ qn_bump <- function(nbetas, fd, window_sz = 1000, cutoff = 0.05) {
 	pos <- as.numeric(fd$start)
 	cl <- bumphunter::clusterMaker(chr, pos, maxGap = window_sz)
 	reg <- lapply(colnames(nbetas), function(sam) {
-		suppressMessages(regionFinder(nbetas[ , sam], chr, pos, cl, cutoff = cutoff))
+		suppressMessages(bumphunter::regionFinder(nbetas[ , sam], chr, pos, cl, cutoff = cutoff))
 	})
 	names(reg) <- colnames(nbetas)
 	reg
