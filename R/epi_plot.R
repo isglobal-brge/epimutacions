@@ -65,7 +65,7 @@ epi_plot <- function(dmr, methy, genome = "hg19", from = NULL, to = NULL){
   
   plot_betas <- ggplot2::ggplot() + 
     ggplot2::geom_line(data = beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), linetype = beta_values$lines) +
-    ggplot2::geom_point(data = beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), color = beta_values$color) 
+    ggplot2::geom_point(data = beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), color = beta_values$color)
   
   plot_sd <- plot_betas +
     ggplot2::geom_ribbon(data = sd, ggplot2::aes(x = start, ymin = sd_2_lower, ymax = sd_2_upper), fill = "gray39", alpha = 0.4) +
@@ -81,8 +81,11 @@ epi_plot <- function(dmr, methy, genome = "hg19", from = NULL, to = NULL){
     ggplot2::annotate(geom="text", x=names$start, y=names$value + 0.05, label=names$id, color="black")
   
   plot <- plot_cpg_names + 
-    #ylim(0,1) +  
-    ggplot2::scale_colour_manual(name="Status",values=c("black","red","darkblue"))
+    ggplot2::lims(y = c(0,1)) +  
+    ggplot2::scale_colour_manual(name="Status",values=c("black","red","darkblue")) +
+    ggplot2::theme_bw() + 
+    ggplot2::labs(x = "DNA methylation level") + 
+    ggplot2::labs(y = "Coordinates")
   
   #Plot gene annotations
   
