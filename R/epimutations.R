@@ -58,9 +58,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
-  if(method == "barbosa" & ncol(case_samples) <= 1){
-    warning("More than 1 case sample must be introduced to use barbosa")
-  }
+  
   if(verbose) message("Selected epimutation detection method '", method, "'")
   #if(method %in% c()) {
   #	stop("Method not implemented yet")
@@ -72,8 +70,8 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     }else{
       fd <- fd[fd$seqnames %in% chr,]
     }
-    case_samples <- case_samples[rownames(fd),]
-    control_panel <- control_panel[rownames(fd),]
+    betas_case <- betas_case[rownames(fd),,drop=FALSE]
+    betas_control <- betas_control[rownames(fd),]
     #pd <- pd[which(rownames(pd) %in% colnames(betas)),]
   }
   
@@ -135,10 +133,10 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
   }else if(method == "barbosa") {
     # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
-    bctr_min <- apply(control_panel, 1, min, na.rm = TRUE)
-    bctr_max <- apply(control_panel, 1, max, na.rm = TRUE)
-    bctr_mean <- apply(control_panel, 1, mean, na.rm = TRUE)
-    bctr_prc <- suppressWarnings(apply(control_panel, 1, quantile, probs = c(0.01, 0.99), na.rm = TRUE))
+    bctr_min <- apply(betas_control, 1, min, na.rm = TRUE)
+    bctr_max <- apply(betas_control, 1, max, na.rm = TRUE)
+    bctr_mean <- apply(betas_control, 1, mean, na.rm = TRUE)
+    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.01, 0.99), na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
@@ -146,8 +144,9 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     
     # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
-      x <- epi_barbosa(case_samples[ , case, drop=FALSE], fd, bctr_min, bctr_max, bctr_mean, 
+      x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
                        bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
+      
       if(nrow(x) != 0){
         x$sample <- case 
       }else{
@@ -163,8 +162,8 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     # 
     # return(rst[ , c(11, 10, 1:9)])
   } else { # if(method == "qn") {
-    nbetas <- qn_norm(cbind(control_panel, case_samples), qn = TRUE)
-    regions <- qn_bump(nbetas[,cas_sam], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
+    nbetas <- qn_norm(cbind(betas_control, betas_case), qn = TRUE)
+    regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- qn_outlier(case, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
       if(nrow(x) != 0){
