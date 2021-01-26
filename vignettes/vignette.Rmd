@@ -49,7 +49,7 @@ BiocManager::install("epimutacions")
 ## Loading libraries
 
 ```{r, message=FALSE}
-library(EpiMutations)
+library(epimutacions)
 library(SummarizedExperiment)
 library(minfi)
 ```
@@ -61,12 +61,15 @@ The `epimutacions` package comes with a small dataset to show the capabilities o
 ```{r}
 data("methy")
 methy
+
+table(methy$status)
 ```
 
-To with with `epimutacions`, any `ExpresionSet` or `GenomicRatioSet` must come with a variable called `status` indicating which samples are _cases_ and which _controls_. Here we see how many of each were included:
+For the analysis we are going to split the dataset in two, one containing the case samples and the other the control samples: 
 
 ```{r}
-table(methy$status)
+case_samples <- methy[,methy$status == "case"]
+control_samples <- methy[,methy$status == "control"]
 ```
 
 # Epimutation detection
@@ -88,13 +91,13 @@ The `epimutacions` package includes 5 methods to detect epimutations. Two of the
 We called `"barbosa"` to the method described in [@Barbosa2018]. Briefly, the algorithm checks for each CpG, if the proband's measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers and they are separated by less than 500 base pairs.
 
 ```{r, epi_brb, message=FALSE}
-epi_brb <- epimutacions(methy, method = "barbosa")
+epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
 ```
 
 We called `"manova"` to the implementation of [@Aref-Eshghi2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs [@Peters2015], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and mean difference between proband and reference group DNA methylation.
 
 ```{r, epi_mvo, message=FALSE, warning=FALSE}
-epi_mvo <- epimutacions(methy, method = "manova")
+epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
 ```
 
 ### Altered methods from literature
@@ -102,15 +105,15 @@ epi_mvo <- epimutacions(methy, method = "manova")
 From [@Aref-Eshghi2019] implementation, we proposed three different approaches. These three approaches run the `bumphunter` step but test DMR for outliers using different approaches: (1) `"mlm"`, that uses a multivariate linear model; (2) `"isoforest"`, that uses isolation forest; and (3) `"mahdistmcd"`, which uses robust Mahalanobis distance.
 
 ```{r, epi_mlm, message=FALSE, warning=FALSE}
-epi_ml <- epimutacions(methy, method = "mlm")
+epi_ml <- epimutations(case_samples, control_samples, method = "mlm")
 ```
 
 ```{r, epi_iso, message=FALSE, warning=FALSE}
-epi_iso <- epimutacions(methy, method = "isoforest")
+epi_iso <- epimutations(case_samples, control_samples, method = "isoforest")
 ```
 
 ```{r, epi_mcd, message=FALSE, warning=FALSE}
-epi_mcd <- epimutacions(methy, method = "mahdistmcd")
+epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
 ```
 
 ## Description of the results
@@ -147,16 +150,16 @@ The following three columns provide some statistic from the detection process:
 The `epimutacions` package also includes a function dedicated to enrich the epimutations identified by the previously described methods:
 
 ```{r, ann, message=FALSE}
-rst_mvo <- annotate_epimutations(epi_mvo)
-rst_mvo[1:2, c(1, 12:14)]
+#rst_mvo <- annotate_epimutations(epi_mvo)
+#rst_mvo[1:2, c(1, 12:14)]
 ```
 
 ## Visualization of epimutations
 
-A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epi`, already included in `epimutacions`.
+A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `epi_plot`, already included in `epimutacions`.
 
 ```{r, plot_mvo, fig.width=7, message=FALSE}
-plot_epi(methy, epi_mvo, "GSM2562699","chr7", "hg19")
+epi_plot(as.data.frame(epi_mvo[1,]), methy)
 ```
 
 # Acknowledgements

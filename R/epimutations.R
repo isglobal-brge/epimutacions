@@ -11,7 +11,6 @@
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
-#' 
 #' @param start an integer specifying the start position. The default value is \code{NULL}.
 #' @param end an integer specifying the end position. The default value is \code{NULL}.
 #' @param epi_params The parameters for each method. See the function \link[epimutations]{epi_parameters}.  
@@ -45,16 +44,17 @@
 #' * \code{outlier_direction}: describes if the epimutation is hypermethylated or hypomethylated. 
 #' The outlier direction is given by the methods barbosa, qn, isoforest, manova and mlm.
 #' @examples 
+#' \dontrun{
 #' library(epimutacions)
 #' data(methy)
 #' 
-#' #Find epimutations in GSM2562701 sample of `methy` dataset
+#' #Find epimutations in GSM2562701 sample of methy dataset
 #' 
 #' case_sample <- methy[,"GSM2562701"]
 #' control_panel <- methy[,-51]
 #' 
 #' epimutations(case_sample, control_panel, method = "manova")
-#'  
+#' }
 #' @export
 epimutations <- function(case_samples, control_panel, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {

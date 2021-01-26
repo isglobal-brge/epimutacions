@@ -1,4 +1,42 @@
-#' @export
+#' @title Settings for parameters of epimutations and epimutations_one_leave_out functions
+#' @description  Allow the user to set the values of the parameters to compute the functions
+#' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out}.
+#' @param pvalue_cutoff the threshold p value to select outliers CpGs regions in \code{manova}
+#' and \code{"mlm"} methods. Default is \code{0.05}.
+#' @param outlier_score_cutoff The outlier score threshold to identify outliers CpGs in
+#' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
+#' @param nsamp the number of subsets used for initial estimates in the robust mahalanobis distance (\code{mahdistmcd}) method. It can be set as:
+#' \code{"best"}, \code{"exact"}, or \code{"deterministic"}. 
+#' For \code{nsamp = "best"} exhaustive enumeration is done, as long as the number of trials does not exceed 100'000. 
+#' For \code{nsamp = "exact"} exhaustive enumeration will be attempted however many samples are needed. 
+#' In this case a warning message may be displayed saying that the computation can take a very long time.
+#' For \code{nsamp = "deterministic"}. For more information see \link[robustbase]{covMcd}.
+#' Default is \code{"deterministic"}. 
+#' @param window_sz a
+#' @param offset_mean a
+#' @param offset_abs a
+#' @param window_sz a
+#' @param qn_th a
+#' @details Invoking \code{epi_parameters()} with no arguments returns return a list with the
+#' default values. 
+#' @return  the function returns a list of all set parameters for each method used in 
+#' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out} functions.
+#' @examples 
+#'  \dontrun{
+#'  library(epumutacions)
+#'  #Default set of parameters
+#'  epi_parameters()
+#'  #change p value for manova method
+#'  epi_parameters(manova = list("pvalue_cutoff" = 0.01))
+#'  #Use in epumutations() function
+#'  data(methy)
+#'  ##Find epimutations in GSM2562701 sample of methy dataset
+#'  case_sample <- methy[,"GSM2562701"]
+#'  control_panel <- methy[,-51]
+#' 
+#'  epimutations(case_sample, control_panel, method = "manova", epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
+#'  }
+#'  @export
 
 epi_parameters <- function(manova = list("pvalue_cutoff" = 0.05), mlm = list("pvalue_cutoff" = 0.05), 
                        isoforest = list("outlier_score_cutoff" = 0.5), mahdistmcd = list("nsamp" = "deterministic"),
@@ -6,11 +44,3 @@ epi_parameters <- function(manova = list("pvalue_cutoff" = 0.05), mlm = list("pv
                       
   return(list("manova" = manova ,"mlm" = mlm,"isoforest" = isoforest, "mahdistmcd" = mahdistmcd,"barbosa" = barbosa,"qn" = qn))
 }
-
-
-
-
-
-
-  
-

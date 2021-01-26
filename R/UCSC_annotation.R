@@ -1,7 +1,7 @@
 UCSC_annotation <- function(genome = "hg19"){
 	if(genome == "hg19" & requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
 		txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
-	} else if (genome == "38" & requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
+	} else if (genome == "hg38" & requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
 	  txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
 	} else if(genome == "hg18" & requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
 		txdb <- TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
