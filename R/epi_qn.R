@@ -14,7 +14,7 @@ qn_norm <- function(betas, fd, qn = TRUE) {
 		vari   <- apply(betas, 1, function(row) {
 			robustbase::Qn(row[!is.na(row)])
 		})
-	} else { # identify the center as mean and the scañe as sd
+	} else { # identify the center as mean and the scale as sd
 		center <- apply(betas, 1, mean, na.rm = TRUE)
 		vari   <- apply(betas, 1, sd, na.rm = TRUE)
 	}
