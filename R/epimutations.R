@@ -33,16 +33,21 @@
 #' The results are composed by the following columns: 
 #' * \code{epi_id}: the name of the anomaly detection method that has been used to detect the epimutation
 #' * \code{sample}: the name of the sample where the epimutation was found.
-#' * \code{chromosome}, \code{start} and \code{end}: the region coordinates.
+#' * \code{chromosome}, \code{start} and \code{end}: indicate the location of the epimutation.
 #' * \code{sz}: the number of base pairs in the region.
 #' * \code{cpg_n}: number of CpGs in the region.
 #' * \code{cpg_ids}: differentially methylated CpGs names.
-#' * \code{outlier_score}: the outlier score of the DMRs. 
-#' The outlier score only is available in the output of manova, mlm, isolation forest and qn. 
-#' * \code{outlier_significance}: the outlier significance of the region.  Only it is 
-#'  available for manova and mlm. 
-#' * \code{outlier_direction}: describes if the epimutation is hypermethylated or hypomethylated. 
-#' The outlier direction is given by the methods barbosa, qn, isoforest, manova and mlm.
+#' * \code{outlier_score}: 
+#'    * For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
+#'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
+#'    * For method \code{isoforest} it provides the magnitude of the outlier score.
+#'    * For methods \code{barbosa} and \code{mahdistmcd} is filled with NA.
+#' * \code{outlier_significance}: 
+#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
+#'    * For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
+#' * \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
+#'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
+#'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 #' @examples 
 #' \dontrun{
 #' library(epimutacions)

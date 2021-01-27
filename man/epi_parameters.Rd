@@ -14,7 +14,7 @@ epi_parameters(
 )
 }
 \arguments{
-\item{pvalue_cutoff}{the threshold p value to select outliers CpGs regions in \code{manova}
+\item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers  \code{manova}
 and \code{"mlm"} methods. Default is \code{0.05}.}
 
 \item{outlier_score_cutoff}{The outlier score threshold to identify outliers CpGs in
@@ -63,5 +63,4 @@ default values.
 
  epimutations(case_sample, control_panel, method = "manova", epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
  }
- @export
 }

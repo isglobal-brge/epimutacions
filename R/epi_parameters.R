@@ -1,7 +1,8 @@
+#' @export
 #' @title Settings for parameters of epimutations and epimutations_one_leave_out functions
 #' @description  Allow the user to set the values of the parameters to compute the functions
 #' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out}.
-#' @param pvalue_cutoff the threshold p value to select outliers CpGs regions in \code{manova}
+#' @param pvalue_cutoff the threshold p value to select which CpG regions are outliers  \code{manova}
 #' and \code{"mlm"} methods. Default is \code{0.05}.
 #' @param outlier_score_cutoff The outlier score threshold to identify outliers CpGs in
 #' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
@@ -36,7 +37,7 @@
 #' 
 #'  epimutations(case_sample, control_panel, method = "manova", epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
 #'  }
-#'  @export
+#' @export
 
 epi_parameters <- function(manova = list("pvalue_cutoff" = 0.05), mlm = list("pvalue_cutoff" = 0.05), 
                        isoforest = list("outlier_score_cutoff" = 0.5), mahdistmcd = list("nsamp" = "deterministic"),

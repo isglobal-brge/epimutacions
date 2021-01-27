@@ -2,7 +2,7 @@
 % Please edit documentation in R/epi_plot.R
 \name{epi_plot}
 \alias{epi_plot}
-\title{Plot a given epimutation}
+\title{Plot a given epimutation and locate it along the genome}
 \usage{
 epi_plot(dmr, methy, genome = "hg19", from = NULL, to = NULL)
 }

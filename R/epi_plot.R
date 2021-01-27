@@ -1,4 +1,4 @@
-#' @title  Plot a given epimutation 
+#' @title  Plot a given epimutation and locate it along the genome
 #' @description This function plots a given epimutation
 #' and UCSC annotations for the specified genomic region.  
 #' @param dmr epimutation obtained as a result of \link[epimutacions]{epimutations}
