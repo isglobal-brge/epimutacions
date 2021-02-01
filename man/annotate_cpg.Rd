@@ -2,7 +2,7 @@
 % Please edit documentation in R/annotate_cpg.R
 \name{annotate_cpg}
 \alias{annotate_cpg}
-\title{Function to annotate DMR resulting from epimutacions package}
+\title{Annotate the DMR resulting from epimutacions package}
 \usage{
 annotate_cpg(
   data,
@@ -19,25 +19,26 @@ annotate_cpg(
 \arguments{
 \item{data}{DataFrame-like object.}
 
-\item{db}{Database to use for annotation. E.g: IlluminaHumanMethylationEPICanno.ilm10b2.hg19.}
+\item{db}{a character string specifying the Database to use for annotation.
+E.g: \code{'IlluminaHumanMethylationEPICanno.ilm10b2.hg19'}.}
 
-\item{split}{Separator for CpG ids. Default ','.}
+\item{split}{a character string containing the separator for CpG ids. Default \code{','}.}
 
-\item{epi_col}{CpG ids, should be rownames in database.}
+\item{epi_col}{CpG ids, should be row names in the data base.}
 
-\item{gene_col}{Column name from where to extract gene names. Default: 'GencodeBasicV12_NAME'.}
+\item{gene_col}{column name from where to extract gene names. Default: \code{'GencodeBasicV12_NAME'}.}
 
-\item{feat_col}{Column name from where to extract CpG feature groups. Default:  'Regulatory_Feature_Group'.}
+\item{feat_col}{column name from where to extract CpG feature groups. Default: \code{'Regulatory_Feature_Group'}.}
 
-\item{relat_col}{Column name from where to extract relation to island info. Default:  'Relation_to_Island'.}
+\item{relat_col}{column name from where to extract relation to island info. Default: \code{'Relation_to_Island'}.}
 
-\item{build}{Build for bioMart. Default '37'}
+\item{build}{The build for bioMart. Default \code{'37'}.}
 
-\item{omim}{Bool, if TRUE will annotate OMIMs as well. Takes a bit longer. Default TRUE}
+\item{omim}{a boolean, if TRUE will annotate OMIMs as well. Takes a bit longer. Default TRUE.}
 }
 \value{
-DataFrame-like object annotated.
+The function returns a DataFrame-like object annotated.
 }
 \description{
-This function annotates a methylated region
+This function annotates a differentially methylated region
 }

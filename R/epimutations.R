@@ -158,13 +158,14 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
                                       pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
       
       suppressWarnings(
-        if(!is.na(bumps) | nrow(bumps) != 0){
+        if(!is.na(bumps)){
           
           bumps <- bumps[bumps$L >= min_cpg, ]
           bumps$sz <- bumps$end - bumps$start
           # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
           if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
           
+          if(nrow(bumps) != 0){
           # Identify outliers according to selected method
           bump_out  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
             bump <- bumps[ii, ]
@@ -187,9 +188,10 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
             }
             
           }))
+          }
         })
     }))
-    if(nrow(rst) == 0){
+    if(is.null(rst)){
       rst <- NA
     }
   }else if(method == "barbosa") {
@@ -228,14 +230,18 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- qn_outlier(case, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
-      if(nrow(x) != 0){
+      
+      if(!is.null(x)){
         x$sample <- case 
       }else{
         x <- NA
       }
       x
     }))
-    rst <- rst[rst$outlier_direction != "", ]
+    suppressWarnings(
+      if(!is.na(rst)){
+        rst <- rst[rst$outlier_direction != "", ]
+      })
   }
   suppressWarnings(
     if(is.na(rst)){

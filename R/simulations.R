@@ -12,7 +12,7 @@ simulations <- function(case_samples, control_samples, n = 100, methods = c("man
   control_samples <- control_samples[,samples_ncol] 
   
   rst <- do.call(rbind, lapply(seq_len(length(methods)), function(i) {
-    rst_case <- do.call(rbind, lapply(ncol(case_samples), function(ii) {
+    rst_case <- do.call(rbind, lapply(seq_len(ncol(case_samples)), function(ii) {
       epimutacions::epimutations(case_samples[,ii], 
                                  control_panel = control_samples, 
                                  method = methods[i], 
@@ -27,7 +27,8 @@ simulations <- function(case_samples, control_samples, n = 100, methods = c("man
       }))
   }))
   
-  if(nrow(rst) == 0){
+  
+  if(is.null(rst)){
     rst <- NA
     return(rst)
   }

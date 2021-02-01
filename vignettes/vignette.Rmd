@@ -36,7 +36,7 @@ The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) whi
 
 Rare diseases are pathologies with a low prevalence (< 1 per 2,000 people). Most of these pathologies have an onset during childhood and a strong genetic etiology. Consequently, rare disease diagnosis has relied on identifying genetic and genomic mutations that can cause the disease. Although these variants have provided a diagnosis for many patients and families, around 60% of the cases remained undiagnosed [@Lionel2018]. Aberrant methylation can be an underlying cause of undiagnosed patients, either as a primary event (a.k.a. epimutation) or as a functional consequence of chromatin dysregulation by genetic or environmental agents (a.k.a. episignature). Epimutations are the cause of some rare
 
-diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@Aref-Eshghi2019; @Inoue2017] and some human malformations [@Serra-Juhe2015]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@Aref-Eshghi2020]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
+diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@aref2019; @Inoue2017] and some human malformations [@Serra-Juhe2015]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@aref2019]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
 
 
 The package `epimutacions ` provides tools for analysing  epivariants by using  outlier detection methods. The full `epimutacions `  user´s guide is available in this vignette. 
@@ -83,15 +83,15 @@ control_samples <- methy[,methy$status == "control"]
 
 ## Methods included for epimutations detection
 
-The `epimutacions` package includes 5 methods to detect epimutations. Two of these methods were described elsewhere before [@Barbosa2018, @Aref-Eshghi2019], and the other three are adaptations of one of them:
+The `epimutacions` package includes 5 methods to detect epimutations. Two of these methods were described elsewhere before [@barbosa2018, @aref2019], and the other three are adaptations of one of them:
 
 | Method | Short description |
 |:------:|:------------------|
-| `"barbosa"`     | Previously described [@Barbosa2018] |
-| `"manova"`      | Previously described [@Aref-Eshghi2019] |
-| `"mlm"`         | Adapted from [@Aref-Eshghi2019] using multivariate linear methods to identify outliers |
-| `iso.forest`    | Adapted from [@Aref-Eshghi2019] using isolation forest to detect outliers |
-| `"mahdist.mcd"` | Adapted from [@Aref-Eshghi2019] using robust Mahalanobis distance with a custom threshold to identify outliers |
+| `"barbosa"`     | Previously described [@barbosa2018] |
+| `"manova"`      | Previously described [@aref2019] |
+| `"mlm"`         | Adapted from [@aref2019] using multivariate linear methods to identify outliers |
+| `iso.forest`    | Adapted from [@aref2019] using isolation forest to detect outliers |
+| `"mahdist.mcd"` | Adapted from [@aref2019] using robust Mahalanobis distance with a custom threshold to identify outliers |
 
 ### Function parameters for each method
 
@@ -104,11 +104,10 @@ The following table describes the arguments:
 | `"mlm"`         |  `pvalue_cutoff` | the threshold p value to select which CpG regions are  outliers |
 | `iso.forest`    | `outlier_score_cutoff` | the threshold outlier score to select which CpG regions are outliers | 
 | `"mahdist.mcd"` | `nsamp` | the number of subsets used for initial estimates |
-|                 | `window_sz`   | ... |
-|   `"barbosa"`   | `offset_mean` | ... | 
-|                 | `offset_abs`  | ... |  
-|        `"qn"`   | `window_sz`   | ... |  
-|                 | `qn_th`       | ... |  
+|                 | `window_sz`   | the maximum distance between CpGs to be considered in the same DMR |
+|   `"barbosa"`   | `offset_mean`, `offset_abs` | the upper and lower threshold to consider a CpG an outlier | 
+|        `"qn"`   | `window_sz`   | the maximum distance between CpGs to be considered in the same DMR |  
+|                 | `qn_th`       | the threshold to consider a CpG an outlier |  
 
 Invoking `epi_parameters()` with no arguments returns a list of the default settings of the parameters: 
 
@@ -116,7 +115,7 @@ Invoking `epi_parameters()` with no arguments returns a list of the default sett
 epi_parameters()
 ```
 
-For example, if we want to change the p value for manova function we can as following: 
+For example, if we want to change the p value for manova function we can do as following: 
 
 ```{r}
 epi_parameters(manova = list("pvalue_cutoff" = 0.01))
@@ -124,21 +123,25 @@ epi_parameters(manova = list("pvalue_cutoff" = 0.01))
 
 ### Methods from literature
 
-We called `"barbosa"` to the method described in [@Barbosa2018]. Briefly, the algorithm checks for each CpG, if the proband's measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers and they are separated by less than 500 base pairs.
+We called `"barbosa"` to the method described in [@barbosa2018] and `"qn"` to the one in [@rousseeuw1993alternatives]. Briefly, these algorithms checks for each CpG, if the proband's measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers and they are separated by less than 500 base pairs.
 
 ```{r, epi_brb, message=FALSE}
 epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
 ```
 
-We called `"manova"` to the implementation of [@Aref-Eshghi2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs [@Peters2015], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and the mean difference between proband and reference group DNA methylation.
+```{r, epi_qn, message=FALSE}
+epi_qn <- epimutations(case_samples, control_samples, method = "qn")
+```
+We called `"manova"` to the implementation of [@aref2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs [@Peters2015], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and the mean difference between proband and reference group DNA methylation.
 
 ```{r, epi_mvo, message=FALSE, warning=FALSE}
 epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
 ```
 
+We called `"qn` to the method described in [@rousseeuw1993alternatives]. It computes the robust scale estimator.
 ### Altered methods from literature
 
-From [@Aref-Eshghi2019] implementation, we proposed three different approaches. These three approaches run the `bumphunter` step but test DMR for outliers using different approaches: (1) `"mlm"`, which uses a multivariate linear model; (2) `"isoforest"`, that uses isolation forest; and (3) `"mahdistmcd"`, which uses robust Mahalanobis distance.
+From [@aref2019] implementation, we proposed three different approaches. These three approaches run the `bumphunter` step but test DMR for outliers using different approaches: (1) `"mlm"`, which uses a multivariate linear model; (2) `"isoforest"`, that uses isolation forest; and (3) `"mahdistmcd"`, which uses robust Mahalanobis distance.
 
 ```{r, epi_mlm, message=FALSE, warning=FALSE}
 epi_ml <- epimutations(case_samples, control_samples, method = "mlm")
@@ -186,8 +189,8 @@ The following three columns provide some statistic from the detection process:
 The `epimutacions` package also includes a function dedicated to enrich the epimutations identified by the previously described methods:
 
 ```{r, ann, message=FALSE}
-#rst_mvo <- annotate_epimutations(epi_mvo)
-#rst_mvo[1:2, c(1, 12:14)]
+rst_mvo <- annotate_epimutations(epi_mvo)
+rst_mvo[1:2, c(1, 12:14)]
 ```
 
 ## Visualization of epimutations

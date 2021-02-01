@@ -1,11 +1,16 @@
-#' Add ENSEMBL regulatory regions to epimutations
+#' @title Add ENSEMBL regulatory regions to epimutations
 #' 
-#' @param epimutations Result from `EpiMutations`
-#' @param build Build used to define epimutations coordinates. By default, it is 37,
+#' @param epimutations a data frame object containing the result from \code{epimutations}
+#' or \code{epimutations_one_leave_out} functions. 
+#' @param build the build used to define epimutations coordinates. By default, it is \code{'37'},
 #' corresponding to Illumina annotation.
 #' 
-#' @return Object of `epimutations` with some additional variables describing regulatory
-#' elements from ENSEMBL. Note that a single epimutation might overlap with more than one
+#' @return The function returns a data frame object
+#' containing the results of  \code{epimutations} or \code{epimutations_one_leave_out}
+#' with some additional variables describing regulatory
+#' elements from ENSEMBL. 
+#' 
+#' Note that a single epimutation might overlap with more than one
 #' regulatory region. In that case, the different regulatory regions are separated by `///`.
 #' \itemize{
 #'  \item{ensembl_reg_id}{Region identifier from ENSEMBL}
@@ -44,7 +49,7 @@ add_ensemble_regulatory <- function(epimutations, build = "37"){
 #' @param chromosome Chromosome of the region
 #' @param start Start of the region
 #' @param end End of the region
-#' @param mart `Mart` object to perform the ENSEMBL query
+#' @param mart \code{Mart} object to perform the ENSEMBL query
 #' @return `data.frame` of one row with the ENSEMBL regulatory regions overlapping
 #' the genomic coordinate
 get_ENSEMBL_data <- function(chromosome, start, end, mart){

@@ -54,7 +54,7 @@
 #' library(epimutacions)
 #' data(methy)
 #' 
-#' #Find epimutations in GSM2562701 sample of methy dataset
+#' #Find epimutations in case samples of methy dataset
 #' 
 #' epimutations_one_leave_out(methy)
 #' }

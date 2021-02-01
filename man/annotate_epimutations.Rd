@@ -2,7 +2,8 @@
 % Please edit documentation in R/annotate_epimutations.R
 \name{annotate_epimutations}
 \alias{annotate_epimutations}
-\title{Annotate epimutations results}
+\title{Annotate the results of  epimutations or
+epimutations_one_leave_out functions}
 \usage{
 annotate_epimutations(
   epi_results,
@@ -12,20 +13,44 @@ annotate_epimutations(
 )
 }
 \arguments{
-\item{epi_results}{Output from \code{epimutations}}
+\item{epi_results}{a data frame object containing the output from \code{epimutations} or
+\code{epimutations_one_leave_out} functions.}
 
-\item{db}{String with the Illumina annotation package used to annotate the CpGs}
+\item{db}{a character string containing  the Illumina annotation package
+used to annotate the CpGs.}
 
-\item{build}{Genomic build where the epimutations are mapped. By default, it is
-GRCh37. Set build to \code{NULL} to use GRCh38.}
+\item{build}{a character string containing the genomic build where the epimutations are mapped.
+The default is GRCh37 (\code{build = "37"}). To use GRCh38
+set \code{built} to \code{NULL}.}
 
-\item{...}{Further arguments passed to \code{annotate_cpg}}
+\item{...}{Further arguments passed to \code{annotate_cpg}.}
 }
 \value{
-Input object \code{epi_results} with additional columns with information about
-the genes or overlapping regulatory features. See \code{annotate_cpg} and \code{add_ensemble_regulatory}
+The function returns the input object \code{epi_results}
+with additional columns containing the  information about
+the genes or overlapping regulatory features.
+
+See \link[epimutacions]{annotate_cpg} and \link[epimutacions]{add_ensemble_regulatory}
 for an in-depth description of these variables.
 }
 \description{
-Add information about close genes and regulatory elements for epimutations.
+Information about close genes and regulatory elements for epimutations.
+}
+\examples{
+\dontrun{
+library(epimutacions)
+data(methy)
+
+#Find epimutations in GSM2562701 sample of methy dataset
+
+case_sample <- methy[,"GSM2562701"]
+control_panel <- methy[,-51]
+
+epi_results <- epimutations(case_sample, control_panel, method = "manova")
+
+#Annotate the epimutations
+anno_results <- annotate_epimutations(as.data.frame(epi_mvo))
+anno_results[1:2, c(1, 12:14)]
+}
+
 }

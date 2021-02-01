@@ -3,21 +3,20 @@
 #' @description  Allow the user to set the values of the parameters to compute the functions
 #' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out}.
 #' @param pvalue_cutoff the threshold p value to select which CpG regions are outliers  \code{manova}
-#' and \code{"mlm"} methods. Default is \code{0.05}.
+#' and \code{mlm} methods. Default is \code{0.05}.
 #' @param outlier_score_cutoff The outlier score threshold to identify outliers CpGs in
 #' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
 #' @param nsamp the number of subsets used for initial estimates in the robust mahalanobis distance (\code{mahdistmcd}) method. It can be set as:
 #' \code{"best"}, \code{"exact"}, or \code{"deterministic"}. 
 #' For \code{nsamp = "best"} exhaustive enumeration is done, as long as the number of trials does not exceed 100'000. 
 #' For \code{nsamp = "exact"} exhaustive enumeration will be attempted however many samples are needed. 
-#' In this case a warning message may be displayed saying that the computation can take a very long time.
+#' In this case, a warning message may be displayed saying that the computation can take a very long time.
 #' For \code{nsamp = "deterministic"}. For more information see \link[robustbase]{covMcd}.
 #' Default is \code{"deterministic"}. 
-#' @param window_sz a
-#' @param offset_mean a
-#' @param offset_abs a
-#' @param window_sz a
-#' @param qn_th a
+#' @param window_sz the maximum distance between CpGs to be considered in the same DMR. 
+#' This parameter is used in \code{barbosa} and \code{qn}. 
+#' @param offset_mean,offset_abs the upper and lower threshold to consider a CpG an outlier when using \code{barbosa} method. 
+#' @param qn_th  the threshold to consider a CpG an outlier in the \code{qn} method.
 #' @details Invoking \code{epi_parameters()} with no arguments returns return a list with the
 #' default values. 
 #' @return  the function returns a list of all set parameters for each method used in 

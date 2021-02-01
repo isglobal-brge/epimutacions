@@ -15,7 +15,7 @@ epi_parameters(
 }
 \arguments{
 \item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers  \code{manova}
-and \code{"mlm"} methods. Default is \code{0.05}.}
+and \code{mlm} methods. Default is \code{0.05}.}
 
 \item{outlier_score_cutoff}{The outlier score threshold to identify outliers CpGs in
 isolation forest (\code{isoforest}) method. Default is \code{0.5}.}
@@ -28,13 +28,12 @@ In this case a warning message may be displayed saying that the computation can 
 For \code{nsamp = "deterministic"}. For more information see \link[robustbase]{covMcd}.
 Default is \code{"deterministic"}.}
 
-\item{offset_mean}{a}
+\item{window_sz}{the maximum distance between CpGs to be consider in the same DMR.
+This parameter is used in \code{barbosa} and \code{qn}.}
 
-\item{offset_abs}{a}
+\item{offset_mean, offset_abs}{The threshold to considered a CpG an outlier when using \code{barbosa} method.}
 
-\item{window_sz}{a}
-
-\item{qn_th}{a}
+\item{qn_th}{the threshold to consider a CpG an outlier in the \code{qn} method.}
 }
 \value{
 the function returns a list of all set parameters for each method used in

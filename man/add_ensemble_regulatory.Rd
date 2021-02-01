@@ -7,14 +7,19 @@
 add_ensemble_regulatory(epimutations, build = "37")
 }
 \arguments{
-\item{epimutations}{Result from \code{EpiMutations}}
+\item{epimutations}{a data frame object containing the result from \code{epimutations}
+or \code{epimutations_one_leave_out} functions.}
 
-\item{build}{Build used to define epimutations coordinates. By default, it is 37,
+\item{build}{the build used to define epimutations coordinates. By default, it is \code{'37'},
 corresponding to Illumina annotation.}
 }
 \value{
-Object of \code{epimutations} with some additional variables describing regulatory
-elements from ENSEMBL. Note that a single epimutation might overlap with more than one
+The function returns a data frame object
+containing the results of  \code{epimutations} or \code{epimutations_one_leave_out}
+with some additional variables describing regulatory
+elements from ENSEMBL.
+
+Note that a single epimutation might overlap with more than one
 regulatory region. In that case, the different regulatory regions are separated by \verb{///}.
 \itemize{
 \item{ensembl_reg_id}{Region identifier from ENSEMBL}
