@@ -20,18 +20,20 @@ and \code{mlm} methods. Default is \code{0.05}.}
 \item{outlier_score_cutoff}{The outlier score threshold to identify outliers CpGs in
 isolation forest (\code{isoforest}) method. Default is \code{0.5}.}
 
-\item{nsamp}{the number of subsets used for initial estimates in the robust mahalanobis distance (\code{mahdistmcd}) method. It can be set as:
+\item{nsamp}{the number of subsets used for initial estimates in the Minimum Covariance Determinant
+which is used to compute the Robust Mahalanobis distance (\code{mahdistmcd}).
+It can be set as:
 \code{"best"}, \code{"exact"}, or \code{"deterministic"}.
 For \code{nsamp = "best"} exhaustive enumeration is done, as long as the number of trials does not exceed 100'000.
 For \code{nsamp = "exact"} exhaustive enumeration will be attempted however many samples are needed.
-In this case a warning message may be displayed saying that the computation can take a very long time.
+In this case, a warning message may be displayed saying that the computation can take a very long time.
 For \code{nsamp = "deterministic"}. For more information see \link[robustbase]{covMcd}.
 Default is \code{"deterministic"}.}
 
-\item{window_sz}{the maximum distance between CpGs to be consider in the same DMR.
+\item{window_sz}{the maximum distance between CpGs to be considered in the same DMR.
 This parameter is used in \code{barbosa} and \code{qn}.}
 
-\item{offset_mean, offset_abs}{The threshold to considered a CpG an outlier when using \code{barbosa} method.}
+\item{offset_mean, offset_abs}{the upper and lower threshold to consider a CpG an outlier when using \code{barbosa} method.}
 
 \item{qn_th}{the threshold to consider a CpG an outlier in the \code{qn} method.}
 }

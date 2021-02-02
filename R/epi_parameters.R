@@ -6,7 +6,9 @@
 #' and \code{mlm} methods. Default is \code{0.05}.
 #' @param outlier_score_cutoff The outlier score threshold to identify outliers CpGs in
 #' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
-#' @param nsamp the number of subsets used for initial estimates in the robust mahalanobis distance (\code{mahdistmcd}) method. It can be set as:
+#' @param nsamp the number of subsets used for initial estimates in the Minimum Covariance Determinant 
+#' which is used to compute the Robust Mahalanobis distance (\code{mahdistmcd}). 
+#' It can be set as:
 #' \code{"best"}, \code{"exact"}, or \code{"deterministic"}. 
 #' For \code{nsamp = "best"} exhaustive enumeration is done, as long as the number of trials does not exceed 100'000. 
 #' For \code{nsamp = "exact"} exhaustive enumeration will be attempted however many samples are needed. 

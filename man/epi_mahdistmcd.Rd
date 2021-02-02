@@ -2,12 +2,27 @@
 % Please edit documentation in R/epi_mahdistmcd.R
 \name{epi_mahdistmcd}
 \alias{epi_mahdistmcd}
-\title{Epimutation detection based on Outlier Detection with Robust Mahalanobis}
+\title{Identifies epimutations using Robust Mahalanobis distance}
 \usage{
 epi_mahdistmcd(mixture, nsamp = c("best", "exact", "deterministic"))
 }
+\arguments{
+\item{mixture}{beta values matrix. Samples in columns and
+CpGs in rows.}
+
+\item{nsamp}{the number of subsets used for initial estimates in the MCD.
+It can be set as:
+\code{"best"}, \code{"exact"}, or \code{"deterministic"}.}
+}
+\value{
+The function returns the computed Robust Mahalanobis distance.
+}
 \description{
-The implementation of the method here is based on the discusion in this
-thred of StakOverflow:
-https://stats.stackexchange.com/questions/137263/multivariate-outlier-detection-with-robust-mahalanobis
+This function identifies regions with CpGs being outliers
+using the Minimum Covariance Determinant (MCD) estimator (\link[robustbase]{covMcd})
+to compute the Mahalanobis distance.
+}
+\details{
+The implementation of the method here is based on the discussion in this
+thread of \href{https://cutt.ly/Kka0M87}{Cross Validated}
 }

@@ -103,7 +103,7 @@ The following table describes the arguments:
 | `"manova"`      | `pvalue_cutoff` | the threshold p value to select which CpG regions are  outliers |
 | `"mlm"`         |  `pvalue_cutoff` | the threshold p value to select which CpG regions are  outliers |
 | `iso.forest`    | `outlier_score_cutoff` | the threshold outlier score to select which CpG regions are outliers | 
-| `"mahdist.mcd"` | `nsamp` | the number of subsets used for initial estimates |
+| `"mahdist.mcd"` | `nsamp` | the number of subsets used for initial estimates in the MCD|
 |                 | `window_sz`   | the maximum distance between CpGs to be considered in the same DMR |
 |   `"barbosa"`   | `offset_mean`, `offset_abs` | the upper and lower threshold to consider a CpG an outlier | 
 |        `"qn"`   | `window_sz`   | the maximum distance between CpGs to be considered in the same DMR |  
@@ -188,10 +188,19 @@ The following three columns provide some statistic from the detection process:
 
 The `epimutacions` package also includes a function dedicated to enrich the epimutations identified by the previously described methods:
 
-```{r, ann, message=FALSE}
+```{r, ann, message=FALSE, tidy = TRUE}
 rst_mvo <- annotate_epimutations(epi_mvo)
+```
+
+```{r ann results, eval = FALSE}
 rst_mvo[1:2, c(1, 12:14)]
 ```
+
+```{r ann result table, echo = FALSE}
+library(knitr)
+kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
+```
+
 
 ## Visualization of epimutations
 

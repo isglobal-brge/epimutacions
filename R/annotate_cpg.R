@@ -12,7 +12,7 @@
 #' @param build The build for bioMart. Default \code{'37'}.
 #' @param omim a boolean, if TRUE will annotate OMIMs as well. Takes a bit longer. Default TRUE.
 #' @return The function returns a DataFrame-like object annotated.
-#' @export
+
 annotate_cpg <- function(data, db, split = ',', 
 		# illumina annotation parameters
 		epi_col = 'cpg_ids', gene_col = 'GencodeBasicV12_NAME', feat_col = 'Regulatory_Feature_Group', relat_col = 'Relation_to_Island',

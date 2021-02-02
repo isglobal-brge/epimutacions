@@ -2,10 +2,20 @@
 % Please edit documentation in R/epi_mlm.R
 \name{epi_mlm}
 \alias{epi_mlm}
-\title{Epimutation detection using Multivariate linear models}
+\title{Detects epimutations using Multivariate Linear Model (MLM)}
 \usage{
-epi_mlm(mixture, model, case)
+epi_mlm(mixture, model)
+}
+\arguments{
+\item{mixture}{beta values matrix.  Samples in columns and
+CpGs in rows.}
+
+\item{Model}{formula describing the model to be fitted.}
+}
+\value{
+The function returns the F statistic, R2 test statistic and Pillai.
 }
 \description{
-Epimutation detection using Multivariate linear models
+Identifies CpGs with outlier methylation values
+using methylated Multivariate Linear Model
 }

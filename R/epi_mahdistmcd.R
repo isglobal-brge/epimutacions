@@ -1,8 +1,17 @@
-#' Epimutation detection based on Outlier Detection with Robust Mahalanobis
+#' @title Identifies epimutations using Robust Mahalanobis distance
+#' @description  This function identifies regions with CpGs being outliers
+#' using the Minimum Covariance Determinant (MCD) estimator (\link[robustbase]{covMcd}) 
+#' to compute the Mahalanobis distance. 
+#' @param mixture beta values matrix. Samples in columns and
+#' CpGs in rows.
+#' @param nsamp the number of subsets used for initial estimates in the MCD. 
+#' It can be set as:
+#' \code{"best"}, \code{"exact"}, or \code{"deterministic"}. 
+#' @details The implementation of the method here is based on the discussion in this
+#' thread of [Cross Validated](https://cutt.ly/Kka0M87)
+#' @return The function returns the computed Robust Mahalanobis distance.
 #' 
-#' The implementation of the method here is based on the discusion in this
-#' thred of StakOverflow:
-#' https://stats.stackexchange.com/questions/137263/multivariate-outlier-detection-with-robust-mahalanobis
+
 epi_mahdistmcd <- function(mixture, nsamp = c("best", "exact", "deterministic")) {
 	nsamp <- charmatch(nsamp, c("best", "exact", "deterministic"))
 	nsamp <- c("best", "exact", "deterministic")[nsamp]
@@ -36,6 +45,29 @@ epi_mahdistmcd <- function(mixture, nsamp = c("best", "exact", "deterministic"))
 	return(data.frame(ID = names(robust_dist), statistic = robust_dist))
 }
 
+#' @title  Creates a data frame containing the results 
+#' obtained from Robust Mahalanobis distance
+#' @description Creates a data frame containing the
+#' genomic regions, statistics and direction for the DMRs.
+#' @param bump a DMR obtained from \link[bumphunter]{bumphunter}
+#' (i.e. a row from \link[bumphunter]{bumphunter} method result).
+#' @param beta_bump a beta values matrix for the CpGs in the selected
+#' DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}. 
+#' @param sts  the robust distance computed by 
+#'  \link[epimutacions]{epi_mahdistmcd} function results. 
+#' @param case a character string specifying the case sample name. 
+#' @returns The function returns a data frame containing the following information
+#' for each DMR: 
+#' * genomic ranges
+#' * DMR base pairs
+#' * number and name of CpGs in DMR
+#' * statistics: 
+#'     * Outlier score
+#'     * Outlier significance
+#'     * Outlier direction
+#'  * Sample name
+#' 
+#' For more information about the output see \link[epimutacions]{epimutations}.
 
 res_mahdistmcd <- function(case, bump, beta_bump, outliers) {
 	bump$outlier <- case %in% outliers
