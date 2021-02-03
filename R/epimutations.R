@@ -31,17 +31,18 @@
 #'  * Qn (\code{"Qn"})
 #' @return The function returns an object of class tibble containing the outliers regions.  
 #' The results are composed by the following columns: 
-#' * \code{epi_id}: the name of the anomaly detection method that has been used to detect the epimutation
-#' * \code{sample}: the name of the sample where the epimutation was found.
+#' * \code{epi_id}: systematic name for each epimutation identified. It provides the name 
+#' of the used anomaly detection method. 
+#' * \code{sample}: the name of the sample containing the epimutation. 
 #' * \code{chromosome}, \code{start} and \code{end}: indicate the location of the epimutation.
-#' * \code{sz}: the number of base pairs in the region.
-#' * \code{cpg_n}: number of CpGs in the region.
-#' * \code{cpg_ids}: differentially methylated CpGs names.
+#' * \code{sz}: the window's size of the event.
+#' * \code{cpg_n}: the number of CpGs in the epimutation.
+#' * \code{cpg_ids}: the names of CpGs in the epimutation.
 #' * \code{outlier_score}: 
 #'    * For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
 #'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 #'    * For method \code{isoforest} it provides the magnitude of the outlier score.
-#'    * For methods \code{barbosa} and \code{mahdistmcd} is filled with NA.
+#'    * For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
 #' * \code{outlier_significance}: 
 #'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
 #'    * For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
@@ -101,8 +102,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
   if(minfi::annotation(case_samples)[1] != minfi::annotation(control_panel)[1] & minfi::annotation(case_samples)[2] != minfi::annotation(control_panel)[2]){
     stop("The annotation of 'case_samples' and 'control_panel' must be the same")
   }
-  fd <- .fd_cols(fd)
-  
+  fd <- cols_names(fd, cpg_ids_col = FALSE) #epi_plot
   if(!is.null(start) & !is.null(end)){
     if(is.null(chr)){
       stop("Argument 'chr' must be inroduced with 'start' and 'end' parameters")
@@ -254,61 +254,23 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
                          "sample", "epi_id")
       rownames(rst) <- seq_len(nrow(rst))
       rst <- rst[ , c(11, 10, 1:9)]
+      #Filter results: 
+      # * P value: "manova" and "mlm"
+      # * Outlier score: "isoforest"
       if(method == "manova"){
-        pvalue_cutoff <- epi_params$manova$pvalue_cutoff
-      }else if(method == "mlm"){
-        pvalue_cutoff <- epi_params$mlm$pvalue_cutoff
-        
+        rst <- rst[which(rst$outlier_significance < epi_params$manova$pvalue_cutoff),]
       }
-      rst <- filter_results(rst, method, pvalue_cutoff, epi_params$isoforest$outlier_score_cutoff)
+      
+      if(method == "mlm"){
+        rst <- rst[which(rst$outlier_significance < epi_params$mlm$pvalue_cutoff),]
+      }
+      
+      if(method == "isoforest"){
+        rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff),]
+      }
+      
+      #convert rst into a tibble class
       rst <- tibble::as_tibble(rst)
       return(rst)
     })
-}
-
-
-# Helper functions
-
-.fd_cols <- function(fd){
-  
-  if(class(fd) != "data.frame"){
-    stop("'fd' must be a data frame")
-  }
-  seqnames_field <- c("seqnames", "seqname",
-                      "chromosome", "chrom",
-                      "chr", "chromosome_name",
-                      "seqid")
-  start_field <- "start"
-  end_field <- c("end", "stop")
-  strand_field <- c("strand")
-  
-  
-  if(seqnames_field[1] %in% colnames(fd) | seqnames_field[2] %in% colnames(fd) | seqnames_field[3] %in% colnames(fd) | seqnames_field[4] %in% colnames(fd) | seqnames_field[5] %in% colnames(fd) | seqnames_field[6] %in% colnames(fd) | seqnames_field[7] %in% colnames(fd)){
-    seqnames_pos <- which(colnames(fd) %in% seqnames_field)
-    seqnames <- fd[,seqnames_pos]
-  }else{
-    stop("In feature dataset chromosome column name must be specified as: 'seqnames', 'seqname', 'chromosome', 'chrom', 'chr', 'chromosome_name' or 'seqid'")
-  }
-  if(start_field %in% colnames(fd)){
-    start_pos <- which(colnames(fd) %in% start_field)
-    start <- fd[,start_pos]
-  }else{
-    stop("In feature dataset start column name must be specified as: 'start'")
-  }
-  if(end_field[1] %in% colnames(fd) | end_field[2] %in% colnames(fd)){
-    end_pos <- which(colnames(fd) %in% end_field)
-    end <- fd[,end_pos]
-  }else{
-    stop("In feature dataset end column name  must be specified as: 'end' or 'stop'")
-  }
-  if( strand_field %in% colnames(fd)){
-    strand_pos <- which(colnames(fd) %in% strand_field)
-    strand <- fd[,strand_pos]
-  }else{
-    stop("In feature dataset strand column name  must be specified as: 'strand'")
-  }
-  fd_rownames <- rownames(fd)
-  fd <- data.frame("seqnames" = seqnames, "start" = start, "end" = end, "strand" = strand)
-  rownames(fd) <- fd_rownames
-  return(fd)
 }

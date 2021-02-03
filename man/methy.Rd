@@ -11,7 +11,7 @@ An object of class \code{GenomicRatioSet} with 80731 rows and 51 columns.
 data("methy")
 }
 \value{
-A \code{GenomicRatioSet} object.
+a \code{GenomicRatioSet} object.
 }
 \description{
 Dataset used to illustrate the package capabilities.

@@ -1,88 +1,136 @@
-#' @title  Plot a given epimutation and locate it along the genome
-#' @description This function plots a given epimutation
-#' and UCSC annotations for the specified genomic region.  
-#' @param dmr epimutation obtained as a result of \link[epimutacions]{epimutations}
-#' function. 
-#' @param methy a GenomicRatioSet object containing the information
-#' of control and case samples used for the analysis in the \link[epimutacions]{epimutations}
-#' function. See the constructor function \link[minfi]{GenomicRatioSet},
-#' \link[minfi]{makeGenomicRatioSetFromMatrix}.
-#' @param genome a character string specifying the genome of reference. 
-#' It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}. 
-#' The default is \code{"hg19"}. 
-#' @param from,to scalar, specifying the range of genomic coordinates 
-#' for the plot of gene annotation region.
-#' If \code{NULL} the plotting ranges are derived from the individual track. 
-#' Note that \code{from} cannot be larger than \code{to}. 
-#' @details 
-#' The tracks are plotted vertically. Each track is separated by different background
-#' colour and a section title. The colours and titles are preset and cannot be set by 
-#' the user. 
+#' @title Generates a GRanges object 
+#' @description  This function makes a GRanges object from a \code{GenomicRatioSet}.
+#' @param methy a \code{GenomicRatioSet} object containing the control and
+#' case samples used in \link[epimutacions]{epimutations} or 
+#' \link[epimutacions]{epimutations_one_leave_out} function.  
+#' @param cpg_ids a character string specifying the name of the
+#' CpGs in the DMR of interest. 
+#' @return  The function returns a GRanges object containing the beta values and the
+#' genomic ranges of the CpGs of interest. 
 #' 
-#' Note that if you want to see the UCSC annotations maybe you need to take a bigger
-#' genomic region. 
-#' 
-#' @return The function returns a plot divided in two parts: 
-#' * ggplot graph including the individual with 
-#' the epimutation in red, the control samples in dashed black lines and
-#' population mean in blue. Grey shaded regions indicate 1, 1.5 and 2 standard
-#' deviations from the mean of the distribution. 
-#' * UCSC gene annotations for the specified genomic region. 
-#' 
-#' @examples 
-#' \dontrun{
-#' library(epimutacions)
-#' data(methy)
-#' 
-#' #Find epimutations in GSM2562701 sample of methy dataset
-#' 
-#' case_sample <- methy[,"GSM2562701"]
-#' control_panel <- methy[,-51]
-#' 
-#' results <- epimutations(case_sample, control_panel, method = "manova")
-#' 
-#' epi_plot(as.data.frame(results[1,]), methy)
-#' }
-#' 
-#' @export
-epi_plot <- function(dmr, methy, genome = "hg19", from = NULL, to = NULL){
-  #Comprobations
-  ## NULL elements
-  if(is.null(dmr)){
-    stop("The argument 'dmr' must be introduced")
+create_GRanges_class <- function(methy, cpg_ids){
+  
+  #Identify type of input and extract required data:
+  # * The object class  must be 'GenomicRatioSet'
+  # * beta values and genomic ranges
+  if(class(methy) == "GenomicRatioSet") {
+    betas <- minfi::getBeta(methy)
+    fd <- as.data.frame(SummarizedExperiment::rowRanges(methy))
+    rownames(fd) <- rownames(betas)
+  } else {
+    stop("Input data 'methy' must be a 'GenomicRatioSet'")
   }
-  if(is.null(methy)){
-    stop("The argument 'beta' must be introduced")
+  
+  #CpG names
+  cpg_ids <- unlist(strsplit(cpg_ids, ","))
+  #Genomic ranges
+  fd <- fd[cpg_ids,]
+  fd <- cols_names(fd, cpg_ids_col = FALSE) #common cols names (epi_plot)
+  #Beta values matrix
+  betas <- jitter(betas[cpg_ids,])
+  rownames(fd) <- rownames(betas)
+  #Generate the GenomicRanges class object
+  gr <- GenomicRanges::makeGRangesFromDataFrame(fd)
+  S4Vectors::values(gr) <- betas
+  return(gr)
+}
+#' @title Sets common column names in a data frame
+#' @description  Sets common column names in a given data frame 
+#' containing the CpGs genomic ranges or a DMR (result of
+#' \link[epimutacions]{epimutations} or 
+#' \link[epimutacions]{epimutations_one_leave_out} function).
+#' @param x a data frame containing the genomic ranges or 
+#' a DMR (a row of the results of \link[epimutacions]{epimutations} or 
+#' \link[epimutacions]{epimutations_one_leave_out} function). 
+#' @param cpg_ids_col a boolean, if TRUE the input data frame contains
+#' the CpGs names column. 
+#' @return The function returns a data frame containing the column names
+#' to carry out the analysis without any error. 
+#' 
+
+cols_names <- function(x, cpg_ids_col = FALSE){
+  
+  #Accepted names for 'dmr' column names
+  seqnames_field <- c("seqnames", "seqname",
+                      "chromosome", "chrom",
+                      "chr", "chromosome_name",
+                      "seqid")
+  start_field <- "start"
+  end_field <- c("end", "stop")
+  strand_field <- c("strand")
+  cpg_field <- c("cpg_ids", "cpgnames", "cpg")
+  sample_field <- "sample"
+  
+  #Identify the column name for each argument
+  if(seqnames_field[1] %in% colnames(x) | seqnames_field[2] %in% colnames(x) | seqnames_field[3] %in% colnames(x) | seqnames_field[4] %in% colnames(x) | seqnames_field[5] %in% colnames(x) | seqnames_field[6] %in% colnames(x) | seqnames_field[7] %in% colnames(x)){
+    seqnames_pos <- which(colnames(x) %in% seqnames_field)
+    seqnames <- x[,seqnames_pos]
+  }else{
+    stop("Chromosome column name must be specified as: 'seqnames', 'seqname', 'chromosome', 'chrom', 'chr', 'chromosome_name' or 'seqid'")
   }
-  if(is.null(genome)){
-    stop("The argument 'genome' must be introduced")
+  if(start_field %in% colnames(x)){
+    start_pos <- which(colnames(x) %in% start_field)
+    start <- x[,start_pos]
+  }else{
+    stop("Start column name  must be specified as: 'start'")
   }
-  ##Dimensions 
-  if(nrow(dmr) > 1){
-    warning("more than one DMR introduced (nrow > 1) only the first element will be used")
-    dmr <- dmr[1,]
+  if(end_field[1] %in% colnames(x) | end_field[2] %in% colnames(x)){
+    end_pos <- which(colnames(x) %in% end_field)
+    end <- x[,end_pos]
+  }else{
+    stop("End column name  must be specified as: 'end' or 'stop'")
   }
-  ##Genome posible options
-  if(genome != "hg19" & genome != "hg18"){
-    stop("Argument 'genome' must be 'hg19' or 'hg18'")
-  }
-  ##From and to arguments
-  if(is.null(from) & !is.null(to) | !is.null(from) & is.null(to)){
-    stop("Arguments 'from' and 'to' must be provided together")	
-  }
-  if(!is.null(from) & !is.null(to)){
-    if(from > to){
-      stop("The value of argument 'from' must be smaller than  'to'")	
+  
+  if(cpg_ids_col == T){
+    
+    if(sample_field %in% colnames(x)){
+      sample_pos <- which(colnames(x) %in% sample_field)
+      sample <- x[,sample_pos]
+    }else{
+      stop("Sample column name  must be specified as: 'sample'")
     }
+    
+    if(cpg_field[1] %in% colnames(x) | cpg_field[2] %in% colnames(x) |cpg_field[3] %in% colnames(x)){
+      cpg_pos <- which(colnames(x) %in% cpg_field)
+      cpg_ids <- x[,cpg_pos]
+    }else{
+      stop("CpGs column name  must be specified as: 'cpg_ids', 'cpgnames' or 'cpg'")
+    }
+    df <- data.frame("sample" = sample, "seqnames" = seqnames, "start" = start, "end" = end, "cpg_ids" = cpg_ids)
+  }else{
+    if( strand_field %in% colnames(x)){
+      strand_pos <- which(colnames(x) %in% strand_field)
+      strand <- x[,strand_pos]
+    }else{
+      stop("In feature dataset strand column name  must be specified as: 'strand'")
+    }
+    df <- data.frame("seqnames" = seqnames, "start" = start, "end" = end, "strand" = strand)
   }
+  #establish common column names
+  x_rownames <- rownames(x)
+  rownames(df) <- x_rownames
+  return(df)
+}
+
+#' @title Computes beta values, standard deviation and mean 
+#' to plot the epimutation
+#' @description  Computes the beta values, population mean and 
+#'  1, 1.5, and 2 standard deviations from the mean of the distribution
+#'  necessary to plot the epimutations.
+#' @param gr  a GRanges object obtained from \link[epimutacions]{create_GRanges_class}
+#' function. 
+#' @return The function returns a list containing the melted beta values, 
+#' the population mean and 1, 1.5, and 2 standard deviations 
+#' from the mean of the distribution.
+#' 
+
+betas_sd_mean <- function(gr){
   
-  #Select dmr colnames and columns
-  dmr <- .dmr_cols(dmr)
-  
-  #Generate GenomicRanges object with the beta values in the DMR 
-  gr <- create_GRanges_class(methy, dmr[,"cpg_ids"])
   df <- as.data.frame(gr)
-  #Generate all the necessary objects for the plot
+  #Compute: 
+  # * beta values
+  # * Population mean 
+  # * 1, 1.5, and 2 standard deviations from the mean of the distribution
   betas <- as.data.frame(S4Vectors::values(gr))
   mean <- rowMeans(betas)
   sd <- apply(betas,1,sd)
@@ -97,125 +145,46 @@ epi_plot <- function(dmr, methy, genome = "hg19", from = NULL, to = NULL){
   mean <- cbind(df[,c("seqnames", "start","end","width","strand")], mean)
   
   
-  #Melt
-  beta_values<- reshape2::melt(df, id = c("seqnames", "start", "end", "width", "strand"))
+  #Melt beta values, mean and sd object (necessary for the ggplot)
+  
+  beta_values <- reshape2::melt(df, id = c("seqnames", "start", "end", "width", "strand"))
   mean <- reshape2::melt(mean, id = c("seqnames", "start", "end", "width", "strand","mean"))
   sd <- reshape2::melt(sd, id = c("seqnames", "start", "end", "width", "strand","sd_1_lower", "sd_1_upper", "sd_1.5_lower","sd_1.5_upper","sd_2_lower","sd_2_upper"))
-  ###
-  beta_values$status <- ifelse(beta_values$variable == dmr$sample, dmr$sample, "control")
-  beta_values$color <- ifelse(beta_values$status == dmr$sample,"red","black")
-  beta_values$lines <- ifelse(beta_values$status == "control","longdash","solid")
-  names <- beta_values[beta_values$variable == dmr$sample,]
-  names$id <- names(gr)
   
-  #Plot epimutations
-  
-  plot_betas <- ggplot2::ggplot() + 
-    ggplot2::geom_line(data = beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), linetype = beta_values$lines) +
-    ggplot2::geom_point(data = beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), color = beta_values$color)
-  
-  plot_sd <- plot_betas +
-    ggplot2::geom_ribbon(data = sd, ggplot2::aes(x = start, ymin = sd_2_lower, ymax = sd_2_upper), fill = "gray39", alpha = 0.4) +
-    ggplot2::geom_ribbon(data = sd, ggplot2::aes(x = start, ymin = sd_1.5_lower, ymax = sd_1.5_upper), fill = "gray40", alpha = 0.4) +
-    ggplot2::geom_ribbon(data = sd, ggplot2::aes(x = start, ymin = sd_1_lower, ymax = sd_1_upper), fill = "gray98", alpha = 0.4)
-  
-  plot_mean <-  plot_sd +
-    ggplot2::geom_line(data = mean, ggplot2::aes(x = start, y = mean, color = "mean")) +
-    ggplot2::geom_point(data = mean, ggplot2::aes(x = start, y = mean), show.legend = TRUE)
-  
-  plot_cpg_names <- plot_mean +
-    ggrepel::geom_text_repel() + 
-    ggplot2::annotate(geom="text", x=names$start, y=names$value + 0.05, label=names$id, color="black")
-  
-  plot <- plot_cpg_names + 
-    ggplot2::lims(y = c(0,1)) +  
-    ggplot2::scale_colour_manual(name="Status",values=c("black","red","darkblue")) +
-    ggplot2::theme_bw() + 
-    ggplot2::labs(x = "DNA methylation level") + 
-    ggplot2::labs(y = "Coordinates")
-  
-  #Plot gene annotations
-  
-  genes <- UCSC_annotation(genome)
-  ideo_track <- Gviz::IdeogramTrack(genome = genome, chromosome = dmr$seqnames)
-  genome_track <- Gviz::GenomeAxisTrack()
-  gene_track <- Gviz::GeneRegionTrack(genes, 
-                                      chromosome = dmr$seqnames,
-                                      name = "Genes",
-                                      transcriptAnnotation = "symbol",
-                                      background.title = "#7EA577")		
-  
-  gene_genome_tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track),
-                                                       start = dmr$start, end = dmr$end,
-                                                       chromosome = dmr$seqnames,
-                                                       col = "#7EA577", fill = "#C6D7C3",
-                                                       alpha = 0.4,
-                                                       inBackground = FALSE)
-  
-  #Plot window
-  
-  dev.new(width = 1080, height = 1350, unit = "px")
-  p1 <- plot
-  if(is.null(from) & is.null(to)){
-    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, gene_genome_tracks_Highlight), 
-                                               from = dmr$start - 1000, 
-                                               to = dmr$end + 1000, 
-                                               add = TRUE))
-  
-  }else{
-    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, gene_genome_tracks_Highlight), 
-                                               from = from, 
-                                               to = to, add = TRUE))
-  }
-  
-  gridExtra::grid.arrange(grobs = list(p1,p2), row=2)
+  #Create the output list
+  output <- list("beta_values" = beta_values, "mean" = mean, "sd" = sd)
+  return(output)
 }
 
-# Helper functions
+#' @title UCSC gene annotations
+#' @description  UCSC gene annotations for a given genome assembly. 
+#' @param genome  genome asambly. Can be set as: 
+#' \code{'hg38'}, \code{'hg19'} and \code{'hg18'}. 
+#' @return The function returns gene annotations for the specified genome assembly.
+#' 
 
-.dmr_cols <- function(dmr){
-  seqnames_field <- c("seqnames", "seqname",
-                      "chromosome", "chrom",
-                      "chr", "chromosome_name",
-                      "seqid")
-  start_field <- "start"
-  end_field <- c("end", "stop")
-  cpg_field <- c("cpg_ids", "cpgnames", "cpg")
-  sample_field <- "sample"
-  
-  if(sample_field %in% colnames(dmr)){
-    sample_pos <- which(colnames(dmr) %in% sample_field)
-    sample <- dmr[,sample_pos]
-  }else{
-    stop("Sample column name  must be specified as: 'sample'")
-  }
-  if(seqnames_field[1] %in% colnames(dmr) | seqnames_field[2] %in% colnames(dmr) | seqnames_field[3] %in% colnames(dmr) | seqnames_field[4] %in% colnames(dmr) | seqnames_field[5] %in% colnames(dmr) | seqnames_field[6] %in% colnames(dmr) | seqnames_field[7] %in% colnames(dmr)){
-    seqnames_pos <- which(colnames(dmr) %in% seqnames_field)
-    seqnames <- dmr[,seqnames_pos]
-  }else{
-    stop("Chromosome column name must be specified as: 'seqnames', 'seqname', 'chromosome', 'chrom', 'chr', 'chromosome_name' or 'seqid'")
-  }
-  if(start_field %in% colnames(dmr)){
-    start_pos <- which(colnames(dmr) %in% start_field)
-    start <- dmr[,start_pos]
-  }else{
-    stop("Start column name  must be specified as: 'start'")
-  }
-  if(end_field[1] %in% colnames(dmr) | end_field[2] %in% colnames(dmr)){
-    end_pos <- which(colnames(dmr) %in% end_field)
-    end <- dmr[,end_pos]
-  }else{
-    stop("End column name  must be specified as: 'end' or 'stop'")
-  }
-  if(cpg_field[1] %in% colnames(dmr) | cpg_field[2] %in% colnames(dmr) |cpg_field[3] %in% colnames(dmr)){
-    cpg_pos <- which(colnames(dmr) %in% cpg_field)
-    cpg_ids <- dmr[,cpg_pos]
-  }else{
-    stop("CpGs column name  must be specified as: 'cpg_ids', 'cpgnames' or 'cpg'")
+
+UCSC_annotation <- function(genome = "hg19"){
+  if(genome == "hg19" & requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
+    txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+  } else if (genome == "hg38" & requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
+    txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+  } else if(genome == "hg18" & requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
+    txdb <- TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
+  } else{
+    warning("Genes are not shown since TxDb database is not installed in you computer")
+    txdb <- NULL
   }
   
-  dmr_rownames <- rownames(dmr)
-  dmr <- data.frame("sample" = sample,"seqnames" = seqnames, "start" = start, "end" = end, "cpg_ids" = cpg_ids)
-  rownames(dmr) <- dmr_rownames
-  return(dmr)
+  if(!is.null(txdb)){
+    all_genes <- suppressMessages(GenomicFeatures::genes(txdb))
+    all_genes$symbol <- AnnotationDbi::mapIds(Homo.sapiens::Homo.sapiens, 
+                                              keys = all_genes$gene_id,
+                                              keytype = "ENTREZID",
+                                              column = "SYMBOL")
+  }else{
+    all_genes <- NULL
+  }
+  
+  return(all_genes)
 }

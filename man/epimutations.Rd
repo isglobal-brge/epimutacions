@@ -50,12 +50,13 @@ The default is TRUE.}
 The function returns an object of class tibble containing the outliers regions.
 The results are composed by the following columns:
 \itemize{
-\item \code{epi_id}: the name of the anomaly detection method that has been used to detect the epimutation
-\item \code{sample}: the name of the sample where the epimutation was found.
+\item \code{epi_id}: systematic name for each epimutation identified. It provides the name
+of the used anomaly detection method.
+\item \code{sample}: the name of the sample containing the epimutation.
 \item \code{chromosome}, \code{start} and \code{end}: indicate the location of the epimutation.
-\item \code{sz}: the number of base pairs in the region.
-\item \code{cpg_n}: number of CpGs in the region.
-\item \code{cpg_ids}: differentially methylated CpGs names.
+\item \code{sz}: the window's size of the event.
+\item \code{cpg_n}: the number of CpGs in the epimutation.
+\item \code{cpg_ids}: the names of CpGs in the epimutation.
 \item \code{outlier_score}:
 \itemize{
 \item For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
