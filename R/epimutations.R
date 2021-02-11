@@ -1,0 +1,276 @@
+#' @title Epimutations analysis based on outlier detection methods
+#' @description The function identifies  Differentially Methylated Regions
+#' in a case sample by comparing it against a control panel. 
+#' @param case_samples a GenomicRatioSet object containing the case samples.
+#' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
+#' @param control_panel a GenomicRatioSet object containing the control panel (control panel).
+#' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
+#' @param method a character string naming the outlier detection method to be used. 
+#' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
+#' \code{"barbosa"} and \code{"qn"}. 
+#' The default is \code{"manova"}. 
+#' For more information see \strong{Details}. 
+#' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
+#' @param start an integer specifying the start position. The default value is \code{NULL}.
+#' @param end an integer specifying the end position. The default value is \code{NULL}.
+#' @param epi_params The parameters for each method. See the function \link[epimutations]{epi_parameters}.  
+#' @param bump_cutoff a numeric value of the estimate of the genomic profile above the 
+#' cutoff or below the negative of the cutoff will be used as candidate regions. 
+#' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
+#' @param verbose logical. If TRUE additional details about the procedure will provide to the user. 
+#' The default is TRUE. 
+#' @details The function compares a case sample against a control panel to identify epimutations in the given 
+#' sample. First, the DMRs are identified using the \link[bumphunter]{bumphunter} approach. 
+#' After that, CpGs in those DMRs are tested in order to detect regions
+#' with CpGs being outliers.  For that,  different anomaly detection methods can be selected:  
+#'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
+#'  * Multivariate Linear Model (\code{"mlm"})
+#'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
+#'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
+#'  * Barbosa (\code{"barbosa"})
+#'  * Qn (\code{"Qn"})
+#' @return The function returns an object of class tibble containing the outliers regions.  
+#' The results are composed by the following columns: 
+#' * \code{epi_id}: systematic name for each epimutation identified. It provides the name 
+#' of the used anomaly detection method. 
+#' * \code{sample}: the name of the sample containing the epimutation. 
+#' * \code{chromosome}, \code{start} and \code{end}: indicate the location of the epimutation.
+#' * \code{sz}: the window's size of the event.
+#' * \code{cpg_n}: the number of CpGs in the epimutation.
+#' * \code{cpg_ids}: the names of CpGs in the epimutation.
+#' * \code{outlier_score}: 
+#'    * For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
+#'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
+#'    * For method \code{isoforest} it provides the magnitude of the outlier score.
+#'    * For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
+#' * \code{outlier_significance}: 
+#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
+#'    * For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
+#' * \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
+#'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
+#'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
+#' @examples 
+#' \dontrun{
+#' library(epimutacions)
+#' data(methy)
+#' 
+#' #Find epimutations in GSM2562701 sample of methy dataset
+#' 
+#' case_sample <- methy[,"GSM2562701"]
+#' control_panel <- methy[,-51]
+#' 
+#' epimutations(case_sample, control_panel, method = "manova")
+#' }
+#' @export
+epimutations <- function(case_samples, control_panel, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
+{
+  
+  # Identify type of input and extract required data:
+  #	* betas
+  #	* sample's classification
+  #	* feature annotation
+  if(is.null(case_samples))
+  {
+    stop("The argument 'case_samples' must be introduced")
+    
+  }
+  if(is.null(control_panel))
+  {
+    stop("The argument 'case_samples' must be introduced")
+    
+  }
+  
+  if(class(case_samples) != "GenomicRatioSet"){
+    stop("'case_samples' must be of class 'GenomicRatioSet'. 
+         To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
+         function from minfi package")
+  }
+  
+  if(class(control_panel) != "GenomicRatioSet"){
+    stop("'control_panel' must be of class 'GenomicRatioSet'. 
+         To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
+         function from minfi package")
+  }
+ 
+  fd <- as.data.frame(GenomicRanges::granges(case_samples))
+  rownames(fd) <- rownames(case_samples)
+  betas_case <- minfi::getBeta(case_samples)
+  betas_case <- betas_case[rownames(fd),,drop =FALSE]
+  betas_control <- minfi::getBeta(control_panel)
+  betas_control <- betas_control[rownames(fd),]
+
+  if(minfi::annotation(case_samples)[1] != minfi::annotation(control_panel)[1] & minfi::annotation(case_samples)[2] != minfi::annotation(control_panel)[2]){
+    stop("The annotation of 'case_samples' and 'control_panel' must be the same")
+  }
+  fd <- cols_names(fd, cpg_ids_col = FALSE) #epi_plot
+  if(!is.null(start) & !is.null(end)){
+    if(is.null(chr)){
+      stop("Argument 'chr' must be inroduced with 'start' and 'end' parameters")
+    }
+    if(start > end){
+      stop("'start' cannot be higher than 'end'")
+    }
+    
+  }
+  if(!is.null(start) & is.null(end) | is.null(start) & !is.null(end)){
+    stop("'start' and 'end' arguments must be introduced together")
+    
+  }
+  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
+  method <- charmatch(method, avail)
+  method <- avail[method]
+  if(is.na(method)) stop("Invalid method was selected'")
+  
+  if(verbose) message("Selected epimutation detection method '", method, "'")
+  #if(method %in% c()) {
+  #	stop("Method not implemented yet")
+  #}
+  
+  if(!is.null(chr)){
+    if(!is.null(start) & !is.null(end)){
+      fd <- fd[fd$seqnames %in% chr & fd$start >= start & fd$end <= end,]
+    }else{
+      fd <- fd[fd$seqnames %in% chr,]
+    }
+    betas_case <- betas_case[rownames(fd),,drop=FALSE]
+    betas_control <- betas_control[rownames(fd),]
+    #pd <- pd[which(rownames(pd) %in% colnames(betas)),]
+  }
+  
+  
+  # Identify cases and controls
+  cas_sam <- colnames(case_samples)
+  ctr_sam <- colnames(control_panel)
+  
+  # Differentiate between methods that required region detection that the ones
+  # that finds outliers to identify regions
+  if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
+    if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
+    # Prepare model to be evaluated
+    rst <- do.call(rbind, lapply(cas_sam, function(case){
+      samples_names <- c(ctr_sam, case)
+      status <- samples_names == case
+      status <- as.data.frame(status, row.names = samples_names)
+      betas <- cbind(betas_control, betas_case[,case,drop=FALSE])
+      model <- stats::model.matrix(~status, status)
+      # Run bumphunter for region partitioning
+      bumps <- bumphunter::bumphunter(object = betas, design = model,
+                                      pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
+      
+      suppressWarnings(
+        if(!is.na(bumps)){
+          
+          bumps <- bumps[bumps$L >= min_cpg, ]
+          bumps$sz <- bumps$end - bumps$start
+          # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
+          if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
+          
+          if(nrow(bumps) != 0){
+          # Identify outliers according to selected method
+          bump_out  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
+            bump <- bumps[ii, ]
+            beta_bump <- betas_from_bump(bump, fd, betas)
+            if(method == "mahdistmcd") {
+              dst <- epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp)
+              threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
+              outliers <- which(dst$statistic >= threshold)
+              outliers <- dst$ID[outliers]
+              return(res_mahdistmcd(case, bump, beta_bump, outliers))
+            } else if(method == "mlm") {
+              sts <- epi_mlm(beta_bump, model)
+              return(res_mlm(bump, beta_bump, sts, case))
+            } else if(method == "manova") {
+              sts <- epi_manova(beta_bump, model, case)
+              return(res_manova(bump, beta_bump, sts, case))
+            } else if(method == "isoforest") {
+              sts <- epi_isoforest(beta_bump, case)
+              return(res_isoforest(bump, beta_bump, sts, case))
+            }
+            
+          }))
+          }
+        })
+    }))
+    if(is.null(rst)){
+      rst <- NA
+    }
+  }else if(method == "barbosa") {
+    # Compute reference statistics
+    if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
+    bctr_min <- apply(betas_control, 1, min, na.rm = TRUE)
+    bctr_max <- apply(betas_control, 1, max, na.rm = TRUE)
+    bctr_mean <- apply(betas_control, 1, mean, na.rm = TRUE)
+    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.01, 0.99), na.rm = TRUE))
+    bctr_pmin <- bctr_prc[1, ]
+    bctr_pmax <- bctr_prc[2, ]
+    rm(bctr_prc)
+    #case <- betas[ , cas_sam[1], drop=FALSE]
+    
+    # Run region detection
+    rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
+                       bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
+      
+      if(nrow(x) != 0){
+        x$sample <- case 
+      }else{
+        x <- NA
+      }
+      x
+    }))
+    # rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+    # colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
+    # 	   "outlier_score", "outlier_significance", "outlier_direction", 
+    # 	   "sample", "epi_id")
+    # rownames(rst) <- seq_len(nrow(rst))
+    # 
+    # return(rst[ , c(11, 10, 1:9)])
+  } else { # if(method == "qn") {
+    nbetas <- qn_norm(cbind(betas_control, betas_case), qn = TRUE)
+    regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
+    rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      x <- qn_outlier(case, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
+      
+      if(!is.null(x)){
+        x$sample <- case 
+      }else{
+        x <- NA
+      }
+      x
+    }))
+    suppressWarnings(
+      if(!is.na(rst)){
+        rst <- rst[rst$outlier_direction != "", ]
+      })
+  }
+  suppressWarnings(
+    if(is.na(rst)){
+      return(message("No outliers found"))
+      
+    }else{
+      rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+      colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
+                         "outlier_score", "outlier_significance", "outlier_direction", 
+                         "sample", "epi_id")
+      rownames(rst) <- seq_len(nrow(rst))
+      rst <- rst[ , c(11, 10, 1:9)]
+      #Filter results: 
+      # * P value: "manova" and "mlm"
+      # * Outlier score: "isoforest"
+      if(method == "manova"){
+        rst <- rst[which(rst$outlier_significance < epi_params$manova$pvalue_cutoff),]
+      }
+      
+      if(method == "mlm"){
+        rst <- rst[which(rst$outlier_significance < epi_params$mlm$pvalue_cutoff),]
+      }
+      
+      if(method == "isoforest"){
+        rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff),]
+      }
+      
+      #convert rst into a tibble class
+      rst <- tibble::as_tibble(rst)
+      return(rst)
+    })
+}

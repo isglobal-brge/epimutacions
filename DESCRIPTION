@@ -1,4 +1,4 @@
-Package: EpiMutations
+Package: epimutacions
 Title: Robust Outlier identification for DNA methylation data
 Version: 0.0.0.9000
 Authors@R: 
@@ -14,7 +14,13 @@ Imports:
 	isotree,
 	robustbase,
 	rrcovHD,
-	tibble
+	tibble,
+	ggplot2,
+	ggrepel,
+	Gviz,
+	gridExtra,
+	S4Vectors,
+	GenomicRanges
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 Encoding: UTF-8
