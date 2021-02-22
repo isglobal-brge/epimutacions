@@ -32,19 +32,33 @@ simulations <- function(case_samples, control_samples, n = 100, methods = c("man
     rst <- NA
     return(rst)
   }
-  gr <- GenomicRanges::makeGRangesFromDataFrame(as.data.frame(rst), seqnames.field = "chromosome", start.field = "start", end.field= "end")
-  overlaps <- GenomicRanges::findOverlaps(gr,epi_validated, minoverlap = 0, maxgap = 600,  type ="equal")
+  query <- GenomicRanges::makeGRangesFromDataFrame(as.data.frame(rst), seqnames.field = "chromosome", start.field = "start", end.field= "end")
+  subject  <- epi_validated
+  hits <- GenomicRanges::findOverlaps(query, subject, minoverlap = 0, maxgap = 600,  type ="equal")
   
-  if(length(overlaps) != 0){
-  keep_rst <- S4Vectors::queryHits(overlaps)
-  keep_validated <- S4Vectors::subjectHits(overlaps)
+  if(length(hits) != 0){
+  overlaps <- GenomicRanges::pintersect(query[S4Vectors::queryHits(hits)], subject[S4Vectors::subjectHits(hits)])
+  percentOverlap <- width(overlaps) / width(subject[S4Vectors::subjectHits(hits)])
+  
+  
+  
+  keep_rst <- S4Vectors::queryHits(hits)
+  keep_validated <- S4Vectors::subjectHits(hits)
   rst <- as.data.frame(rst[keep_rst,])
   validated <- as.data.frame(epi_validated[keep_validated,])
   results <- cbind(rst,validated[,1:4])
-  results <- results[,c(1:7,12:15,8:11)]
-  colnames(results) <- c("epi_id", "sample", "chromosome", "start", "end", "sz", "cpg_n", "chromosome_validated","start_validated","end_validated", "width_validated", "cpg_ids", "outlier_score", "outlier_significance", "outlier_direction")
+  results$percent25 <- ifelse(percentOverlap >= 0.25, 1, 0)
+  results$percent50 <- ifelse(percentOverlap >= 0.50, 1, 0)
+  results$percent75 <- ifelse(percentOverlap >= 0.75, 1, 0)
+  results$percent100 <- ifelse(percentOverlap >= 1, 1, 0)
+  results$percent <- percentOverlap
+  
+  results <- results[,c(1:7,12:20)]
+  colnames(results) <- c("epi_id", "sample", "chromosome", "start", "end", "sz", "cpg_n", "chromosome_validated","start_validated","end_validated", "width_validated", "percent25", "percent50", "percent75", "percent100", "percentpercent")
   return(results)
   }else{
-   return(NA)
+    return(NA)
   }
+  
+ 
 }

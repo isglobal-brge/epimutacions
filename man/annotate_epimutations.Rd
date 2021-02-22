@@ -49,7 +49,7 @@ control_panel <- methy[,-51]
 epi_results <- epimutations(case_sample, control_panel, method = "manova")
 
 #Annotate the epimutations
-anno_results <- annotate_epimutations(as.data.frame(epi_mvo))
+anno_results <- annotate_epimutations(as.data.frame(epi_results))
 anno_results[1:2, c(1, 12:14)]
 }
 

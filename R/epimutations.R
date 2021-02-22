@@ -244,7 +244,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
       })
   }
   suppressWarnings(
-    if(is.na(rst)){
+    if(nrow(rst) == 0){
       return(message("No outliers found"))
       
     }else{

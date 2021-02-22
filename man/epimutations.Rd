@@ -62,7 +62,7 @@ of the used anomaly detection method.
 \item For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
 \item For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 \item For method \code{isoforest} it provides the magnitude of the outlier score.
-\item For methods \code{barbosa} and \code{mahdistmcd} is filled with NA.
+\item For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
 }
 \item \code{outlier_significance}:
 \itemize{

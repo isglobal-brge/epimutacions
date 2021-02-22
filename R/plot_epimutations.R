@@ -10,6 +10,9 @@
 #' @param genome a character string specifying the genome of reference. 
 #' It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}. 
 #' The default is \code{"hg19"}. 
+#' @param regulation a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac and H3K4Me3
+#' are plotted. The default is FALSE. The running process when \code{regulation} is TRUE 
+#' can take several minutes.
 #' @param from,to scalar, specifying the range of genomic coordinates 
 #' for the plot of gene annotation region.
 #' If \code{NULL} the plotting ranges are derived from the individual track. 
@@ -45,7 +48,7 @@
 #' }
 #' 
 #' @export
-plot_epimutations <- function(dmr, methy, genome = "hg19", from = NULL, to = NULL){
+plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, from = NULL, to = NULL){
   
   # Identify type of input and extract required data:
   #	* Input parameters: class, not null (if requered), nrow/ncols... 
@@ -142,25 +145,58 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", from = NULL, to = NUL
                                       transcriptAnnotation = "symbol",
                                       background.title = "#7EA577")		
   
-  gene_genome_tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track),
-                                                       start = dmr$start, end = dmr$end,
-                                                       chromosome = dmr$seqnames,
-                                                       col = "#7EA577", fill = "#C6D7C3",
-                                                       alpha = 0.4,
-                                                       inBackground = FALSE)
+  tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track),
+                                           start = dmr$start, end = dmr$end,
+                                           chromosome = dmr$seqnames,
+                                           col = "#7EA577", fill = "#C6D7C3",
+                                           alpha = 0.4,
+                                           inBackground = FALSE)
+  if(regulation == TRUE){
+    
+    if(is.null(from) & is.null(to)){
+      annotation <- UCSC_regulation(genome, dmr$seqnames, dmr$start - 1000, dmr$end + 1000) 
+    } else{
+      annotation <- UCSC_regulation(genome, dmr$seqnames, from, to)
+    }
+
+    if(genome ==  "hg19"){
+      tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track, 
+                                                                annotation$cpgIslands,
+                                                                annotation$H3K4Me3,
+                                                                annotation$H3K27Ac, 
+                                                                annotation$H3K27Me3),
+                                               start = dmr$start, end = dmr$end,
+                                               chromosome = dmr$seqnames,
+                                               col = "#7EA577", fill = "#C6D7C3",
+                                               alpha = 0.4,
+                                               inBackground = FALSE)
+      
+    }else{
+      tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track, 
+                                                                annotation$cpgIslands,
+                                                                annotation$H3K4Me3,
+                                                                annotation$H3K27Ac),
+                                               start = dmr$start, end = dmr$end,
+                                               chromosome = dmr$seqnames,
+                                               col = "#7EA577", fill = "#C6D7C3",
+                                               alpha = 0.4,
+                                               inBackground = FALSE)
+    }
+    
+  }
   
   #Plot window
   
   dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
   if(is.null(from) & is.null(to)){
-    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, gene_genome_tracks_Highlight), 
+    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
                                                from = dmr$start - 1000, 
                                                to = dmr$end + 1000, 
                                                add = TRUE))
   
   }else{
-    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, gene_genome_tracks_Highlight), 
+    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
                                                from = from, 
                                                to = to, add = TRUE))
   }
