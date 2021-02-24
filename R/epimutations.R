@@ -191,8 +191,9 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
           }
         })
     }))
+    
     if(is.null(rst)){
-      rst <- NA
+      return(message("No outliers found"))
     }
   }else if(method == "barbosa") {
     # Compute reference statistics
@@ -205,16 +206,12 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
     #case <- betas[ , cas_sam[1], drop=FALSE]
-    
     # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
                        bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
-      
       if(nrow(x) != 0){
         x$sample <- case 
-      }else{
-        x <- NA
       }
       x
     }))
@@ -233,13 +230,11 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
       
       if(!is.null(x)){
         x$sample <- case 
-      }else{
-        x <- NA
       }
       x
     }))
     suppressWarnings(
-      if(!is.na(rst)){
+      if(!is.null(rst)){
         rst <- rst[rst$outlier_direction != "", ]
       })
   }
