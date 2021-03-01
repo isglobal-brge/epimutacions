@@ -171,13 +171,16 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
             bump <- bumps[ii, ]
             beta_bump <- betas_from_bump(bump, fd, betas)
             if(method == "mahdistmcd") {
-              dst <- epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp)
-              threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
-              outliers <- which(dst$statistic >= threshold)
-              outliers <- dst$ID[outliers]
-              return(res_mahdistmcd(case, bump, beta_bump, outliers))
+              dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp), silent = TRUE)
+              if(class(dst) != "try-error"){
+                threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
+                outliers <- which(dst$statistic >= threshold)
+                outliers <- dst$ID[outliers] 
+                return(res_mahdistmcd(case, bump, beta_bump, outliers))
+              }
             } else if(method == "mlm") {
-              sts <- epi_mlm(beta_bump, model)
+              sts <- try(epi_mlm(beta_bump, model), silent = TRUE)
+              #sts <- epi_mlm(beta_bump, model)
               return(res_mlm(bump, beta_bump, sts, case))
             } else if(method == "manova") {
               sts <- epi_manova(beta_bump, model, case)
@@ -191,8 +194,10 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
           }
         })
     }))
-    
     if(is.null(rst)){
+      return(message("No outliers found"))
+    }
+    if(nrow(rst) == 0){
       return(message("No outliers found"))
     }
   }else if(method == "barbosa") {
@@ -210,8 +215,12 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
                        bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
-      if(nrow(x) != 0){
+      if(is.null(x)){
+        x <- NA
+      }else if(nrow(x) != 0){
         x$sample <- case 
+      }else if (nrow(x) == 0){
+        x <- NA 
       }
       x
     }))
@@ -227,21 +236,28 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- qn_outlier(case, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
-      
-      if(!is.null(x)){
+      if(is.null(x)){
+        x <- NA
+      }else if(nrow(x) != 0){
         x$sample <- case 
+      }else if (nrow(x) == 0){
+        x <- NA 
       }
       x
     }))
     suppressWarnings(
-      if(!is.null(rst)){
+      if(!is.na(rst)){
         rst <- rst[rst$outlier_direction != "", ]
       })
+     if(nrow(rst) == 0){
+       rst <- NA
+     }
   }
   suppressWarnings(
-    if(nrow(rst) == 0){
+    if(is.na(rst)){
       return(message("No outliers found"))
-      
+    }else if(nrow(rst) == 0){
+      return(message("No outliers found"))
     }else{
       rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
       colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 

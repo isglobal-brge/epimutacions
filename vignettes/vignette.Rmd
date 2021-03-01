@@ -4,17 +4,18 @@ author:
 - name: Leire Abarrategui Martinez
   affiliation:
   - &Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK
-  - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
   - &Autonomous University of Barcelona (UAB)
   email: leire.abarrategui-martinez@newcastle.ac.uk
 - name: Carles Hernandez-Ferrer
   affiliation:
   - &Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation
   - &Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain
+  email: carles.hernandez@cnag.crg.eu
 - name: Carlos Ruiz-Arenas
   affiliation:
   - &Centro de Investigación Biomédica en Red de Enfermedades Raras (CIBERER), Barcelona, Spain
   - &Universitat Pompeu Fabra (UPF), Barcelona, Spain
+  email: carlos.ruiza@upf.edu
 - name: Juan R. Gonzalez
   affiliation:
   - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
@@ -44,9 +45,7 @@ knitr::opts_chunk$set(comment="", warning=FALSE, message=FALSE, cache = TRUE)
 
 # Introduction
 
-Rare diseases are pathologies with a low prevalence (< 1 per 2,000 people). Most of these pathologies have an onset during childhood and a strong genetic etiology. Consequently, rare disease diagnosis has relied on identifying genetic and genomic mutations that can cause the disease. Although these variants have provided a diagnosis for many patients and families, around 60% of the cases remained undiagnosed [@lionel2018improved]. Aberrant methylation can be an underlying cause of undiagnosed patients, either as a primary event (a.k.a. epimutation) or as a functional consequence of chromatin dysregulation by genetic or environmental agents (a.k.a. episignature). Epimutations are the cause of some rare
-
-diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@aref2019] and some human malformations [@serra2015dna]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@aref2019]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
+Rare diseases are pathologies with a low prevalence (< 1 per 2,000 people). Most of these pathologies have an onset during childhood and a strong genetic etiology. Consequently, rare disease diagnosis has relied on identifying genetic and genomic mutations that can cause the disease. Although these variants have provided a diagnosis for many patients and families, around 60% of the cases remained undiagnosed [@lionel2018improved]. Aberrant methylation can be an underlying cause of undiagnosed patients, either as a primary event (a.k.a. epimutation) or as a functional consequence of chromatin dysregulation by genetic or environmental agents (a.k.a. episignature). Epimutations are the cause of some rare diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@aref2019] and some human malformations [@serra2015dna]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@aref2019]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
 
 
 The package `epimutacions ` provides tools for analysing epivariants by using outlier detection methods. Also, functions to plot and annotate 
@@ -230,7 +229,7 @@ rst_mvo <- annotate_epimutations(epi_mvo)
 rst_mvo[1:2, c(1, 12:14)]
 ```
 
-```{r ann result table, echo = FALSE}
+```{r echo = FALSE}
 library(knitr)
 kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 ```
@@ -240,9 +239,22 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 
 A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epimutations`, already included in `epimutacions`.
 
-```{r, plot_mvo, fig.width=7, message=FALSE}
+```{r, plot_mvo, fig.width = 7, message=FALSE}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
+
+
+Also, it is possible to plot the cromatine marks H3K4me3, H3K27me3  and H3K27ac by seting the argument `regulation = TRUE` in `plot_epimutations` function:
+
+* H3K4me3: commonly associated with the activation of transcription of nearby genes.
+* H3K27me3: is used in epigenetics to look for inactive genes.
+* H3K27ac: is associated with the higher activation of transcription and therefore defined as an active enhancer mark
+
+
+```{r, plot_mvo_regulation, fig.width = 7, message=FALSE}
+plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
+```
+
 
 # Acknowledgements
 
