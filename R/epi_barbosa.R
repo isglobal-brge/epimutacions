@@ -130,20 +130,38 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
 
 
   collapse_regions <- function(flag_df) {
+    empty <- data.frame(
+      chromosome = character(),
+      start = numeric(),
+      end = numeric(),
+      length = numeric(),
+      N_CpGs = numeric(),
+      CpG_ids = character(),
+      outlier_score = numeric(),
+      outlier_significance = numeric(),
+      outlier_direction = character()
+    )
+    if(nrow(flag_df) == 0) {
+      return(empty)
+    }
     do.call(rbind, lapply(unique(flag_df$region), function(reg) {
+      message(reg)
       x <- flag_df[flag_df$region == reg, ]
-      data.frame(
-        chromosome = x$chr[1],
-        start = min(x$pos),
-        end = max(x$pos),
-        length = max(x$pos) - min(x$pos),
-        N_CpGs = nrow(x),
-        CpG_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
-        outlier_score = NA,
-        outlier_significance = NA,
-        outlier_direction = x$outlier_direction[1]
-      )
-      
+      if(nrow(x) > 0) {
+        data.frame(
+          chromosome = x$chr[1],
+          start = min(x$pos),
+          end = max(x$pos),
+          length = max(x$pos) - min(x$pos),
+          N_CpGs = nrow(x),
+          CpG_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = x$outlier_direction[1]
+        )
+      } else {
+        empty
+      }
     }))
   }
   
