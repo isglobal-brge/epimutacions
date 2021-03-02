@@ -13,7 +13,7 @@ simulations <- function(case_samples, control_samples, n = 100, methods = c("man
   
   rst <- do.call(rbind, lapply(seq_len(length(methods)), function(i) {
     rst_case <- do.call(rbind, lapply(seq_len(ncol(case_samples)), function(ii) {
-      epimutacions::epimutations(case_samples[,ii], 
+     epimutations(case_samples[,ii], 
                                  control_panel = control_samples, 
                                  method = methods[i], 
                                  chr = chr, 

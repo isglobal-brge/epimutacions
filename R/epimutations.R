@@ -107,8 +107,14 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     if(is.null(chr)){
       stop("Argument 'chr' must be inroduced with 'start' and 'end' parameters")
     }
-    if(start > end){
-      stop("'start' cannot be higher than 'end'")
+    if(length(start) != length(end) & length(chr) != length(start)){
+      stop("'start' and 'end' length must be same")
+    }
+    for(i in 1:length(start)){
+      if(start[i] > end[i]){
+        stop("'start' cannot be higher than 'end'")
+    }
+
     }
     
   }
@@ -128,7 +134,11 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
   
   if(!is.null(chr)){
     if(!is.null(start) & !is.null(end)){
-      fd <- fd[fd$seqnames %in% chr & fd$start >= start & fd$end <= end,]
+      a <- NULL
+      for(i in 1:length(chr)){
+        a <- rbind(a, fd[fd$seqnames %in% chr[i] & fd$start >= start[i] & fd$end <= end[i],])
+      }
+      fd <- a
     }else{
       fd <- fd[fd$seqnames %in% chr,]
     }

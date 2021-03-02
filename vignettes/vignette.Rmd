@@ -37,7 +37,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(comment="", warning=FALSE, message=FALSE, cache = TRUE)
+knitr::opts_chunk$set(comment="", warning = FALSE, message = FALSE, cache = TRUE)
 ```
 
 
@@ -239,7 +239,7 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 
 A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epimutations`, already included in `epimutacions`.
 
-```{r, plot_mvo, fig.width = 7, message=FALSE}
+```{r, plot_mvo}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
 
@@ -251,7 +251,7 @@ Also, it is possible to plot the cromatine marks H3K4me3, H3K27me3  and H3K27ac 
 * H3K27ac: is associated with the higher activation of transcription and therefore defined as an active enhancer mark
 
 
-```{r, plot_mvo_regulation, fig.width = 7, message=FALSE}
+```{r, plot_mvo_regulation, fig.width = 7}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
 ```
 
