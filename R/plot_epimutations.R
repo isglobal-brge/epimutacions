@@ -89,6 +89,12 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
   # DMR column names must be always the same (set the common column names)
   dmr  <- cols_names(dmr, cpg_ids_col = TRUE)  #epi_plot
   
+  # Set 'from' and 'to' arguments value
+  if(is.null(from) & is.null(to)){
+    from <- dmr$start - 1000
+    to <- dmr$end + 1000
+  }
+  
   #Generate GenomicRanges object to contain in the same object:
   ## * Genomic ranges of each CpG in the DMR
   ## * Beta values 
@@ -129,10 +135,10 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
   
   plot <- plot_cpg_names + 
     #ggplot2::lims(y = c(0,1)) +  
-    ggplot2::scale_colour_manual(name="Status",values=c("black","red","darkblue")) +
+    ggplot2::scale_colour_manual(name="Status", values=c("black","red","darkblue")) +
     ggplot2::theme_bw() + 
-    ggplot2::labs(x = "DNA methylation level") + 
-    ggplot2::labs(y = "Coordinates")
+    ggplot2::labs(x = "Coordinates") + 
+    ggplot2::labs(y = "DNA methylation level")
   
   #Plot gene annotations
   
@@ -143,7 +149,8 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
                                       chromosome = dmr$seqnames,
                                       name = "Genes",
                                       transcriptAnnotation = "symbol",
-                                      background.title = "#7EA577")		
+                                      background.title = "#8F913A",
+                                      rotation.title = 0)		
   
   tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track),
                                            start = dmr$start, end = dmr$end,
@@ -153,11 +160,11 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
                                            inBackground = FALSE)
   if(regulation == TRUE){
     
-    if(is.null(from) & is.null(to)){
-      annotation <- UCSC_regulation(genome, dmr$seqnames, dmr$start - 1000, dmr$end + 1000) 
-    } else{
+      sz <- to - from
+      if(sz > 200000){
+        stop("The region is too large (> 200kb) to download the annotations from 'UCSC'")
+      }
       annotation <- UCSC_regulation(genome, dmr$seqnames, from, to)
-    }
 
     if(genome ==  "hg19"){
       tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track, 
@@ -165,11 +172,12 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
                                                                 annotation$H3K4Me3,
                                                                 annotation$H3K27Ac, 
                                                                 annotation$H3K27Me3),
-                                               start = dmr$start, end = dmr$end,
-                                               chromosome = dmr$seqnames,
-                                               col = "#7EA577", fill = "#C6D7C3",
-                                               alpha = 0.4,
-                                               inBackground = FALSE)
+                                                                start = dmr$start, end = dmr$end,
+                                                                chromosome = dmr$seqnames,
+                                                                col = "#7EA577", 
+                                                                fill = "#C6D7C3",
+                                                                alpha = 0.4,
+                                                                inBackground = FALSE)
       
     }else{
       tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track, 
@@ -189,18 +197,9 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
   
   dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
-  if(is.null(from) & is.null(to)){
-    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
-                                               from = dmr$start - 1000, 
-                                               to = dmr$end + 1000, 
-                                               add = TRUE))
-  
-  }else{
-    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
+  p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
                                                from = from, 
                                                to = to, add = TRUE))
-  }
-  
   gridExtra::grid.arrange(grobs = list(p1,p2), row=2)
 }
 

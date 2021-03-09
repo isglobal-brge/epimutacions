@@ -240,7 +240,7 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epimutations`, already included in `epimutacions`.
 
 ```{r, plot_mvo}
-plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
+#plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
 
 
@@ -252,7 +252,7 @@ Also, it is possible to plot the cromatine marks H3K4me3, H3K27me3  and H3K27ac 
 
 
 ```{r, plot_mvo_regulation, fig.width = 7}
-plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
+#plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
 ```
 
 
@@ -264,7 +264,7 @@ All the team members of the _Project #5_ for the contribution to this package:
 
 | Name | Surname | ORCID | Affiliation | Team |
 |:-----|:--------|:-----:|:------------|:-----|
-| Leire | Abarrategui | 0000-0002-1175-038X | Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK; ISGlobal, Barcelona Institute for Global Health, Barcelona, Spain | Development |
+| Leire | Abarrategui | 0000-0002-1175-038X | Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK; Autonomous University of Barcelona (UAB), Barcelona, Spain | Development |
 | Lordstrong | Akano | 0000-0002-1404-0295 | College of Medicine, University of Ibadan | Development |
 | James | Baye | 0000-0002-0078-3688 | Wellcome/MRC Cambridge Stem Cell Institute, University of Cambridge, Cambridge CB2 0AW, UK; Department of Physics, University of Cambridge, Cambridge CB2 3DY, UK | Development |
 | Alejandro | Caceres | - | ISGlobal, Barcelona Institute for Global Health, Dr Aiguader 88, 08003 Barcelona, Spain; Centro de Investigación Biomédica en Red en Epidemiología y Salud Pública (CIBERESP), Madrid, Spain | Development |

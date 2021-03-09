@@ -203,12 +203,14 @@ UCSC_annotation <- function(genome = "hg19"){
 #' 
 UCSC_regulation <- function(genome, chr, from, to){
   
-  cpgIslands <- Gviz::UcscTrack(genome= genome, chromosome = chr,
+  cpgIslands <- Gviz::UcscTrack(genome = genome, chromosome = chr,
                                 track = "CpG Island", from = from,
                                 to = to, trackType = "AnnotationTrack",
                                 start = "chromStart", end = "chromEnd",
                                 id = "name", shape = "box",
-                                fill = "#006400", name = "CpG Islands")
+                                fill = "#FA9114", name = "CpG",
+                                background.title = "#9D5D10", 
+                                rotation.title = 0)
   
   H3K27Ac <- Gviz::UcscTrack(genome = genome, chromosome = chr,
                              track="Layered H3K27Ac",
@@ -218,7 +220,8 @@ UCSC_regulation <- function(genome, chr, from, to){
                              data = "score",
                              type = "hist", window = "auto",
                              col.histogram = "darkblue",
-                             fill.histogram="darkblue",
+                             fill.histogram = "darkblue",
+                             background.title = "#B0CBE4",
                              name = "H3K27Ac")
   
   H3K4Me3 <- Gviz::UcscTrack(genome = genome, chromosome = chr,
@@ -230,6 +233,7 @@ UCSC_regulation <- function(genome, chr, from, to){
                              type = "hist", window = "auto",
                              col.histogram = "darkred",
                              fill.histogram = "darkred",
+                             background.title = "#E4BBB0",
                             name = "H3K4Me3")
   
   if(genome == "hg19"){
@@ -239,7 +243,8 @@ UCSC_regulation <- function(genome, chr, from, to){
                                 type = "hist", window = "auto",
                                 col.histogram = "darkgreen",
                                 fill.histogram = "darkgreen", data = "score", 
-                          name = "H3K27Me3", chr = chr)
+                          name = "H3K27Me3", chr = chr, 
+                          background.title = "#C0E4B0")
   }
 
   
