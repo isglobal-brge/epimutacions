@@ -62,7 +62,7 @@
 #' epimutations(case_sample, control_panel, method = "manova")
 #' }
 #' @export
-epimutations <- function(case_samples, control_panel, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
+epimutations <- function(case_samples, control_panel, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), maxGap = 1000, bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {
   
   # Identify type of input and extract required data:
@@ -165,7 +165,9 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
       model <- stats::model.matrix(~status, status)
       # Run bumphunter for region partitioning
       bumps <- bumphunter::bumphunter(object = betas, design = model,
-                                      pos = fd$start, chr = fd$seqnames, cutoff = bump_cutoff)$table
+                                      pos = fd$start, chr = fd$seqnames, 
+                                      maxGap = maxGap,
+                                      cutoff = bump_cutoff)$table
       
       suppressWarnings(
         if(!is.na(bumps)){
@@ -183,7 +185,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
             if(method == "mahdistmcd") {
               dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp), silent = TRUE)
               if(class(dst) != "try-error"){
-                threshold <- sqrt(qchisq(p = 0.975, df = ncol(beta_bump)))
+                threshold <- sqrt(qchisq(p = 0.999975, df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
                 return(res_mahdistmcd(case, bump, beta_bump, outliers))
@@ -196,7 +198,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
               sts <- epi_manova(beta_bump, model, case)
               return(res_manova(bump, beta_bump, sts, case))
             } else if(method == "isoforest") {
-              sts <- epi_isoforest(beta_bump, case)
+              sts <- epi_isoforest(beta_bump, case, epi_params$isoforest$ntrees)
               return(res_isoforest(bump, beta_bump, sts, case))
             }
             

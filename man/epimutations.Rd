@@ -12,6 +12,7 @@ epimutations(
   start = NULL,
   end = NULL,
   epi_params = epi_parameters(),
+  maxGap = 1000,
   bump_cutoff = 0.1,
   min_cpg = 3,
   verbose = TRUE

@@ -4,7 +4,7 @@
 \alias{epi_isoforest}
 \title{Identifies epimutations using Isolation Forest}
 \usage{
-epi_isoforest(mixture, case_id)
+epi_isoforest(mixture, case_id, ntrees)
 }
 \arguments{
 \item{mixture}{beta values matrix. Samples in columns and

@@ -6,14 +6,14 @@
 #' @param case_id a character string specifying the name of the case sample.
 #' @return The function returns the outlier score for the given case sample.
 #' 
-epi_isoforest <- function(mixture, case_id) {
+epi_isoforest <- function(mixture, case_id, ntrees) {
 	mixture <- t(mixture)
 	#Generate train and test(sample with suspected disease) data frame
 	train <- mixture[row.names(mixture) != case_id, ]
 	test <- mixture[case_id, , drop = FALSE]
 	
 	#Run the isolation forest methods 
-	iso <- isotree::isolation.forest(train)
+	iso <- isotree::isolation.forest(train, ntrees = ntrees)
 	
 	#Predict
 	score <- predict(iso, test)

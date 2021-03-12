@@ -27,7 +27,7 @@ create_GRanges_class <- function(methy, cpg_ids){
   fd <- fd[cpg_ids,]
   fd <- cols_names(fd, cpg_ids_col = FALSE) #common cols names (epi_plot)
   #Beta values matrix
-  betas <- jitter(betas[cpg_ids,])
+  betas <- betas[cpg_ids,]
   rownames(fd) <- rownames(betas)
   #Generate the GenomicRanges class object
   gr <- GenomicRanges::makeGRangesFromDataFrame(fd)
