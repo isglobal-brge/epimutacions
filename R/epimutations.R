@@ -218,7 +218,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     bctr_min <- apply(betas_control, 1, min, na.rm = TRUE)
     bctr_max <- apply(betas_control, 1, max, na.rm = TRUE)
     bctr_mean <- apply(betas_control, 1, mean, na.rm = TRUE)
-    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.01, 0.99), na.rm = TRUE))
+    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
@@ -271,21 +271,27 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     }else if(nrow(rst) == 0){
       return(message("No outliers found"))
     }else{
+      #Calculate the adjusted p value "manova" and "mlm"
+      if(method == "manova" | method == "mlm"){
+        rst$adj_pvalue <- stats::p.adjust(rst$outlier_significance, method = "hochberg")   
+      }else{
+        rst$adj_pvalue <- NA
+      }
       rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
       colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
-                         "outlier_score", "outlier_significance", "outlier_direction", 
-                         "sample", "epi_id")
+                         "outlier_score", "pvalue", "outlier_direction", 
+                         "sample", "adj_pvalue", "epi_id")
       rownames(rst) <- seq_len(nrow(rst))
-      rst <- rst[ , c(11, 10, 1:9)]
+      rst <- rst[ , c(12, 10, 1:7, 9, 8, 11)]
       #Filter results: 
       # * P value: "manova" and "mlm"
       # * Outlier score: "isoforest"
       if(method == "manova"){
-        rst <- rst[which(rst$outlier_significance < epi_params$manova$pvalue_cutoff),]
+        rst <- rst[which(rst$adj_pvalue < epi_params$manova$pvalue_cutoff),]
       }
       
       if(method == "mlm"){
-        rst <- rst[which(rst$outlier_significance < epi_params$mlm$pvalue_cutoff),]
+        rst <- rst[which(rst$adj_pvalue < epi_params$mlm$pvalue_cutoff),]
       }
       
       if(method == "isoforest"){

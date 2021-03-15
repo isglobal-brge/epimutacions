@@ -7,7 +7,7 @@
 epi_parameters(
   manova = list(pvalue_cutoff = 0.05),
   mlm = list(pvalue_cutoff = 0.05),
-  isoforest = list(outlier_score_cutoff = 0.9, ntrees = 100),
+  isoforest = list(outlier_score_cutoff = 0.5, ntrees = 100),
   mahdistmcd = list(nsamp = "deterministic"),
   barbosa = list(window_sz = 10, offset_mean = 0.15, offset_abs = 0.1),
   qn = list(window_sz = 10, qn_th = 3)
