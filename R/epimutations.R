@@ -13,7 +13,8 @@
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
 #' @param start an integer specifying the start position. The default value is \code{NULL}.
 #' @param end an integer specifying the end position. The default value is \code{NULL}.
-#' @param epi_params The parameters for each method. See the function \link[epimutations]{epi_parameters}.  
+#' @param epi_params the parameters for each method. See the function \link[epimutations]{epi_parameters}.  
+#' @param maxGap the maximum location gap used in \link[bumphunter]{bumphunter} method. 
 #' @param bump_cutoff a numeric value of the estimate of the genomic profile above the 
 #' cutoff or below the negative of the cutoff will be used as candidate regions. 
 #' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
@@ -185,7 +186,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
             if(method == "mahdistmcd") {
               dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp), silent = TRUE)
               if(class(dst) != "try-error"){
-                threshold <- sqrt(qchisq(p = 0.999975, df = ncol(beta_bump)))
+                threshold <- sqrt(stats::qchisq(p = 0.999975, df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
                 return(res_mahdistmcd(case, bump, beta_bump, outliers))

@@ -4,6 +4,8 @@
 #' @param mixture beta values matrix. Samples in columns and
 #' CpGs in rows.
 #' @param case_id a character string specifying the name of the case sample.
+#' @param ntrees number of binary trees to build for the model. 
+#' Default is \code{100}. 
 #' @return The function returns the outlier score for the given case sample.
 #' 
 epi_isoforest <- function(mixture, case_id, ntrees) {
@@ -16,7 +18,7 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 	iso <- isotree::isolation.forest(train, ntrees = ntrees)
 	
 	#Predict
-	score <- predict(iso, test)
+	score <- stats::predict(iso, test)
 	
 	return(score)
 }

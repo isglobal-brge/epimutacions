@@ -2,10 +2,15 @@
 #' @title Settings for parameters of epimutations and epimutations_one_leave_out functions
 #' @description  Allow the user to set the values of the parameters to compute the functions
 #' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out}.
-#' @param pvalue_cutoff the threshold p value to select which CpG regions are outliers  \code{manova}
+#' @param manova,mlm,isoforest,mahdistmcd,barbosa,qn method selected in the function 
+#' \link[epimutacions]{epimutations}. 
+#' @param pvalue_cutoff the threshold p value to select which CpG regions are outliers \code{manova}
 #' and \code{mlm} methods. Default is \code{0.05}.
 #' @param outlier_score_cutoff The outlier score threshold to identify outliers CpGs in
 #' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
+#' @param ntrees number of binary trees to build for the model build by 
+#' isolation forest (\code{isoforest}) method. 
+#' Default is \code{100}. 
 #' @param nsamp the number of subsets used for initial estimates in the Minimum Covariance Determinant 
 #' which is used to compute the Robust Mahalanobis distance (\code{mahdistmcd}). 
 #' It can be set as:
@@ -36,7 +41,8 @@
 #'  case_sample <- methy[,"GSM2562701"]
 #'  control_panel <- methy[,-51]
 #' 
-#'  epimutations(case_sample, control_panel, method = "manova", epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
+#'  epimutations(case_sample, control_panel, method = "manova", 
+#'               epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
 #'  }
 #' @export
 

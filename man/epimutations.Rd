@@ -37,7 +37,9 @@ For more information see \strong{Details}.}
 
 \item{end}{an integer specifying the end position. The default value is \code{NULL}.}
 
-\item{epi_params}{The parameters for each method. See the function \link[epimutations]{epi_parameters}.}
+\item{epi_params}{the parameters for each method. See the function \link[epimutations]{epi_parameters}.}
+
+\item{maxGap}{the maximum location gap used in \link[bumphunter]{bumphunter} method.}
 
 \item{bump_cutoff}{a numeric value of the estimate of the genomic profile above the
 cutoff or below the negative of the cutoff will be used as candidate regions.}

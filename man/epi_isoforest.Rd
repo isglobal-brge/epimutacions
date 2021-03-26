@@ -11,6 +11,9 @@ epi_isoforest(mixture, case_id, ntrees)
 CpGs in rows.}
 
 \item{case_id}{a character string specifying the name of the case sample.}
+
+\item{ntrees}{number of binary trees to build for the model.
+Default is \code{100}.}
 }
 \value{
 The function returns the outlier score for the given case sample.

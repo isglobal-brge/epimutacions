@@ -3,6 +3,7 @@ title: "Detection of epimutations with state of the art methods in methylation d
 author:
 - name: Leire Abarrategui Martinez
   affiliation:
+  - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
   - &Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK
   - &Autonomous University of Barcelona (UAB)
   email: leire.abarrategui-martinez@newcastle.ac.uk
@@ -23,12 +24,11 @@ author:
   email: juanr.gonzalez@isglobal.org
 date: "`r Sys.Date()`"
 package: "`r pkg_ver('epimutacions')`"
+abstract: >
+    An introductory guide to analysing DNA methylation data with R package `epimutacions`. The areas covered in this document are: installing the     package, loading the data, idetifying the epimutations and results visualisation.  
+
 output:
-  BiocStyle::html_document:
-  number_sections: true
-toc: yes
-fig_caption: yes
-toc_float: true
+  BiocStyle::html_document
 bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{Detection of epimutations with state of the art methods in methylation data}
@@ -240,7 +240,7 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epimutations`, already included in `epimutacions`.
 
 ```{r, plot_mvo}
-#plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
+plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
 
 
@@ -252,7 +252,7 @@ Also, it is possible to plot the cromatine marks H3K4me3, H3K27me3  and H3K27ac 
 
 
 ```{r, plot_mvo_regulation, fig.width = 7}
-#plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
+plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
 ```
 
 

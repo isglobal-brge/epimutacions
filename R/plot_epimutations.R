@@ -195,7 +195,7 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", regulation = FALSE, f
   
   #Plot window
   
-  dev.new(width = 1080, height = 1350, unit = "px")
+  #dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
   p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
                                                from = from, 

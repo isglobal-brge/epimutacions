@@ -53,7 +53,7 @@ epi_mahdistmcd <- function(mixture, nsamp = c("best", "exact", "deterministic"))
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
 #' @param beta_bump a beta values matrix for the CpGs in the selected
 #' DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}. 
-#' @param sts  the robust distance computed by 
+#' @param outliers  the robust distance computed by 
 #'  \link[epimutacions]{epi_mahdistmcd} function results. 
 #' @param case a character string specifying the case sample name. 
 #' @returns The function returns a data frame containing the following information

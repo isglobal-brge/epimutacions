@@ -16,7 +16,7 @@ res_mahdistmcd(case, bump, beta_bump, outliers)
 \item{beta_bump}{a beta values matrix for the CpGs in the selected
 DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
 
-\item{sts}{the robust distance computed by
+\item{outliers}{the robust distance computed by
 \link[epimutacions]{epi_mahdistmcd} function results.}
 }
 \value{
