@@ -1,8 +1,6 @@
-epi_beta <-  function(betas_ref, betas_case, annot, pvalue_threshold = 1e-8, 
-                      min_cpgs = 3){
+epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold, 
+                      min_cpgs = 3, maxGap){
  
-  ## Get Beta distribution params
-  beta_params <- getBetaParams(betas_ref)
   
   ## Compute p-value for case
   mat <- cbind(betas_case, t(beta_params))
@@ -19,16 +17,27 @@ epi_beta <-  function(betas_ref, betas_case, annot, pvalue_threshold = 1e-8,
   selRegs <- names(regs[regs >= min_cpgs])
   epi_list <- lapply(selRegs, function(idx){
     ov <- overs[to(overs) == idx]
-    rang <- range(sigGR[from(ov)])
-    data.frame(chromosome = seqnames(rang), start = start(rang), 
-               end = end(rang),
-               length = width(rang), N_CpGs = length(from(ov)), 
-               CpG_ids = paste(names(sigGR[from(ov)]), collapse = ",", sep = ""),
-               outlier_score = 0.1,
-               outlier_significance = NA
-    )
+    regGR <- sort(sigGR[from(ov)])
+    
+    cl <- bumphunter::clusterMaker(seqnames(regGR), start(regGR), maxGap = maxGap)
+    reg_list <- lapply(unique(cl), function(i){
+      cpgGR <- regGR[cl == i]
+      rang <- range(cpgGR)
+      data.frame(chromosome = seqnames(rang), start = start(rang), 
+                 end = end(rang),
+                 length = width(rang), N_CpGs = length(cpgGR), 
+                 cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
+                 outlier_score = mean(pvals[names(cpgGR)]),
+                 outlier_significance = NA,
+                 outlier_direction = NA
+      )
+    })
+    Reduce(rbind, reg_list)
+    
+
   })
-  Reduce(rbind, epi_list)
+  df <- Reduce(rbind, epi_list)
+  subset(df, N_CpGs >= min_cpgs )
 }
 
 

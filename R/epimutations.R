@@ -63,7 +63,9 @@
 #' epimutations(case_sample, control_panel, method = "manova")
 #' }
 #' @export
-epimutations <- function(case_samples, control_panel, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), maxGap = 1000, bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
+epimutations <- function(case_samples, control_panel, method = "manova", 
+                         chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), 
+                         maxGap = 1000, bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {
   
   # Identify type of input and extract required data:
@@ -123,7 +125,7 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     stop("'start' and 'end' arguments must be introduced together")
     
   }
-  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
+  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn", "beta")
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
@@ -244,7 +246,27 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
     # rownames(rst) <- seq_len(nrow(rst))
     # 
     # return(rst[ , c(11, 10, 1:9)])
-  } else { # if(method == "qn") {
+  } else if(method == "beta") {
+    
+    ## Get Beta distribution params
+    message("Computing beta distribution parameters")
+    beta_params <- getBetaParams(betas_control)
+    
+    message("Defining Regions")
+    rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      x <- epi_beta(beta_params, betas_case[ , case, drop = FALSE], 
+                    SummarizedExperiment::rowRanges(control_panel),
+                    epi_params$beta$pvalue_cutoff, min_cpg, maxGap)
+      if(is.null(x)){
+        x <- NA
+      }else if(nrow(x) != 0){
+        x$sample <- case 
+      }else if (nrow(x) == 0){
+        x <- NA 
+      }
+      x
+    }))
+  }else { # if(method == "qn") {
     nbetas <- qn_norm(cbind(betas_control, betas_case), qn = TRUE)
     regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
