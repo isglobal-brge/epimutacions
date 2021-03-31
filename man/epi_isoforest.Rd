@@ -4,13 +4,16 @@
 \alias{epi_isoforest}
 \title{Identifies epimutations using Isolation Forest}
 \usage{
-epi_isoforest(mixture, case_id)
+epi_isoforest(mixture, case_id, ntrees)
 }
 \arguments{
 \item{mixture}{beta values matrix. Samples in columns and
 CpGs in rows.}
 
 \item{case_id}{a character string specifying the name of the case sample.}
+
+\item{ntrees}{number of binary trees to build for the model.
+Default is \code{100}.}
 }
 \value{
 The function returns the outlier score for the given case sample.

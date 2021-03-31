@@ -10,6 +10,8 @@ epi_manova(mixture, model, case_id)
 \item{mixture}{beta values matrix. Samples in columns and
 CpGs in rows.}
 
+\item{model}{design (or model) matrix.}
+
 \item{case_id}{a character string specifying the name of the case sample.}
 }
 \value{

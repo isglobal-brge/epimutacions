@@ -4,7 +4,14 @@
 \alias{plot_epimutations}
 \title{Plot a given epimutation and locate it along the genome}
 \usage{
-plot_epimutations(dmr, methy, genome = "hg19", from = NULL, to = NULL)
+plot_epimutations(
+  dmr,
+  methy,
+  genome = "hg19",
+  regulation = FALSE,
+  from = NULL,
+  to = NULL
+)
 }
 \arguments{
 \item{dmr}{epimutation obtained as a result of \link[epimutacions]{epimutations}
@@ -18,6 +25,10 @@ function. See the constructor function \link[minfi]{GenomicRatioSet},
 \item{genome}{a character string specifying the genome of reference.
 It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}.
 The default is \code{"hg19"}.}
+
+\item{regulation}{a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac and H3K4Me3
+are plotted. The default is FALSE. The running process when \code{regulation} is TRUE
+can take several minutes.}
 
 \item{from, to}{scalar, specifying the range of genomic coordinates
 for the plot of gene annotation region.

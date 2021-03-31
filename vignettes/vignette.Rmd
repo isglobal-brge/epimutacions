@@ -1,45 +1,58 @@
 ---
 title: "Detection of epimutations with state of the art methods in methylation data"
-output: rmarkdown::html_vignette
+author:
+- name: Leire Abarrategui Martinez
+  affiliation:
+  - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
+  - &Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK
+  - &Autonomous University of Barcelona (UAB)
+  email: leire.abarrategui-martinez@newcastle.ac.uk
+- name: Carles Hernandez-Ferrer
+  affiliation:
+  - &Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation
+  - &Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain
+  email: carles.hernandez@cnag.crg.eu
+- name: Carlos Ruiz-Arenas
+  affiliation:
+  - &Centro de Investigación Biomédica en Red de Enfermedades Raras (CIBERER), Barcelona, Spain
+  - &Universitat Pompeu Fabra (UPF), Barcelona, Spain
+  email: carlos.ruiza@upf.edu
+- name: Juan R. Gonzalez
+  affiliation:
+  - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
+  - &uab Department of Mathematics, Autonomous University of Barcelona (UAB)
+  email: juanr.gonzalez@isglobal.org
+date: "`r Sys.Date()`"
+package: "`r pkg_ver('epimutacions')`"
+abstract: >
+    An introductory guide to analysing DNA methylation data with R package `epimutacions`. The areas covered in this document are: installing the     package, loading the data, idetifying the epimutations and results visualisation.  
+
+output:
+  BiocStyle::html_document
 bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{Detection of epimutations with state of the art methods in methylation data}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(comment="", warning=FALSE, message=FALSE, cache = TRUE)
+knitr::opts_chunk$set(comment="", warning = FALSE, message = FALSE, cache = TRUE)
 ```
 
-# Preface
 
-A large part of the development of this package was produced along the [European BioHackathon 2020](https://www.biohackathon-europe.org/), where we worked on implementing it  to enable analyzing epimutations to the rare disease community. We worked on three main areas: (1) implementation of algorithms to detect epimutations; (2) implementation of reporting functions; (3) testing and validation of the package.
 
-The following are the team members of the _Project #5_ and we consider this as a statement of their contribution to this package:
 
-| Name | Surname | ORCID | Affiliation | Team |
-|:-----|:--------|:-----:|:------------|:-----|
-| Leire | Abarrategui | 0000-0002-1175-038X | Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK; ISGlobal, Barcelona Institute for Global Health, Barcelona, Spain | Development |
-| Lordstrong | Akano | 0000-0002-1404-0295 | College of Medicine, University of Ibadan | Development |
-| James | Baye | 0000-0002-0078-3688 | Wellcome/MRC Cambridge Stem Cell Institute, University of Cambridge, Cambridge CB2 0AW, UK; Department of Physics, University of Cambridge, Cambridge CB2 3DY, UK | Development |
-| Alejandro | Caceres | - | ISGlobal, Barcelona Institute for Global Health, Dr Aiguader 88, 08003 Barcelona, Spain; Centro de Investigación Biomédica en Red en Epidemiología y Salud Pública (CIBERESP), Madrid, Spain | Development |
-| Carles | Hernandez-Ferrer | 0000-0002-8029-7160 | Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation; Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain | Development |		
-| Pavlo | Hrab | 0000-0002-0742-8478 | Department of Genetics and Biotechnology, Biology faculty, Ivan Franko National University of Lviv | Validation |
-| Raquel | Manzano | 0000-0002-5124-8992 | Cancer Research UK Cambridge Institute; University of Cambridge, Cambridge, United Kingdom | Reporting |
-| Margherita | Mutarelli | 0000-0002-2168-5059 | Institute of Applied Sciences and Intelligent Systems (ISASI-CNR) | Validation |
-| Carlos | Ruiz-Arenas | 0000-0002-6014-3498 | Centro de Investigación Biomédica en Red de Enfermedades Raras (CIBERER), Barcelona, Spain; Universitat Pompeu Fabra (UPF), Barcelona, Spain | Reporting |
+# Introduction
+
+Rare diseases are pathologies with a low prevalence (< 1 per 2,000 people). Most of these pathologies have an onset during childhood and a strong genetic etiology. Consequently, rare disease diagnosis has relied on identifying genetic and genomic mutations that can cause the disease. Although these variants have provided a diagnosis for many patients and families, around 60% of the cases remained undiagnosed [@lionel2018improved]. Aberrant methylation can be an underlying cause of undiagnosed patients, either as a primary event (a.k.a. epimutation) or as a functional consequence of chromatin dysregulation by genetic or environmental agents (a.k.a. episignature). Epimutations are the cause of some rare diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@aref2019] and some human malformations [@serra2015dna]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@aref2019]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
+
+
+The package `epimutacions ` provides tools for analysing epivariants by using outlier detection methods. Also, functions to plot and annotate 
+the identified epimutations.  The full `epimutacions ` user´s guide is available in this vignette. 
 
 The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) which means epimutations in Catalan, a language from the north-east of Spain.
 
-# Background
-
-Rare diseases are pathologies with a low prevalence (< 1 per 2,000 people). Most of these pathologies have an onset during childhood and a strong genetic etiology. Consequently, rare disease diagnosis has relied on identifying genetic and genomic mutations that can cause the disease. Although these variants have provided a diagnosis for many patients and families, around 60% of the cases remained undiagnosed [@lionel2018improved]. Aberrant methylation can be an underlying cause of undiagnosed patients, either as a primary event (a.k.a. epimutation) or as a functional consequence of chromatin dysregulation by genetic or environmental agents (a.k.a. episignature). Epimutations are the cause of some rare
-
-diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@aref2019] and some human malformations [@serra2015dna]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@aref2019]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
-
-
-The package `epimutacions ` provides tools for analysing  epivariants by using  outlier detection methods. The full `epimutacions `  user´s guide is available in this vignette. 
 
 # Setup
 
@@ -87,11 +100,11 @@ The `epimutacions` package includes 5 methods to detect epimutations. Two of the
 
 | Method | Short description |
 |:------:|:------------------|
-| `"barbosa"`     | Previously described [@barbosa2018] |
-| `"manova"`      | Previously described [@aref2019] |
-| `"mlm"`         | Adapted from [@aref2019] using multivariate linear methods to identify outliers |
+| `barbosa`     | Previously described [@barbosa2018] |
+| `manova`      | Previously described [@aref2019] |
+| `mlm`         | Adapted from [@aref2019] using multivariate linear methods to identify outliers |
 | `iso.forest`    | Adapted from [@aref2019] using isolation forest to detect outliers |
-| `"mahdist.mcd"` | Adapted from [@aref2019] using robust Mahalanobis distance with a custom threshold to identify outliers |
+| `mahdist.mcd` | Adapted from [@aref2019] using robust Mahalanobis distance with a custom threshold to identify outliers |
 
 ### Function parameters for each method
 
@@ -101,17 +114,17 @@ The following table describes the arguments:
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | Method        | Parameter                   | Description                                                          |
 +===============+=============================+======================================================================+
-| `"manova"`    | `pvalue_cutoff`             | The threshold p value to select which CpG regions are outliers       |
-|  `"mlm"`      |                             |                                                                      |
+| `"manova`     | `pvalue_cutoff`             | The threshold p value to select which CpG regions are outliers       |
+|  `mlm`        |                             |                                                                      |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | `iso.forest`  | `outlier_score_cutoff`      | The threshold outlier score to select which CpG regions are outliers |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-|`"mahdist.mcd"`| `nsamp`                     | The number of subsets used for initial estimates in the MCD          |
+|`mahdist.mcd`  | `nsamp`                     | The number of subsets used for initial estimates in the MCD          |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-|  `"barbosa"`  |-  `window_sz`               | - The maximum distance between CpGs to be considered in the same DMR |
+|  `barbosa`    |-  `window_sz`               | - The maximum distance between CpGs to be considered in the same DMR |
 |               |- `offset_mean`/`offset_abs` | - The upper and lower threshold to consider a CpG an outlier         |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-| `"qn"`        | - `window_sz`               | - The maximum distance between CpGs to be considered in the same DMR |
+| `qn`          | - `window_sz`               | - The maximum distance between CpGs to be considered in the same DMR |
 |               | - `qn_th`                   | - The threshold to consider a CpG an outlier                         |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 
@@ -216,7 +229,7 @@ rst_mvo <- annotate_epimutations(epi_mvo)
 rst_mvo[1:2, c(1, 12:14)]
 ```
 
-```{r ann result table, echo = FALSE}
+```{r echo = FALSE}
 library(knitr)
 kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 ```
@@ -226,10 +239,39 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 
 A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epimutations`, already included in `epimutacions`.
 
-```{r, plot_mvo, fig.width=7, message=FALSE}
+```{r, plot_mvo}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
 
+
+Also, it is possible to plot the cromatine marks H3K4me3, H3K27me3  and H3K27ac by seting the argument `regulation = TRUE` in `plot_epimutations` function:
+
+* H3K4me3: commonly associated with the activation of transcription of nearby genes.
+* H3K27me3: is used in epigenetics to look for inactive genes.
+* H3K27ac: is associated with the higher activation of transcription and therefore defined as an active enhancer mark
+
+
+```{r, plot_mvo_regulation, fig.width = 7}
+plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
+```
+
+
 # Acknowledgements
 
-We acknowledge the organizers of Europe BioHackathon 2020 for their support.
+We acknowledge the organizers of [European BioHackathon 2020](https://www.biohackathon-europe.org/) for their support.
+
+All the team members of the _Project #5_ for the contribution to this package: 
+
+| Name | Surname | ORCID | Affiliation | Team |
+|:-----|:--------|:-----:|:------------|:-----|
+| Leire | Abarrategui | 0000-0002-1175-038X | Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK; Autonomous University of Barcelona (UAB), Barcelona, Spain | Development |
+| Lordstrong | Akano | 0000-0002-1404-0295 | College of Medicine, University of Ibadan | Development |
+| James | Baye | 0000-0002-0078-3688 | Wellcome/MRC Cambridge Stem Cell Institute, University of Cambridge, Cambridge CB2 0AW, UK; Department of Physics, University of Cambridge, Cambridge CB2 3DY, UK | Development |
+| Alejandro | Caceres | - | ISGlobal, Barcelona Institute for Global Health, Dr Aiguader 88, 08003 Barcelona, Spain; Centro de Investigación Biomédica en Red en Epidemiología y Salud Pública (CIBERESP), Madrid, Spain | Development |
+| Carles | Hernandez-Ferrer | 0000-0002-8029-7160 | Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation; Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain | Development |		
+| Pavlo | Hrab | 0000-0002-0742-8478 | Department of Genetics and Biotechnology, Biology faculty, Ivan Franko National University of Lviv | Validation |
+| Raquel | Manzano | 0000-0002-5124-8992 | Cancer Research UK Cambridge Institute; University of Cambridge, Cambridge, United Kingdom | Reporting |
+| Margherita | Mutarelli | 0000-0002-2168-5059 | Institute of Applied Sciences and Intelligent Systems (ISASI-CNR) | Validation |
+| Carlos | Ruiz-Arenas | 0000-0002-6014-3498 | Centro de Investigación Biomédica en Red de Enfermedades Raras (CIBERER), Barcelona, Spain; Universitat Pompeu Fabra (UPF), Barcelona, Spain | Reporting |
+
+# References

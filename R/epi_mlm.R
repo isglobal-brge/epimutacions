@@ -3,7 +3,7 @@
 #' using methylated Multivariate Linear Model
 #' @param mixture beta values matrix.  Samples in columns and
 #' CpGs in rows. 
-#' @param Model formula describing the model to be fitted.
+#' @param  model design (or model) matrix.
 #' @return The function returns the F statistic, R2 test statistic and Pillai.
 #' 
 epi_mlm <- function(mixture, model) {
