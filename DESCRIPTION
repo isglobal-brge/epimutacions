@@ -21,7 +21,7 @@ Imports:
 	gridExtra,
 	S4Vectors,
 	GenomicRanges
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.0), Biobase

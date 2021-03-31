@@ -7,18 +7,25 @@
 epi_parameters(
   manova = list(pvalue_cutoff = 0.05),
   mlm = list(pvalue_cutoff = 0.05),
-  isoforest = list(outlier_score_cutoff = 0.5),
+  isoforest = list(outlier_score_cutoff = 0.5, ntrees = 100),
   mahdistmcd = list(nsamp = "deterministic"),
   barbosa = list(window_sz = 10, offset_mean = 0.15, offset_abs = 0.1),
   qn = list(window_sz = 10, qn_th = 3)
 )
 }
 \arguments{
-\item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers  \code{manova}
+\item{manova, mlm, isoforest, mahdistmcd, barbosa, qn}{method selected in the function
+\link[epimutacions]{epimutations}.}
+
+\item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers \code{manova}
 and \code{mlm} methods. Default is \code{0.05}.}
 
 \item{outlier_score_cutoff}{The outlier score threshold to identify outliers CpGs in
 isolation forest (\code{isoforest}) method. Default is \code{0.5}.}
+
+\item{ntrees}{number of binary trees to build for the model build by
+isolation forest (\code{isoforest}) method.
+Default is \code{100}.}
 
 \item{nsamp}{the number of subsets used for initial estimates in the Minimum Covariance Determinant
 which is used to compute the Robust Mahalanobis distance (\code{mahdistmcd}).
@@ -62,6 +69,7 @@ default values.
  case_sample <- methy[,"GSM2562701"]
  control_panel <- methy[,-51]
 
- epimutations(case_sample, control_panel, method = "manova", epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
+ epimutations(case_sample, control_panel, method = "manova", 
+              epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
  }
 }

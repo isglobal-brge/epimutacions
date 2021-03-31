@@ -12,6 +12,7 @@ epimutations(
   start = NULL,
   end = NULL,
   epi_params = epi_parameters(),
+  maxGap = 1000,
   bump_cutoff = 0.1,
   min_cpg = 3,
   verbose = TRUE
@@ -36,7 +37,9 @@ For more information see \strong{Details}.}
 
 \item{end}{an integer specifying the end position. The default value is \code{NULL}.}
 
-\item{epi_params}{The parameters for each method. See the function \link[epimutations]{epi_parameters}.}
+\item{epi_params}{the parameters for each method. See the function \link[epimutations]{epi_parameters}.}
+
+\item{maxGap}{the maximum location gap used in \link[bumphunter]{bumphunter} method.}
 
 \item{bump_cutoff}{a numeric value of the estimate of the genomic profile above the
 cutoff or below the negative of the cutoff will be used as candidate regions.}
@@ -62,7 +65,7 @@ of the used anomaly detection method.
 \item For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
 \item For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 \item For method \code{isoforest} it provides the magnitude of the outlier score.
-\item For methods \code{barbosa} and \code{mahdistmcd} is filled with NA.
+\item For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
 }
 \item \code{outlier_significance}:
 \itemize{

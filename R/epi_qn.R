@@ -62,8 +62,9 @@ qn_outlier <- function(case, reg, nbetas, fd, min_cpg = 3, th = 3) {
 		if(length(cpg_top) == 0 & length(cpg_btm) == 0) {
 			cpg_labels <- ""
 		} else if(length(cpg_top) != 0 & length(cpg_btm) != 0) {
-			stop(paste0("For patient '", patient, "' found region (", sel$chr, "-", sel$start, ":", sel$end, ") with CpGs as right and left outliers."))
-		} else if(length(cpg_top) != 0) {
+			#stop(paste0("For patient '", case, "' found region (", sel$chr, "-", sel$start, ":", sel$end, ") with CpGs as right and left outliers."))
+		  cpg_labels <- ""
+		  } else if(length(cpg_top) != 0) {
 			cpg_labels <- paste(cpg_top, collapse = ",", sep = "")
 			outlier_score <- cpg_top_mean
 			outlier_direction <- "hypermethylation"

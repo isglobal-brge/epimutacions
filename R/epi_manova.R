@@ -3,12 +3,13 @@
 #' using \link[stats]{manova} approach. 
 #' @param mixture beta values matrix. Samples in columns and
 #' CpGs in rows.
+#' @param  model design (or model) matrix.
 #' @param case_id a character string specifying the name of the case sample.
 #' @return The function returns the F statistic, Pillai and P value.
 #' 
 epi_manova <-  function(mixture, model, case_id){
 	mixture <- t(mixture)
-	mod <- manova(mixture ~ model)
+	mod <- stats::manova(mixture ~ model)
 	mod_summary <- summary(mod, tol = 0)$stats
 	statistics <- mod_summary[1, c("approx F", "Pillai","Pr(>F)")]
 	

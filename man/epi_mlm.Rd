@@ -10,7 +10,7 @@ epi_mlm(mixture, model)
 \item{mixture}{beta values matrix.  Samples in columns and
 CpGs in rows.}
 
-\item{Model}{formula describing the model to be fitted.}
+\item{model}{design (or model) matrix.}
 }
 \value{
 The function returns the F statistic, R2 test statistic and Pillai.

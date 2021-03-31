@@ -27,7 +27,7 @@ create_GRanges_class <- function(methy, cpg_ids){
   fd <- fd[cpg_ids,]
   fd <- cols_names(fd, cpg_ids_col = FALSE) #common cols names (epi_plot)
   #Beta values matrix
-  betas <- jitter(betas[cpg_ids,])
+  betas <- betas[cpg_ids,]
   rownames(fd) <- rownames(betas)
   #Generate the GenomicRanges class object
   gr <- GenomicRanges::makeGRangesFromDataFrame(fd)
@@ -187,4 +187,66 @@ UCSC_annotation <- function(genome = "hg19"){
   }
   
   return(all_genes)
+}
+
+#' @title UCSC annotation
+#' @description  UCSC annotations for CpG Islands, H3K27Ac and H3K4Me3
+#'  for a given genome assembly and genomic coordinates. 
+#' @param genome  genome asambly. Can be set as: 
+#' \code{'hg38'}, \code{'hg19'} and \code{'hg18'}. 
+#' @param chr 
+#' @param chr a character string containing the sequence names to be analysed.
+#' @param from,to scalar, specifying the range of genomic coordinates.
+#' Note that \code{from} cannot be larger than \code{to}. 
+#' @return \code{UCSC_regulation} returns
+#' a list containing CpG Islands, H3K27Ac and H3K4Me3 tacks. 
+#' 
+UCSC_regulation <- function(genome, chr, from, to){
+  
+  cpgIslands <- Gviz::UcscTrack(genome = genome, chromosome = chr,
+                                track = "CpG Island", from = from,
+                                to = to, trackType = "AnnotationTrack",
+                                start = "chromStart", end = "chromEnd",
+                                id = "name", shape = "box",
+                                fill = "#FA9114", name = "CpG",
+                                background.title = "#9D5D10", 
+                                rotation.title = 0)
+  
+  H3K27Ac <- Gviz::UcscTrack(genome = genome, chromosome = chr,
+                             track="Layered H3K27Ac",
+                             from = from, to = to,
+                             trackType = "DataTrack",
+                             start = "start", end = "end",
+                             data = "score",
+                             type = "hist", window = "auto",
+                             col.histogram = "darkblue",
+                             fill.histogram = "darkblue",
+                             background.title = "#B0CBE4",
+                             name = "H3K27Ac")
+  
+  H3K4Me3 <- Gviz::UcscTrack(genome = genome, chromosome = chr,
+                             track="Layered H3K4Me3",
+                             from = from, to = to,
+                             trackType = "DataTrack",
+                             start = "start", end = "end",
+                             data = "score",
+                             type = "hist", window = "auto",
+                             col.histogram = "darkred",
+                             fill.histogram = "darkred",
+                             background.title = "#E4BBB0",
+                            name = "H3K4Me3")
+  
+  if(genome == "hg19"){
+    ah <- AnnotationHub::AnnotationHub()
+    H3K27Me3 <- AnnotationHub::query(ah , c("UCSC", "H3K27me3", "hg19"))
+    H3K27Me3 <- Gviz::DataTrack(H3K27Me3[["AH23260"]], 
+                                type = "hist", window = "auto",
+                                col.histogram = "darkgreen",
+                                fill.histogram = "darkgreen", data = "score", 
+                          name = "H3K27Me3", chr = chr, 
+                          background.title = "#C0E4B0")
+  }
+
+  
+  return(list("cpgIslands" = cpgIslands, "H3K27Ac" = H3K27Ac, "H3K4Me3" = H3K4Me3, "H3K27Me3" = H3K27Me3))
 }
