@@ -50,9 +50,9 @@ getBetaParamsVec <- function(vec){
   }
   
   vec <- vec[!is.na(vec)]
-  pIni <- c(1, 100)
+  pIni <- c(1, 1)
   
-  param <- nlm(llhd2, x = vec, p=pIni)$estimate
+  param <- nlm(llhd2, x = vec, p = pIni)$estimate
   param
 }
 
