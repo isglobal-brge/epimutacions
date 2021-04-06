@@ -36,8 +36,20 @@ epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold,
     
 
   })
-  df <- Reduce(rbind, epi_list)
-  subset(df, N_CpGs >= min_cpgs )
+  if (length(epi_list) == 0){
+    df <-   data.frame(chromosome = character(), start = numeric(), 
+                       end = numeric(),
+                       length = numeric(), N_CpGs = numeric(), 
+                       cpg_ids = character(),
+                       outlier_score = numeric(),
+                       outlier_significance = numeric(),
+                       outlier_direction = character()
+    )
+  } else {
+    df <- Reduce(rbind, epi_list)
+  }
+  df <- subset(df, N_CpGs >= min_cpgs )
+  df
 }
 
 
