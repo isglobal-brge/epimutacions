@@ -23,13 +23,18 @@
 #' @details The function compares a case sample against a control panel to identify epimutations in the given 
 #' sample. First, the DMRs are identified using the \link[bumphunter]{bumphunter} approach. 
 #' After that, CpGs in those DMRs are tested in order to detect regions
-#' with CpGs being outliers.  For that,  different anomaly detection methods can be selected:  
+#' with CpGs being outliers.  For that,  different outlier detection methods can be selected:  
 #'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
-#'  * Qn (\code{"Qn"})
+#'  * Qn (\code{"qn"})
+#'  
+#' We defined candidate epimutation regions (found in candRegsGR) based on the 450K 
+#' array design. As CpGs are not equally distributed along the genome, only CpGs closer
+#' to other CpGs can form an epimutation. More information can be found in candRegsGR documentation.
+#' 
 #' @return The function returns an object of class tibble containing the outliers regions.  
 #' The results are composed by the following columns: 
 #' * \code{epi_id}: systematic name for each epimutation identified. It provides the name 
@@ -44,12 +49,16 @@
 #'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 #'    * For method \code{isoforest} it provides the magnitude of the outlier score.
 #'    * For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
-#' * \code{outlier_significance}: 
-#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-#'    * For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
 #' * \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 #'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
 #'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
+#' * \code{pvalue}: 
+#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
+#'    * For method \code{barbosa}, \code{mahdistmcd} and \code{qn} is filled with NA.    
+#' * \code{adj_pvalue}: for methods with p-value (\code{manova}, \code{mlm}, and \code{isoforest}) adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
+#' * \code{epi_region_id}: Name of the epimutation region as defined in candRegsGR.
+#' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
+#' * \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
 #' @examples 
 #' \dontrun{
 #' library(epimutacions)
@@ -63,7 +72,10 @@
 #' epimutations(case_sample, control_panel, method = "manova")
 #' }
 #' @export
-epimutations <- function(case_samples, control_panel, method = "manova", chr = NULL, start = NULL, end = NULL, epi_params = epi_parameters(), maxGap = 1000, bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
+epimutations <- function(case_samples, control_panel, method = "manova", 
+                         chr = NULL, start = NULL, end = NULL, 
+                         epi_params = epi_parameters(), 
+                         maxGap = 1000, bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
 {
   
   # Identify type of input and extract required data:
@@ -268,9 +280,31 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
   }
   suppressWarnings(
     if(is.na(rst)){
-      return(message("No outliers found"))
+      message("No outliers found")
+      res <-   data.frame(chromosome = character(), start = numeric(), 
+                         end = numeric(),
+                         sz = numeric(), cpg_n = numeric(), 
+                         cpg_ids = character(),
+                         pvalue = numeric(),
+                         outlier_direction = character(),
+                         sample = character(),
+                         adj_pvalue = numeric(), 
+                         epi_id = character(),
+                         epi_region_id = character())
+      return(res)
     }else if(nrow(rst) == 0){
-      return(message("No outliers found"))
+      message("No outliers found")
+      res <-   data.frame(chromosome = character(), start = numeric(), 
+                          end = numeric(),
+                          sz = numeric(), cpg_n = numeric(), 
+                          cpg_ids = character(),
+                          pvalue = numeric(),
+                          outlier_direction = character(),
+                          sample = character(),
+                          adj_pvalue = numeric(), 
+                          epi_id = character(),
+                          epi_region_id = character())
+      return(res)
     }else{
       #Calculate the adjusted p value "manova" and "mlm"
       if(method == "manova" | method == "mlm"){
@@ -288,16 +322,27 @@ epimutations <- function(case_samples, control_panel, method = "manova", chr = N
       # * P value: "manova" and "mlm"
       # * Outlier score: "isoforest"
       if(method == "manova"){
-        rst <- rst[which(rst$adj_pvalue < epi_params$manova$pvalue_cutoff),]
+        rst <- rst[which(rst$adj_pvalue < epi_params$manova$pvalue_cutoff), , drop = FALSE]
       }
       
       if(method == "mlm"){
-        rst <- rst[which(rst$adj_pvalue < epi_params$mlm$pvalue_cutoff),]
+        rst <- rst[which(rst$adj_pvalue < epi_params$mlm$pvalue_cutoff), , drop = FALSE]
       }
       
       if(method == "isoforest"){
-        rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff),]
+        rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff), drop = FALSE]
       }
+      
+      ## Add epi_region_id ####
+      rstGR <- GenomicRanges::makeGRangesFromDataFrame(rst)
+      ensembldb::seqlevelsStyle(rstGR) <- "UCSC" ## Ensure chromosomes have the same format
+      over <- GenomicRanges::findOverlaps(rstGR, candRegsGR)
+      
+      rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA
+      
+      rst$epi_region_id[S4Vectors::from(over)] <- names(candRegsGR[S4Vectors::to(over)])
+      rst$CRE[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE
+      rst$CRE_type[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE_type
       
       #convert rst into a tibble class
       rst <- tibble::as_tibble(rst)

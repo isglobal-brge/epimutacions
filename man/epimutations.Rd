@@ -67,16 +67,20 @@ of the used anomaly detection method.
 \item For method \code{isoforest} it provides the magnitude of the outlier score.
 \item For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
 }
-\item \code{outlier_significance}:
-\itemize{
-\item For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-\item For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
-}
 \item \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 \itemize{
 \item For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
 \item For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 }
+\item \code{pvalue}:
+\itemize{
+\item For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
+\item For method \code{barbosa}, \code{mahdistmcd} and \code{qn} is filled with NA.
+}
+\item \code{adj_pvalue}: for methods with p-value (\code{manova}, \code{mlm}, and \code{isoforest}) adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
+\item \code{epi_region_id}: Name of the epimutation region as defined in candRegsGR.
+\item \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
+\item \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
 }
 }
 \description{
@@ -87,15 +91,19 @@ in a case sample by comparing it against a control panel.
 The function compares a case sample against a control panel to identify epimutations in the given
 sample. First, the DMRs are identified using the \link[bumphunter]{bumphunter} approach.
 After that, CpGs in those DMRs are tested in order to detect regions
-with CpGs being outliers.  For that,  different anomaly detection methods can be selected:
+with CpGs being outliers.  For that,  different outlier detection methods can be selected:
 \itemize{
 \item Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 \item Multivariate Linear Model (\code{"mlm"})
 \item Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 \item Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 \item Barbosa (\code{"barbosa"})
-\item Qn (\code{"Qn"})
+\item Qn (\code{"qn"})
 }
+
+We defined candidate epimutation regions (found in candRegsGR) based on the 450K
+array design. As CpGs are not equally distributed along the genome, only CpGs closer
+to other CpGs can form an epimutation. More information can be found in candRegsGR documentation.
 }
 \examples{
 \dontrun{

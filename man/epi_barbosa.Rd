@@ -2,7 +2,7 @@
 % Please edit documentation in R/epi_barbosa.R
 \name{epi_barbosa}
 \alias{epi_barbosa}
-\title{Method implementing Barbosa et. al. 2019 to detect epimutations}
+\title{Identifies epimutations the method descrived in Barbosa et. al. 2019}
 \usage{
 epi_barbosa(
   case,
@@ -18,9 +18,53 @@ epi_barbosa(
   offset_abs = 0.1
 )
 }
+\arguments{
+\item{case}{beta values for a single clase (data.frame). The samples as
+single column and CpGs in rows (named).}
+
+\item{fd}{feature description as data.frame having at least chromosome and
+position as columns and and CpGs in rows (named).}
+
+\item{bctr_min}{Lower threshold for epimutation. A beta value has to be lower
+that this value (- offset_abs) to be considered an epimutation candidate. The
+value corresponds to the minimum beta value observed in controls.}
+
+\item{bctr_max}{Higher threshold for epimuation. A beta value has to be
+higher that this value (+ offset_abs) to be considered an epimutation. The
+value corresponds to the maximum beta value observed in controls.
+candidate.}
+
+\item{bctr_mean}{Mean beta value observed in controls. A beta value has to be
+lower that this value (- offset_mean) or higher than this value
+(+ offset_mean) to be considered an epimutation.}
+
+\item{bctr_pmin}{Beta value observed at 0.01 quantile in controls. A beta
+values has to be lower or equal to this value to be considered an
+epimutation.}
+
+\item{bctr_pmax}{Beta value observed at 0.99 quantile in controls. A beta
+values has to be higher or equal to this value to be considered an
+epimutation.}
+
+\item{window_sz}{Maximum distance between a pair of CpGs to defined an
+region of CpGs as epimutation (default: 1000).}
+
+\item{N}{Minimum number of CpGs, separated in a maximum of window_sz bass,
+to defined an epimutation (default: 3).}
+
+\item{offset_mean}{Extra enforcement defining an epimuation based on
+control's mean beta value (default: 0.15).}
+
+\item{offset_abs}{Extra enforcement defining an epimutation based on
+beta values at 0.01 and 0.99 quantiles (default: 0.1).}
+}
+\value{
+The function returns a data frame with the regions candidates to be
+epimutations.
+}
 \description{
-The implementation of the method here is based on teh description of the
-method used in:
+The implementation of the method here is based on teh
+description of the method used in:
 Barbosa M, Joshi RS, Garg P, et al. Identification of rare de novo epigenetic
 variations in congenital disorders. Nat Commun. 2018;9(1):2064. Published
 2018 May 25. doi:10.1038/s41467-018-04540-x
