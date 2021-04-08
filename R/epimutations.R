@@ -7,7 +7,7 @@
 #' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
 #' @param method a character string naming the outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
-#' \code{"barbosa"} and \code{"qn"}. 
+#' \code{"barbosa"}, \code{"qn"} and \code{"beta"}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
@@ -23,13 +23,14 @@
 #' @details The function compares a case sample against a control panel to identify epimutations in the given 
 #' sample. First, the DMRs are identified using the \link[bumphunter]{bumphunter} approach. 
 #' After that, CpGs in those DMRs are tested in order to detect regions
-#' with CpGs being outliers.  For that,  different outlier detection methods can be selected:  
+#' with CpGs being outliers.  For that, different outlier detection methods can be selected:  
 #'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
 #'  * Qn (\code{"qn"})
+#'  * Beta (\code{"beta"})
 #'  
 #' We defined candidate epimutation regions (found in candRegsGR) based on the 450K 
 #' array design. As CpGs are not equally distributed along the genome, only CpGs closer
@@ -48,13 +49,15 @@
 #'    * For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
 #'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 #'    * For method \code{isoforest} it provides the magnitude of the outlier score.
+#'    * For method \code{beta} it provides the mean outlier p-value.
 #'    * For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
 #' * \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 #'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
 #'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
+#'    * For method \code{beta} it return a NA.
 #' * \code{pvalue}: 
 #'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-#'    * For method \code{barbosa}, \code{mahdistmcd} and \code{qn} is filled with NA.    
+#'    * For method \code{barbosa}, \code{mahdistmcd}, \code{qn} and \code{beta} is filled with NA.    
 #' * \code{adj_pvalue}: for methods with p-value (\code{manova}, \code{mlm}, and \code{isoforest}) adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
 #' * \code{epi_region_id}: Name of the epimutation region as defined in candRegsGR.
 #' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
@@ -135,7 +138,7 @@ epimutations <- function(case_samples, control_panel, method = "manova",
     stop("'start' and 'end' arguments must be introduced together")
     
   }
-  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn")
+  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn", "beta")
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
@@ -256,7 +259,27 @@ epimutations <- function(case_samples, control_panel, method = "manova",
     # rownames(rst) <- seq_len(nrow(rst))
     # 
     # return(rst[ , c(11, 10, 1:9)])
-  } else { # if(method == "qn") {
+  } else if(method == "beta") {
+    
+    ## Get Beta distribution params
+    message("Computing beta distribution parameters")
+    beta_params <- getBetaParams(t(betas_control))
+    
+    message("Defining Regions")
+    rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      x <- epi_beta(beta_params, betas_case[ , case, drop = FALSE], 
+                    SummarizedExperiment::rowRanges(control_panel),
+                    epi_params$beta$pvalue_cutoff, min_cpg, maxGap)
+      if(is.null(x)){
+        x <- NA
+      }else if(nrow(x) != 0){
+        x$sample <- case 
+      }else if (nrow(x) == 0){
+        x <- NA 
+      }
+      x
+    }))
+  }else { # if(method == "qn") {
     nbetas <- qn_norm(cbind(betas_control, betas_case), qn = TRUE)
     regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
