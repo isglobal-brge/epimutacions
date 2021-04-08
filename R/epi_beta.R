@@ -1,20 +1,40 @@
+#' @title Identifies epimutations based on a beta distribution.
+#' 
+#' @description This method models the DNA methylation data using a beta distribution. First, 
+#' the beta distribution parameters of the reference population are precomputed and passed
+#' to the method. Then, we compute the probability of observing the methylation values 
+#' of the case from the reference beta distribution. CpGs with p-values smaller than a threshold 
+#' \code{pvalue_threshold} are defined as outlier CpGs. Finally, epimutations are defined as group
+#' of contiguous outlier CpGs.
+#' 
+#' @param beta_params Matrix with the parameters of the reference beta distributions for 
+#' each CpG in the dataset.
+#' @param betas_case Matrix with the methylation values for a case
+#' @param annot Annotation of the CpGs
+#' @param pvalue_threshold Minimum p-value to consider a CpG an outlier
+#' @param min_cpgs Minimum number of CpGs to consider an epimutation
+#' @param maxGap Maximum distance between two contiguous CpGs to combine them into an epimutation
+#' @return The function returns a data frame with the regions candidates to be
+#' epimutations.
 epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold, 
                       min_cpgs = 3, maxGap){
  
   
   ## Compute p-value for case
-  mat <- cbind(betas_case, t(beta_params))
-  pvals <- apply(mat, 1, function(x) {
-    p <- pbeta(x[1], x[2], x[3], lower.tail = TRUE)
-    p <- min(p, 1 - p)
-  })
-
+  pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], beta_params[, 2]), 
+                           function(x, shape1, shape2) pbeta(x, shape1, shape2))
+  names(pvals) <- rownames(betas_case)
+  
   ## Select Significant CpGs
   sigCpGs <- names(pvals[!is.na(pvals) & pvals < pvalue_threshold])
   sigGR <- annot[sigCpGs]
+  
+  ## Overlap significant CpGs with epimutations regions to speed up epimutations definition
   overs <- findOverlaps(sigGR, candRegsGR)
   regs <- table(to(overs))
   selRegs <- names(regs[regs >= min_cpgs])
+  
+  ## Refine epimutations definition
   epi_list <- lapply(selRegs, function(idx){
     ov <- overs[to(overs) == idx]
     regGR <- sort(sigGR[from(ov)])
@@ -53,28 +73,14 @@ epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold,
 }
 
 
-## Model methylation as a beta distribution
+# Model methylation as a beta distribution
+#' @param x Matrix of methylation expressed as a beta. CpGs are in columns and samples in rows.                       
 getBetaParams <- function(x){
-  xbar <- colMeans(x)
-  s2 <- colVars(x)
+  xbar <- colMeans(x, na.rm = TRUE)
+  s2 <- matrixStats::colVars(x, na.rm = TRUE)
   term <- (xbar*(1-xbar))/s2
   alpha.hat <- xbar*(term-1)
   beta.hat <- (1-xbar)*(term-1)
   return(cbind(alpha.hat, beta.hat))
 } 
 
-getBetaParams <- function(mat){
-  
-  ## Add offset to avoid undefined values in optimization
-  mat[mat == 0] <- 0.001
-  mat[mat == 1] <- 0.999
-
-  ## Get beta distribution parameters
-  beta_params <- getBetaParams(mat)
-  beta_params
-}
-
-
-
-# reticulate::source_python("/home/carlos/Repositories/combined-pvalues/cpv/pipeline.py")
-# pipeline("pvalue", "None", "None", 333, "out", "None", 0.05, "None", "~/Repositories/combined-pvalues/examples/file.bed")

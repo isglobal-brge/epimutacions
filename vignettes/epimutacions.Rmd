@@ -25,7 +25,7 @@ author:
 date: "`r Sys.Date()`"
 package: "`r pkg_ver('epimutacions')`"
 abstract: >
-    An introductory guide to analysing DNA methylation data with R package `epimutacions`. The areas covered in this document are: installing the     package, loading the data, idetifying the epimutations and results visualisation.  
+    An introductory guide to analysing DNA methylation data with R package `epimutacions`. The areas covered in this document are: installing the     package, loading the data, identifying the epimutations and results visualisation.  
 
 output:
   BiocStyle::html_document
@@ -48,10 +48,10 @@ knitr::opts_chunk$set(comment="", warning = FALSE, message = FALSE, cache = TRUE
 Rare diseases are pathologies with a low prevalence (< 1 per 2,000 people). Most of these pathologies have an onset during childhood and a strong genetic etiology. Consequently, rare disease diagnosis has relied on identifying genetic and genomic mutations that can cause the disease. Although these variants have provided a diagnosis for many patients and families, around 60% of the cases remained undiagnosed [@lionel2018improved]. Aberrant methylation can be an underlying cause of undiagnosed patients, either as a primary event (a.k.a. epimutation) or as a functional consequence of chromatin dysregulation by genetic or environmental agents (a.k.a. episignature). Epimutations are the cause of some rare diseases, such as Prader-Willi, Angelman or Beckwith-Wiedemann syndromes [@aref2019] and some human malformations [@serra2015dna]. Syndrome-specific episignatures are increasingly defined as biomarkers for a growing number of disorders [@aref2019]. Therefore, tools to detect epimutations and episignatures should be made available to the rare disease community and included in standardized analysis workflows.
 
 
-The package `epimutacions ` provides tools for analysing epivariants by using outlier detection methods. Also, functions to plot and annotate 
-the identified epimutations.  The full `epimutacions ` user´s guide is available in this vignette. 
+The package `epimutacions ` provides tools for analysing epivariants using multiple outlier detection  approaches. In addition, functions to plot and annotate 
+the identified epimutations. The full `epimutacions ` user´s guide is available in this vignette. 
 
-The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) which means epimutations in Catalan, a language from the north-east of Spain.
+The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) which means epimutations in Catalan, a language from the northeast of Spain.
 
 
 # Setup
@@ -70,13 +70,11 @@ BiocManager::install("epimutacions")
 
 ```{r, message=FALSE}
 library(epimutacions)
-library(SummarizedExperiment)
-library(minfi)
 ```
 
 ## Preparing dataset
 
-The `epimutacions` package comes with a small dataset to show the capabilities of the implemented methods. The following lines shows how to load the data and it presents the `GenomicRatioSet`: 
+The `epimutacions` package comes with a small `GenomicRatioSet` class dataset (`methy`) to show the capabilities of the implemented methods. The following lines shows how to load the data: 
 
 ```{r}
 data("methy")
@@ -85,16 +83,16 @@ methy
 table(methy$status)
 ```
 
-For the analysis we are going to carry out, we will split the data in two datasets; one containing the case samples and the other the control samples: 
+The dataset is composed by case and control samples. So,  we are going to split the data for the following analysis:
 
 ```{r}
 case_samples <- methy[,methy$status == "case"]
 control_samples <- methy[,methy$status == "control"]
 ```
 
-# Epimutation detection
+# Epimutations
 
-## Methods included for epimutations detection
+## Methods included for epimutations identification
 
 The `epimutacions` package includes 5 methods to detect epimutations. Two of these methods were described elsewhere before [@barbosa2018; @aref2019], and the other three are adaptations of one of them:
 
@@ -108,33 +106,34 @@ The `epimutacions` package includes 5 methods to detect epimutations. Two of the
 
 ### Function parameters for each method
 
-The `epi_parameters()` function  is  useful to set the parameters for the methods mentioned above. 
-The following table describes the arguments: 
+The `epi_parameters()` function  is  useful to set the value of the parameters for the above methods. 
+In the following table each argument is described: 
 
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | Method        | Parameter                   | Description                                                          |
 +===============+=============================+======================================================================+
-| `"manova`     | `pvalue_cutoff`             | The threshold p value to select which CpG regions are outliers       |
+| `manova`<br>  | `pvalue_cutoff`             | The threshold p-value to select which CpG regions are outliers       |
 |  `mlm`        |                             |                                                                      |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-| `iso.forest`  | `outlier_score_cutoff`      | The threshold outlier score to select which CpG regions are outliers |
+| `iso.forest`  | `outlier_score_cutoff`<br>  | The threshold to select which CpG regions are outliers<br>           |
+|               | `ntrees`                    | The number of binary trees to build for the model                    |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 |`mahdist.mcd`  | `nsamp`                     | The number of subsets used for initial estimates in the MCD          |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-|  `barbosa`    |-  `window_sz`               | - The maximum distance between CpGs to be considered in the same DMR |
-|               |- `offset_mean`/`offset_abs` | - The upper and lower threshold to consider a CpG an outlier         |
+|  `barbosa`    |`window_sz`<br>              |The maximum distance between CpGs to be considered in the same DMR<br>|                
+|               |`offset_mean`/`offset_abs`   | The upper and lower threshold to consider a CpG an outlier           |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-| `qn`          | - `window_sz`               | - The maximum distance between CpGs to be considered in the same DMR |
-|               | - `qn_th`                   | - The threshold to consider a CpG an outlier                         |
+| `qn`          | `window_sz`<br>             |The maximum distance between CpGs to be considered in the same DMR<br>|
+|               | `qn_th`                     | The threshold to consider a CpG an outlier                           |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 
-Invoking `epi_parameters()` with no arguments returns a list of the default settings of the parameters: 
+Invoking `epi_parameters()` with no arguments returns a list of the default settings: 
 
 ```{r}
 epi_parameters()
 ```
 
-For example, if we want to change the p value for manova function we can do as following: 
+If we want to change the p-value cut off for `manova` we can do as following: 
 
 ```{r}
 epi_parameters(manova = list("pvalue_cutoff" = 0.01))
@@ -152,7 +151,7 @@ epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
 epi_qn <- epimutations(case_samples, control_samples, method = "qn")
 ```
 
-We called `"manova"` to the implementation of [@aref2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs [@peters2015novo], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and the mean difference between proband and reference group DNA methylation.
+We called `"manova"` to the implementation of [@aref2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs (Differentially Methylated Regions) [@peters2015novo], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and the mean difference between proband and reference group DNA methylation.
 
 ```{r, epi_mvo, message=FALSE, warning=FALSE}
 epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
@@ -174,16 +173,16 @@ epi_iso <- epimutations(case_samples, control_samples, method = "isoforest")
 epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
 ```
 
-## Description of the results
+## Results description
 
-The two methods from literature returned `r nrow(epi_brb)` and `r nrow(epi_mvo)` as we can see:
+The two methods from literature returned `r nrow(epi_brb)` and `r nrow(epi_mvo)` epimutations as we can see:
 
 ```{r, show_brb_mvo_1}
 nrow(epi_brb) # Results from Barbosa et. al. 2018
 nrow(epi_mvo) # Results from Aref-Eshghi et. al. 2019
 ```
 
-All the implemented methods returns the same `tibble` although the meaning of some of the columns is slightly different. Let's see the one of the outputs from the two methods from literature:
+All the implemented methods return the same `tibble` although the meaning of some of the columns is slightly different. Let's see one of the outputs from the two methods from literature:
 
 ```{r, show_brb_mvo_2}
 rbind(epi_brb[1, ], epi_mvo[1, ])
@@ -206,20 +205,25 @@ rbind(epi_brb[1, ], epi_mvo[1, ])
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `cpg_n`               | The names of CpGs in the epimutation                                                                                  |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
-| `outlier_score`       |    - For method `manova` it provides the approximation to F-test and the Pillai score, separated by `/`               |
-|                       |    - For method `mlm` it provides the approximation to F-test and the R2 of the model, separated by `/`               |
-|                       |    - For method `isoforest` it provides the magnitude of the outlier score.                                           |
-|                       |    - For methods `barbosa` and `mahdistmcd` it is filled with `NA`.                                                   |
+| `outlier_score`       | For method `manova` it provides the approximation to F-test and the Pillai score, separated by `/`<br>                |
+|                       | For method `mlm` it provides the approximation to F-test and the R2 of the model, separated by `/`<br>                |
+|                       | For method `isoforest` it provides the magnitude of the outlier score.<br>                                            |
+|                       | For methods `barbosa` and `mahdistmcd` it is filled with `NA`.                                                        |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
-| `outlier_significance`|   - For methods `manova`, `mlm`, and `isoforest` it provides the p-value obtained from the model.                     |
-|                       |   - For method `barbosa` and `mahdistmcd` is filled with `NA`.                                                        |
+| `pvalue`              | For methods `manova` and  `mlm` it provides the p-value obtained from the model.<br>                                  |
+|                       | For method `barbosa`, `isoforest`, `qn` and `mahdistmcd` it is filled with `NA`.                                      |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
-| `outlier_direction`   | - Indicates the direction of the outlier with "hypomethylation" and "hypermethylation".                               | 
-|                       | - For `manova`, `mlm`, `isoforest`, and `mahdistmcd` it is computed from the values obtained from `bumphunter`.       |
-|                       | - For `barbosa` it is computed from the location of the sample in the reference distribution (left vs. right outlier).|
+| `outlier_direction`   | Indicates the direction of the outlier with "hypomethylation" and "hypermethylation".<br>                             | 
+|                       | For `manova`, `mlm`, `isoforest`, and `mahdistmcd` it is computed from the values obtained from `bumphunter`.<br>     |
+|                       | For `barbosa` it is computed from the location of the sample in the reference distribution (left vs. right outlier).  |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
+| `adj_pvalue`          | For methods `manova` and  `mlm` it provides the adjusted p-value.<br>                                                 |
+|                       | For method `barbosa`, `isoforest`, `qn` and `mahdistmcd` it is filled with `NA`.                                      |
++-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 
-The `epimutacions` package also includes a function dedicated to enrich the epimutations identified by the previously described methods:
+## Epimutations annotations
+
+The `epimutacions` package also includes the `annotate_epimutations` function dedicated to enrich the epimutations identified by the previously described methods:
 
 ```{r, ann, message=FALSE, tidy = TRUE}
 rst_mvo <- annotate_epimutations(epi_mvo)
@@ -235,32 +239,32 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 ```
 
 
-## Visualization of epimutations
+## Epimutation visualisation
 
-A visualization method is in order to locate the epimutations along the genome. This can be archived by using the function `plot_epimutations`, already included in `epimutacions`.
+The  visualisation approach locates the epimutations along the genome. Furthermore, it includes the gene annotations in the regions in which the epivariation is located.  This can be archived by using the function `plot_epimutations`, already included in `epimutacions`: 
 
 ```{r, plot_mvo}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
 
 
-Also, it is possible to plot the cromatine marks H3K4me3, H3K27me3  and H3K27ac by seting the argument `regulation = TRUE` in `plot_epimutations` function:
+Also, it is possible to plot the chromatin marks H3K4me3, H3K27me3  and H3K27ac by setting the argument `regulation = TRUE` in `plot_epimutations`:
 
-* H3K4me3: commonly associated with the activation of transcription of nearby genes.
-* H3K27me3: is used in epigenetics to look for inactive genes.
-* H3K27ac: is associated with the higher activation of transcription and therefore defined as an active enhancer mark
+* **H3K4me3**: commonly associated with the activation of transcription of nearby genes.
+* **H3K27me3**: is used in epigenetics to look for inactive genes.
+* **H3K27ac**: is associated with the higher activation of transcription and therefore defined as an active enhancer mark
 
 
-```{r, plot_mvo_regulation, fig.width = 7}
+```{r, plot_mvo_regulation}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
 ```
 
 
 # Acknowledgements
 
-We acknowledge the organizers of [European BioHackathon 2020](https://www.biohackathon-europe.org/) for their support.
+We acknowledge the organizers of the [European BioHackathon 2020](https://www.biohackathon-europe.org/) for their support.
 
-All the team members of the _Project #5_ for the contribution to this package: 
+All the team members of *Project #5* for the contribution to this package: 
 
 | Name | Surname | ORCID | Affiliation | Team |
 |:-----|:--------|:-----:|:------------|:-----|
