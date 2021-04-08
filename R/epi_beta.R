@@ -54,19 +54,14 @@ epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold,
 
 
 ## Model methylation as a beta distribution
-getBetaParamsVec <- function(vec){
-  
-  llhd2 <- function(x,p) {
-    ans <- -sum(log(dbeta(x, p[1], p[2])))
-    ans
-  }
-  
-  vec <- vec[!is.na(vec)]
-  pIni <- c(1, 1)
-  
-  param <- nlm(llhd2, x = vec, p = pIni)$estimate
-  param
-}
+getBetaParams <- function(x){
+  xbar <- colMeans(x)
+  s2 <- colVars(x)
+  term <- (xbar*(1-xbar))/s2
+  alpha.hat <- xbar*(term-1)
+  beta.hat <- (1-xbar)*(term-1)
+  return(cbind(alpha.hat, beta.hat))
+} 
 
 getBetaParams <- function(mat){
   
@@ -75,7 +70,7 @@ getBetaParams <- function(mat){
   mat[mat == 1] <- 0.999
 
   ## Get beta distribution parameters
-  beta_params <- apply(mat, 1, getBetaParamsVec)
+  beta_params <- getBetaParams(mat)
   beta_params
 }
 
