@@ -8,6 +8,7 @@ Description: Collection of functions for robust outlier identification in DNA me
 License: MIT + file LICENSE
 Imports:
 	minfi,
+	reshape2,
 	a4Base,
 	bumphunter,
 	mlm,
@@ -20,7 +21,10 @@ Imports:
 	Gviz,
 	gridExtra,
 	S4Vectors,
-	GenomicRanges
+	GenomicRanges,
+	IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
+	TxDb.Hsapiens.UCSC.hg19.knownGene,
+	Homo.sapiens
 Suggests: knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
 Encoding: UTF-8
