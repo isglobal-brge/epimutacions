@@ -1,10 +1,40 @@
-#' Method implementing Barbosa et. al. 2019 to detect epimutations
-#' 
-#' The implementation of the method here is based on teh description of the
-#' method used in:
+#' @title Identifies epimutations the method descrived in Barbosa et. al. 2019
+#' @description  The implementation of the method here is based on teh 
+#' description of the method used in:
 #' Barbosa M, Joshi RS, Garg P, et al. Identification of rare de novo epigenetic
 #'  variations in congenital disorders. Nat Commun. 2018;9(1):2064. Published 
 #'  2018 May 25. doi:10.1038/s41467-018-04540-x
+#' @param case beta values for a single clase (data.frame). The samples as 
+#' single column and CpGs in rows (named).
+#' @param fd feature description as data.frame having at least chromosome and
+#' position as columns and and CpGs in rows (named).
+#' @param bctr_min Lower threshold for epimutation. A beta value has to be lower
+#' that this value (- offset_abs) to be considered an epimutation candidate. The
+#' value corresponds to the minimum beta value observed in controls.
+#' @param bctr_max Higher threshold for epimuation. A beta value has to be 
+#' higher that this value (+ offset_abs) to be considered an epimutation. The
+#' value corresponds to the maximum beta value observed in controls.
+#' candidate.
+#' @param bctr_mean Mean beta value observed in controls. A beta value has to be
+#' lower that this value (- offset_mean) or higher than this value 
+#' (+ offset_mean) to be considered an epimutation. 
+#' @param bctr_pmin Beta value observed at 0.01 quantile in controls. A beta
+#' values has to be lower or equal to this value to be considered an 
+#' epimutation.
+#' @param bctr_pmax Beta value observed at 0.99 quantile in controls. A beta
+#' values has to be higher or equal to this value to be considered an 
+#' epimutation.
+#' @param window_sz Maximum distance between a pair of CpGs to defined an
+#' region of CpGs as epimutation (default: 1000).
+#' @param N Minimum number of CpGs, separated in a maximum of window_sz bass,
+#' to defined an epimutation (default: 3).
+#' @param offset_mean Extra enforcement defining an epimuation based on 
+#' control's mean beta value (default: 0.15).
+#' @param offset_abs Extra enforcement defining an epimutation based on 
+#' beta values at 0.01 and 0.99 quantiles (default: 0.1).
+#' @return The function returns a data frame with the regions candidates to be
+#' epimutations.
+#' 
 epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin, 
                         bctr_pmax, window_sz = 1000, N = 3, offset_mean = 0.15, offset_abs = 0.1) {
   # Check that there is a single proband
@@ -130,20 +160,38 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
 
 
   collapse_regions <- function(flag_df) {
+    empty <- data.frame(
+      chromosome = character(),
+      start = numeric(),
+      end = numeric(),
+      length = numeric(),
+      N_CpGs = numeric(),
+      CpG_ids = character(),
+      outlier_score = numeric(),
+      outlier_significance = numeric(),
+      outlier_direction = character()
+    )
+    if(nrow(flag_df) == 0) {
+      return(empty)
+    }
     do.call(rbind, lapply(unique(flag_df$region), function(reg) {
+      message(reg)
       x <- flag_df[flag_df$region == reg, ]
-      data.frame(
-        chromosome = x$chr[1],
-        start = min(x$pos),
-        end = max(x$pos),
-        length = max(x$pos) - min(x$pos),
-        N_CpGs = nrow(x),
-        CpG_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
-        outlier_score = NA,
-        outlier_significance = NA,
-        outlier_direction = x$outlier_direction[1]
-      )
-      
+      if(nrow(x) > 0) {
+        data.frame(
+          chromosome = x$chr[1],
+          start = min(x$pos),
+          end = max(x$pos),
+          length = max(x$pos) - min(x$pos),
+          N_CpGs = nrow(x),
+          CpG_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = x$outlier_direction[1]
+        )
+      } else {
+        empty
+      }
     }))
   }
   
