@@ -22,8 +22,11 @@ epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold,
   
   ## Compute p-value for case
   pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], beta_params[, 2]), 
-                           function(x, shape1, shape2) pbeta(x, shape1, shape2))
-  names(pvals) <- rownames(betas_case)
+                           function(x, shape1, shape2){ 
+                             p <- pbeta(x, shape1, shape2)
+                             p <- min(p, 1 - p)
+                             })
+    names(pvals) <- rownames(betas_case)
   
   ## Select Significant CpGs
   sigCpGs <- names(pvals[!is.na(pvals) & pvals < pvalue_threshold])
