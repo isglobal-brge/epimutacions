@@ -74,7 +74,18 @@ library(epimutacions)
 
 ## Preparing dataset
 
-The `epimutacions` package comes with a small `GenomicRatioSet` class dataset (`methy`) to show the capabilities of the implemented methods. The following lines shows how to load the data: 
+We defined 40408 candidate epimutation regions (found in `candRegsGR`) based on the 450K  array design. As CpGs are not equally distributed along the genome, only CpGs closer to other CpGs can form an epimutation. We cluster the CpGs that were closer than 1000Kb to their closest CpG.
+
+Next, we mapped epimutations regions to hg38. We selected those regions whose mapping between hg19 and hg38 builds was 100%. Also, we overlapped epimutation regions with ENCODE cREs v13. 
+
+
+```{r}
+data("candRegsGR")
+candRegsGR
+```
+
+In addition, the package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
+
 
 ```{r}
 data("methy")
@@ -83,7 +94,7 @@ methy
 table(methy$status)
 ```
 
-The dataset is composed by case and control samples. So,  we are going to split the data for the following analysis:
+We are going to split the data by the status to use in the following analysis:
 
 ```{r}
 case_samples <- methy[,methy$status == "case"]
@@ -94,15 +105,16 @@ control_samples <- methy[,methy$status == "control"]
 
 ## Methods included for epimutations identification
 
-The `epimutacions` package includes 5 methods to detect epimutations. Two of these methods were described elsewhere before [@barbosa2018; @aref2019], and the other three are adaptations of one of them:
+The `epimutacions` package includes 6 methods to detect epimutations. Two of these methods were described elsewhere before [@barbosa2018; @aref2019], and the other three are adaptations of one of them:
 
 | Method | Short description |
 |:------:|:------------------|
-| `barbosa`     | Previously described [@barbosa2018] |
-| `manova`      | Previously described [@aref2019] |
-| `mlm`         | Adapted from [@aref2019] using multivariate linear methods to identify outliers |
-| `iso.forest`    | Adapted from [@aref2019] using isolation forest to detect outliers |
+| `barbosa`     | Previously described [@barbosa2018]                                                                     |
+| `manova`      | Previously described [@aref2019]                                                                        |
+| `mlm`         | Adapted from [@aref2019] using multivariate linear methods to identify outliers                         |
+| `iso.forest`  | Adapted from [@aref2019] using isolation forest to detect outliers                                      |
 | `mahdist.mcd` | Adapted from [@aref2019] using robust Mahalanobis distance with a custom threshold to identify outliers |
+| `beta`        |Identifies epimutations based on a beta distribution                                                     |
 
 ### Function parameters for each method
 
@@ -113,7 +125,8 @@ In the following table each argument is described:
 | Method        | Parameter                   | Description                                                          |
 +===============+=============================+======================================================================+
 | `manova`<br>  | `pvalue_cutoff`             | The threshold p-value to select which CpG regions are outliers       |
-|  `mlm`        |                             |                                                                      |
+|  `mlm`<br>    |                             |                                                                      |
+|  `beta`       |                             |                                                                      |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | `iso.forest`  | `outlier_score_cutoff`<br>  | The threshold to select which CpG regions are outliers<br>           |
 |               | `ntrees`                    | The number of binary trees to build for the model                    |
@@ -127,7 +140,7 @@ In the following table each argument is described:
 |               | `qn_th`                     | The threshold to consider a CpG an outlier                           |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 
-Invoking `epi_parameters()` with no arguments returns a list of the default settings: 
+Invoking `epi_parameters()` with no arguments returns a list of the default settings for each method: 
 
 ```{r}
 epi_parameters()
@@ -136,7 +149,8 @@ epi_parameters()
 If we want to change the p-value cut off for `manova` we can do as following: 
 
 ```{r}
-epi_parameters(manova = list("pvalue_cutoff" = 0.01))
+parameters <- epi_parameters(manova = list("pvalue_cutoff" = 0.01))
+parameters$manova$pvalue_cutoff
 ```
 
 ### Methods from literature
@@ -171,6 +185,14 @@ epi_iso <- epimutations(case_samples, control_samples, method = "isoforest")
 
 ```{r, epi_mcd, message=FALSE, warning=FALSE}
 epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
+```
+
+### Other methods
+
+We implemented `"beta"` method which  models the DNA methylation data using a beta distribution.
+
+```{r, epi_beta, message=FALSE, warning=FALSE}
+epi_beta <- epimutations(case_samples, control_samples, method = "beta")
 ```
 
 ## Results description
@@ -217,9 +239,16 @@ rbind(epi_brb[1, ], epi_mvo[1, ])
 |                       | For `manova`, `mlm`, `isoforest`, and `mahdistmcd` it is computed from the values obtained from `bumphunter`.<br>     |
 |                       | For `barbosa` it is computed from the location of the sample in the reference distribution (left vs. right outlier).  |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
-| `adj_pvalue`          | For methods `manova` and  `mlm` it provides the adjusted p-value.<br>                                                 |
-|                       | For method `barbosa`, `isoforest`, `qn` and `mahdistmcd` it is filled with `NA`.                                      |
+| `adj_pvalue`          | For methods `manova` and  `mlm` it provides the adjusted p-value with                                                 |
+|                       | Benjamini-Hochberg based on the total number of regions detected by Bumphunter.<br>                                   |
+|                       | For method `barbosa`, `isoforest`, `qn`, `mahdistmcd` and `beta` it is filled with `NA`.                              |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
+| `epi_region_id`       | Name of the epimutation region as defined in `candRegsGR`.                                                            |
++-----------------------+-----------------------------------------------------------------------------------------------------------------------+
+| `CRE`                 | cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region.                               |
++-----------------------+-----------------------------------------------------------------------------------------------------------------------+
+| `CRE_type`            | Type of cREs (cis-Regulatory Elements) as defined by ENCODE.                                                          |
++-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 
 ## Epimutations annotations
 

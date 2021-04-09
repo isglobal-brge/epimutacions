@@ -33,13 +33,13 @@ epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold,
   sigGR <- annot[sigCpGs]
   
   ## Overlap significant CpGs with epimutations regions to speed up epimutations definition
-  overs <- findOverlaps(sigGR, candRegsGR)
+  overs <- GenomicRanges::findOverlaps(sigGR, candRegsGR)
   regs <- table(to(overs))
   selRegs <- names(regs[regs >= min_cpgs])
   
   ## Refine epimutations definition
   epi_list <- lapply(selRegs, function(idx){
-    ov <- overs[to(overs) == idx]
+    ov <- overs[S4Vectors::to(overs) == idx]
     regGR <- sort(sigGR[from(ov)])
     
     cl <- bumphunter::clusterMaker(seqnames(regGR), start(regGR), maxGap = maxGap)
@@ -76,7 +76,7 @@ epi_beta <-  function(beta_params, betas_case, annot, pvalue_threshold,
 }
 
 
-# Model methylation as a beta distribution
+#' @title  Model methylation as a beta distribution
 #' @param x Matrix of methylation expressed as a beta. CpGs are in columns and samples in rows.                       
 getBetaParams <- function(x){
   xbar <- colMeans(x, na.rm = TRUE)

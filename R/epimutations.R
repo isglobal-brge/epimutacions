@@ -58,8 +58,8 @@
 #' * \code{pvalue}: 
 #'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
 #'    * For method \code{barbosa}, \code{mahdistmcd}, \code{qn} and \code{beta} is filled with NA.    
-#' * \code{adj_pvalue}: for methods with p-value (\code{manova}, \code{mlm}, and \code{isoforest}) adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
-#' * \code{epi_region_id}: Name of the epimutation region as defined in candRegsGR.
+#' * \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
+#' * \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
 #' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
 #' * \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
 #' @examples 
@@ -353,7 +353,7 @@ epimutations <- function(case_samples, control_panel, method = "manova",
       }
       
       if(method == "isoforest"){
-        rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff), drop = FALSE]
+        rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff),, drop = FALSE]
       }
       
       ## Add epi_region_id ####

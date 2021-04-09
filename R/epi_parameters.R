@@ -4,8 +4,8 @@
 #' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out}.
 #' @param manova,mlm,isoforest,mahdistmcd,barbosa,qn method selected in the function 
 #' \link[epimutacions]{epimutations}. 
-#' @param pvalue_cutoff the threshold p value to select which CpG regions are outliers \code{manova}
-#' and \code{mlm} methods. Default is \code{0.05}.
+#' @param pvalue_cutoff the threshold p value to select which CpG regions are outliers in 
+#' \code{manova}, \code{mlm} and \code{beta} methods.
 #' @param outlier_score_cutoff The outlier score threshold to identify outliers CpGs in
 #' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
 #' @param ntrees number of binary trees to build for the model build by 
