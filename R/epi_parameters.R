@@ -24,6 +24,9 @@
 #' This parameter is used in \code{barbosa} and \code{qn}. 
 #' @param offset_mean,offset_abs the upper and lower threshold to consider a CpG an outlier when using \code{barbosa} method. 
 #' @param qn_th  the threshold to consider a CpG an outlier in the \code{qn} method.
+#' @param pvalue_threshold Minimum p-value to consider a CpG an outlier
+#' @param diff_threshold Minimum methylation difference between the CpG and the mean methylation to
+#' consider a position an outlier. 
 #' @details Invoking \code{epi_parameters()} with no arguments returns return a list with the
 #' default values. 
 #' @return  the function returns a list of all set parameters for each method used in 
@@ -52,7 +55,7 @@ epi_parameters <- function(manova = list("pvalue_cutoff" = 0.05),
                            mahdistmcd = list("nsamp" = "deterministic"),
                            barbosa = list("window_sz" = 10, "offset_mean" = 0.15, "offset_abs" = 0.1), 
                            qn = list("window_sz" = 10, "qn_th" = 3),
-                           beta =  list("pvalue_cutoff" = 1e-6)){
+                           beta =  list("pvalue_cutoff" = 1e-6, "diff_threshold" = 0.1)){
   
   return(list("manova" = manova ,"mlm" = mlm,"isoforest" = isoforest, 
               "mahdistmcd" = mahdistmcd, "barbosa" = barbosa, "qn" = qn,

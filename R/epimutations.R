@@ -264,12 +264,15 @@ epimutations <- function(case_samples, control_panel, method = "manova",
     ## Get Beta distribution params
     message("Computing beta distribution parameters")
     beta_params <- getBetaParams(t(betas_control))
+    beta_mean <- rowMeans(betas_control)
     
     message("Defining Regions")
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
-      x <- epi_beta(beta_params, betas_case[ , case, drop = FALSE], 
+      x <- epi_beta(beta_params, beta_mean, 
+                    betas_case[ , case, drop = FALSE], 
                     SummarizedExperiment::rowRanges(control_panel),
-                    epi_params$beta$pvalue_cutoff, min_cpg, maxGap)
+                    epi_params$beta$pvalue_cutoff, 
+                    epi_params$beta$diff_threshold, min_cpg, maxGap)
       if(is.null(x)){
         x <- NA
       }else if(nrow(x) != 0){
