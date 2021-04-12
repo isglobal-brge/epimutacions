@@ -43,7 +43,7 @@ epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshol
   
   
   ## Hypermethylation regions
-  posCpGs <- pvals[1 - pvals < pvalue_threshold]
+  posCpGs <- 1 - pvals[1 - pvals < pvalue_threshold]
   posGR <- annot[names(posCpGs)]
   posGR$pvals <- posCpGs
   posRegs <- defineRegions(posGR, maxGap)
@@ -51,7 +51,7 @@ epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshol
   df <- rbind(posRegs, negRegs)
   
   if (nrow(df) > 0){
-    df <- subset(df, N_CpGs >= min_cpgs )
+    df <- subset(df, N_CpGs >= min_cpgs, drop = FALSE )
   }
   df
 }
@@ -80,9 +80,10 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
                end = end(rang),
                length = width(rang), N_CpGs = length(cpgGR), 
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
-               outlier_score = mean(cpgGR$pval),
+               outlier_score = mean(cpgGR$pvals),
                outlier_significance = NA,
-               outlier_direction = ifelse(up, "hypermethylation", "hypomethylation")
+               outlier_direction = ifelse(up, "hypermethylation", "hypomethylation"),
+               sample = NA
     )
   })
   if (length(reg_list) == 0){
