@@ -23,10 +23,7 @@ Imports:
 	Gviz,
 	gridExtra,
 	S4Vectors,
-	GenomicRanges,
-	IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
-	TxDb.Hsapiens.UCSC.hg19.knownGene,
-	Homo.sapiens
+	GenomicRanges
 Suggests: knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
 Encoding: UTF-8
