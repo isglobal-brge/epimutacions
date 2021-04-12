@@ -264,7 +264,7 @@ epimutations <- function(case_samples, control_panel, method = "manova",
     ## Get Beta distribution params
     message("Computing beta distribution parameters")
     beta_params <- getBetaParams(t(betas_control))
-    beta_mean <- rowMeans(betas_control)
+    beta_mean <- rowMeans(betas_control, na.rm = TRUE)
     
     message("Defining Regions")
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
@@ -273,12 +273,8 @@ epimutations <- function(case_samples, control_panel, method = "manova",
                     SummarizedExperiment::rowRanges(control_panel),
                     epi_params$beta$pvalue_cutoff, 
                     epi_params$beta$diff_threshold, min_cpg, maxGap)
-      if(is.null(x)){
-        x <- NA
-      }else if(nrow(x) != 0){
+      if(nrow(x) != 0){
         x$sample <- case 
-      }else if (nrow(x) == 0){
-        x <- NA 
       }
       x
     }))
