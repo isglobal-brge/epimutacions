@@ -175,7 +175,6 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
       return(empty)
     }
     do.call(rbind, lapply(unique(flag_df$region), function(reg) {
-      message(reg)
       x <- flag_df[flag_df$region == reg, ]
       if(nrow(x) > 0) {
         data.frame(
