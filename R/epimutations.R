@@ -66,10 +66,10 @@
 #' 
 #' #Find epimutations in GSM2562701 sample of methy dataset
 #' 
-#' case_sample <- methy[,"GSM2562701"]
+#' case_samples <- methy[,"GSM2562701"]
 #' control_panel <- methy[,-51]
 #' 
-#' epimutations(case_sample, control_panel, method = "manova")
+#' epimutations(case_samples, control_panel, method = "manova")
 #' }
 #' @export
 epimutations <- function(case_samples, control_panel, method = "manova", 
@@ -141,9 +141,6 @@ epimutations <- function(case_samples, control_panel, method = "manova",
   if(is.na(method)) stop("Invalid method was selected'")
   
   if(verbose) message("Selected epimutation detection method '", method, "'")
-  #if(method %in% c()) {
-  #	stop("Method not implemented yet")
-  #}
   
   if(!is.null(chr)){
     if(!is.null(start) & !is.null(end)){
@@ -228,9 +225,9 @@ epimutations <- function(case_samples, control_panel, method = "manova",
   }else if(method == "barbosa") {
     # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
-    bctr_min <- apply(betas_control, 1, min, na.rm = TRUE)
-    bctr_max <- apply(betas_control, 1, max, na.rm = TRUE)
-    bctr_mean <- apply(betas_control, 1, mean, na.rm = TRUE)
+    bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
+    bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
+    bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
     bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
@@ -240,22 +237,24 @@ epimutations <- function(case_samples, control_panel, method = "manova",
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
                        bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
-      if(is.null(x)){
-        x <- NA
-      }else if(nrow(x) != 0){
+      if(is.null(x) || nrow(x) == 0){
+        x <- data.frame(
+          chromosome = NA,
+          start = NA,
+          end = NA,
+          sz = NA,
+          cpg_n = NA,
+          cpg_ids = NA,
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = NA,
+          sample = case
+        )
+      } else {
         x$sample <- case 
-      }else if (nrow(x) == 0){
-        x <- NA 
       }
       x
     }))
-    # rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
-    # colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
-    # 	   "outlier_score", "outlier_significance", "outlier_direction", 
-    # 	   "sample", "epi_id")
-    # rownames(rst) <- seq_len(nrow(rst))
-    # 
-    # return(rst[ , c(11, 10, 1:9)])
   } else { # if(method == "qn") {
     nbetas <- qn_norm(cbind(betas_control, betas_case), qn = TRUE)
     regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
@@ -278,9 +277,9 @@ epimutations <- function(case_samples, control_panel, method = "manova",
        rst <- NA
      }
   }
-  suppressWarnings(
-    if(is.na(rst)){
-      message("No outliers found")
+  #suppressWarnings({
+    if(nrow(rst) == 0){
+      #message("No outliers found")
       res <-   data.frame(chromosome = character(), start = numeric(), 
                          end = numeric(),
                          sz = numeric(), cpg_n = numeric(), 
@@ -292,20 +291,7 @@ epimutations <- function(case_samples, control_panel, method = "manova",
                          epi_id = character(),
                          epi_region_id = character())
       return(res)
-    }else if(nrow(rst) == 0){
-      message("No outliers found")
-      res <-   data.frame(chromosome = character(), start = numeric(), 
-                          end = numeric(),
-                          sz = numeric(), cpg_n = numeric(), 
-                          cpg_ids = character(),
-                          pvalue = numeric(),
-                          outlier_direction = character(),
-                          sample = character(),
-                          adj_pvalue = numeric(), 
-                          epi_id = character(),
-                          epi_region_id = character())
-      return(res)
-    }else{
+    } else {
       #Calculate the adjusted p value "manova" and "mlm"
       if(method == "manova" | method == "mlm"){
         rst$adj_pvalue <- stats::p.adjust(rst$outlier_significance, method = "hochberg")   
@@ -334,18 +320,24 @@ epimutations <- function(case_samples, control_panel, method = "manova",
       }
       
       ## Add epi_region_id ####
-      rstGR <- GenomicRanges::makeGRangesFromDataFrame(rst)
-      ensembldb::seqlevelsStyle(rstGR) <- "UCSC" ## Ensure chromosomes have the same format
-      over <- GenomicRanges::findOverlaps(rstGR, candRegsGR)
-      
-      rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA
-      
-      rst$epi_region_id[S4Vectors::from(over)] <- names(candRegsGR[S4Vectors::to(over)])
-      rst$CRE[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE
-      rst$CRE_type[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE_type
+      rst_c <- rst
+      rst_c <- tryCatch({
+        rstGR <- GenomicRanges::makeGRangesFromDataFrame(rst)
+        ensembldb::seqlevelsStyle(rstGR) <- "UCSC" ## Ensure chromosomes have the same format
+        over <- GenomicRanges::findOverlaps(rstGR, candRegsGR)
+        
+        rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA
+        
+        rst$epi_region_id[S4Vectors::from(over)] <- names(candRegsGR[S4Vectors::to(over)])
+        rst$CRE[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE
+        rst$CRE_type[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE_type
+        
+        rst
+      }, error = function(e) { rst })
       
       #convert rst into a tibble class
-      rst <- tibble::as_tibble(rst)
+      rst <- tibble::as_tibble(rst_c)
       return(rst)
-    })
+    }
+  #})
 }

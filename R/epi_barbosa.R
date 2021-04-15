@@ -165,8 +165,8 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
       start = numeric(),
       end = numeric(),
       length = numeric(),
-      N_CpGs = numeric(),
-      CpG_ids = character(),
+      sz = numeric(),
+      cpg_ids = character(),
       outlier_score = numeric(),
       outlier_significance = numeric(),
       outlier_direction = character()
@@ -182,8 +182,8 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
           start = min(x$pos),
           end = max(x$pos),
           length = max(x$pos) - min(x$pos),
-          N_CpGs = nrow(x),
-          CpG_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
+          sz = nrow(x),
+          cpg_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
           outlier_score = NA,
           outlier_significance = NA,
           outlier_direction = x$outlier_direction[1]
@@ -196,9 +196,9 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
   
   # We collapse the CpGs in regions and format the output
   clean_sup <- collapse_regions(reg_sup)
-  clean_sup <- clean_sup[!is.na(clean_sup$chromosome), ]
   clean_inf <- collapse_regions(reg_inf)
-  clean_inf <- clean_inf[!is.na(clean_inf$chromosome), ]
   
-  return(rbind(clean_inf, clean_sup))
+  rst <- rbind(clean_inf, clean_sup)
+  rst <- rst[!is.na(rst$chromosome), ]
+  return(rst)
 }
