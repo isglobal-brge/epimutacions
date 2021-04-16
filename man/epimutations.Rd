@@ -79,8 +79,8 @@ of the used anomaly detection method.
 \item For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
 \item For method \code{barbosa}, \code{mahdistmcd}, \code{qn} and \code{beta} is filled with NA.
 }
-\item \code{adj_pvalue}: for methods with p-value (\code{manova}, \code{mlm}, and \code{isoforest}) adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
-\item \code{epi_region_id}: Name of the epimutation region as defined in candRegsGR.
+\item \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
+\item \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
 \item \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
 \item \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
 }
