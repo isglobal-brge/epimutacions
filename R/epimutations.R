@@ -239,11 +239,11 @@ epimutations <- function(case_samples, control_panel, method = "manova",
                        bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
       if(is.null(x) || nrow(x) == 0){
         x <- data.frame(
-          chromosome = NA,
-          start = NA,
-          end = NA,
+          chromosome = 0,
+          start = 0,
+          end = 0,
+          length = NA,
           sz = NA,
-          cpg_n = NA,
           cpg_ids = NA,
           outlier_score = NA,
           outlier_significance = NA,
