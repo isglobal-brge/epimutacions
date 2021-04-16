@@ -6,9 +6,11 @@
 \usage{
 epi_beta(
   beta_params,
+  beta_mean,
   betas_case,
   annot,
   pvalue_threshold,
+  diff_threshold,
   min_cpgs = 3,
   maxGap
 )
@@ -23,6 +25,9 @@ each CpG in the dataset.}
 
 \item{pvalue_threshold}{Minimum p-value to consider a CpG an outlier}
 
+\item{diff_threshold}{Minimum methylation difference between the CpG and the mean methylation to
+consider a position an outlier.}
+
 \item{min_cpgs}{Minimum number of CpGs to consider an epimutation}
 
 \item{maxGap}{Maximum distance between two contiguous CpGs to combine them into an epimutation}
@@ -36,6 +41,7 @@ This method models the DNA methylation data using a beta distribution. First,
 the beta distribution parameters of the reference population are precomputed and passed
 to the method. Then, we compute the probability of observing the methylation values
 of the case from the reference beta distribution. CpGs with p-values smaller than a threshold
-\code{pvalue_threshold} are defined as outlier CpGs. Finally, epimutations are defined as group
+\code{pvalue_threshold} and with a methylation difference with the mean reference methylation
+higher than \code{diff_threshold} are defined as outlier CpGs. Finally, epimutations are defined as group
 of contiguous outlier CpGs.
 }
