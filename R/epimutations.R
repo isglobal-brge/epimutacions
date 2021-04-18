@@ -1,10 +1,10 @@
 #' @title Epimutations analysis based on outlier detection methods
 #' @description The function identifies  Differentially Methylated Regions
 #' in a case sample by comparing it against a control panel. 
-#' @param case_samples a GenomicRatioSet object containing the case samples.
+#' @param methy a GenomicRatioSet object containing the samples for the analysis. 
 #' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
-#' @param control_panel a GenomicRatioSet object containing the control panel (control panel).
-#' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
+#' @param status a vector of 3 character string specifying the name of the status variable 
+#' in the colData and the given name for controls and cases. These last 2 can be binomial.
 #' @param method a character string naming the outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
 #' \code{"barbosa"}, \code{"qn"} and \code{"beta"}. 
@@ -67,58 +67,63 @@
 #' library(epimutacions)
 #' data(methy)
 #' 
-#' #Find epimutations in GSM2562701 sample of methy dataset
+#' #Find epimutations in cases samples from methy dataset
 #' 
-#' case_samples <- methy[,"GSM2562701"]
-#' control_panel <- methy[,-51]
-#' 
-#' epimutations(case_samples, control_panel, method = "manova")
+#' epimutations(methy, method = "manova")
 #' }
 #' @export
-epimutations <- function(case_samples, control_panel, method = "manova", 
+epimutations <- function(methy, status = c("status", "control", "case"),
+                         method = "manova", 
                          chr = NULL, start = NULL, end = NULL, 
                          epi_params = epi_parameters(), 
-                         maxGap = 1000, bump_cutoff =  0.1, min_cpg = 3, verbose = TRUE)
+                         maxGap = 1000, bump_cutoff =  0.1, 
+                         min_cpg = 3, verbose = TRUE)
 {
   
   # Identify type of input and extract required data:
   #	* betas
   #	* sample's classification
   #	* feature annotation
-  if(is.null(case_samples))
+  if(is.null(methy))
   {
-    stop("The argument 'case_samples' must be introduced")
+    stop("The argument 'methy' must be introduced")
     
   }
-  if(is.null(control_panel))
-  {
-    stop("The argument 'case_samples' must be introduced")
-    
-  }
-  
-  if(class(case_samples) != "GenomicRatioSet"){
-    stop("'case_samples' must be of class 'GenomicRatioSet'. 
-         To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
-         function from minfi package")
-  }
-  
-  if(class(control_panel) != "GenomicRatioSet"){
-    stop("'control_panel' must be of class 'GenomicRatioSet'. 
-         To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
-         function from minfi package")
-  }
- 
-  fd <- as.data.frame(GenomicRanges::granges(case_samples))
-  rownames(fd) <- rownames(case_samples)
-  betas_case <- minfi::getBeta(case_samples)
-  betas_case <- betas_case[rownames(fd),,drop =FALSE]
-  betas_control <- minfi::getBeta(control_panel)
-  betas_control <- betas_control[rownames(fd),]
 
-  if(minfi::annotation(case_samples)[1] != minfi::annotation(control_panel)[1] & minfi::annotation(case_samples)[2] != minfi::annotation(control_panel)[2]){
-    stop("The annotation of 'case_samples' and 'control_panel' must be the same")
+  if(class(methy) != "GenomicRatioSet"){
+    stop("'methy' must be of class 'GenomicRatioSet'. 
+         To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
+         function from minfi package")
   }
+  
+  
+  if(length(status) != 3){
+    stop("'status' must specify (1) the colData column, (2) the control level and (3) cases level names")
+  }
+  if(!status[1] %in% colnames(pd)){
+    stop("The variable name '", status[1], "' is not in 'colData'")
+  }
+  if(!status[2] %in% unique(pd[,status[1]])){
+    stop(" '", status[2], "' is not a level of '", status[1], "'")
+    
+  }
+  if(!status[3] %in% unique(pd[,status[1]])){
+    stop(" '", status[3], "' is not a level of '", status[1], "'")
+    
+  }
+  
+  #Feature data
+  fd <- as.data.frame(GenomicRanges::granges(methy))
+  rownames(fd) <- rownames(methy)
   fd <- cols_names(fd, cpg_ids_col = FALSE) #epi_plot
+  #Feature data
+  pd <- as.data.frame(SummarizedExperiment::colData(methy))
+  
+  #Beta values matrix for control and cases
+  keep_cases <- pd[, status[1]] == status[3]
+  betas_case <- minfi::getBeta(methy[,keep_cases, drop = FALSE])
+  betas_control <- minfi::getBeta(methy[,!keep_cases, drop = FALSE])
+  
   if(!is.null(start) & !is.null(end)){
     if(is.null(chr)){
       stop("Argument 'chr' must be inroduced with 'start' and 'end' parameters")
@@ -155,6 +160,7 @@ epimutations <- function(case_samples, control_panel, method = "manova",
     }else{
       fd <- fd[fd$seqnames %in% chr,]
     }
+    
     betas_case <- betas_case[rownames(fd),,drop=FALSE]
     betas_control <- betas_control[rownames(fd),]
     #pd <- pd[which(rownames(pd) %in% colnames(betas)),]
@@ -162,8 +168,8 @@ epimutations <- function(case_samples, control_panel, method = "manova",
   
   
   # Identify cases and controls
-  cas_sam <- colnames(case_samples)
-  ctr_sam <- colnames(control_panel)
+  cas_sam <- colnames(betas_case)
+  ctr_sam <- colnames(betas_control)
   
   # Differentiate between methods that required region detection that the ones
   # that finds outliers to identify regions

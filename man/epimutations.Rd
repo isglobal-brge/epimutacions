@@ -5,8 +5,8 @@
 \title{Epimutations analysis based on outlier detection methods}
 \usage{
 epimutations(
-  case_samples,
-  control_panel,
+  methy,
+  status = c("status", "control", "case"),
   method = "manova",
   chr = NULL,
   start = NULL,
@@ -19,11 +19,11 @@ epimutations(
 )
 }
 \arguments{
-\item{case_samples}{a GenomicRatioSet object containing the case samples.
+\item{methy}{a GenomicRatioSet object containing the samples for the analysis.
 See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
 
-\item{control_panel}{a GenomicRatioSet object containing the control panel (control panel).
-See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
+\item{status}{a vector of 3 character string specifying the name of the status variable
+in the colData and the given name for controls and cases. These last 2 can be binomial.}
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
@@ -113,11 +113,8 @@ to other CpGs can form an epimutation. More information can be found in candRegs
 library(epimutacions)
 data(methy)
 
-#Find epimutations in GSM2562701 sample of methy dataset
+#Find epimutations in cases samples from methy dataset
 
-case_sample <- methy[,"GSM2562701"]
-control_panel <- methy[,-51]
-
-epimutations(case_sample, control_panel, method = "manova")
+epimutations(methy, method = "manova")
 }
 }
