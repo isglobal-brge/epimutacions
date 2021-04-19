@@ -84,7 +84,7 @@ data("candRegsGR")
 candRegsGR
 ```
 
-In addition, the package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
+In addition, the package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy", package = "epimutacions")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
 
 
 ```{r}
@@ -94,13 +94,73 @@ methy
 table(methy$status)
 ```
 
-We are going to split the data by the status to use in the following analysis:
+# Preprocessing
+The preprocessing in `epimutacions` package is done by `epi_preprocess()` function. It contains 6 preprocessing method corresponding to minfi package:
+
++---------------+-----------------------------+----------------------------------------------------------------------+
+| Method        |  Function                   | Description                                                          |
++===============+=============================+======================================================================+
+| `raw`         | `preprocessRaw`             | Converts the Red/Green channel for an Illumina methylation           |  
+|               |                             |  array into methylation signal, without using any normalization      |
++---------------+-----------------------------+----------------------------------------------------------------------+
+| `illumina  `  | `preprocessIllumina`        |  Implements preprocessing for Illumina methylation                   |
+|               |                             |      microarrays as used in Genome Studio                            |
++---------------+-----------------------------+----------------------------------------------------------------------+
+|`swan`         | `preprocessSWAN `           |Subset-quantile Within Array Normalisation (SWAN). It allows Infinium |
+|               |                             | I and II type probes on a single array to be normalized together     |
++---------------+-----------------------------+----------------------------------------------------------------------+
+|  `quantile`   |`preprocessQuantile`         |Implements stratified quantile normalization preprocessing for        |                
+|               |                             |Illumina methylation microarrays                                      |
++---------------+-----------------------------+----------------------------------------------------------------------+
+| `noob`        | `preprocessNoob`            | Noob (normal-exponential out-of-band) is a background correction     | 
+|               |                             | method with dye-bias normalization for                               |
+|               |                             | Illumina Infinium methylation arrays                                 |
++---------------+-----------------------------+----------------------------------------------------------------------+
+| `funnorm`     | `preprocessFunnorm `        | Functional normalization (FunNorm) is a between-array                |
+|               |                             | normalization method for the Illumina Infinium                       |
+|               |                             | HumanMethylation450 platform                                         | 
++---------------+-----------------------------+----------------------------------------------------------------------+
+
+In addition, `norm_parameters()` function contains  the parameters for each method described above: 
+
++----------+-----------------------+-----------------------------------------------------------------------------+
+| Method   |Parameters             |Description                                                                  |
++==========+=======================+=============================================================================+
+|`illumina`|`bg.correct`<br>       |Performs background correction<br>                                           |
+|          |`normalize`<br>        |Performs controls normalization<br>                                          |        
+|          |`reference`            |The reference array for control normalization                                |
++----------+-----------------------+-----------------------------------------------------------------------------+
+|`quantile`|`fixOutliers`<br>      | Low outlier Meth and Unmeth signals will be fixed<br>                       |                       
+|          |`removeBadSamples`<br> | Remove bad samples<br>                                                      |
+|          |`badSampleCutoff`<br>  | The cutoff to label samples as 'bad'<br>                                    |
+|          |`quantileNormalize`<br>| Performs quantile normalization<br>                                         |
+|          | `stratified`          | performs quantile normalization within region strata<br>                    |
+|          |`mergeManifest`<br>    | Merged to the output the information in the associated manifest package<br> |
+|          |`sex`                  | Sex of the samples                                                          |
++----------+-----------------------+-----------------------------------------------------------------------------+
+|`noob`    | `offset`<br>          | Offset for the normexp background correct<br>                               |
+|          | `dyeCorr`<br>         | Performs dye normalization<br>                                              |  
+|          | `dyeMethod`           | Dye bias correction to be done                                              |
++---------------+------------------+-----------------------------------------------------------------------------+
+|`funnorm` | `nPCs `<br>           | The number of principal components from the control probes<br>              |       
+|          | `sex`<br>             | Sex of the samples<br>                                                      |      
+|          | `bgCorr`<br>          | Performs NOOB background correction prior to functional normalization<br>   |
+|          | `dyeCorr`<br>         | Performs dye normalization<br>                                              |
+|          | `keepCN`              | Keeps copy number estimates                                                 |
++---------------+-----------------------------+------------------------------------------------------------------+
+
+Invoking `norm_parameters()` with no arguments returns a list of the default settings for each method: 
 
 ```{r}
-case_samples <- methy[,methy$status == "case"]
-control_samples <- methy[,methy$status == "control"]
+norm_parameters()
 ```
 
+If we do not want to perform the background correction in `illumina` method we can do as following: 
+
+```{r}
+parameters <- norm_parameters(illumina = list("bg.correct" = FALSE))
+parameters$illumina$bg.correct
+```
 # Epimutations
 
 ## Methods included for epimutations identification
@@ -136,8 +196,9 @@ In the following table each argument is described:
 |  `barbosa`    |`window_sz`<br>              |The maximum distance between CpGs to be considered in the same DMR<br>|                
 |               |`offset_mean`/`offset_abs`   | The upper and lower threshold to consider a CpG an outlier           |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-| `qn`          | `window_sz`<br>             |The maximum distance between CpGs to be considered in the same DMR<br>|
-|               | `qn_th`                     | The threshold to consider a CpG an outlier                           |
+| `beta`        | `pvalue_cutoff`<br>         | The minimum p-value to consider a CpG an outlier<br>                 |
+|               | `diff_threshold`            | The minimum methylation difference between the CpG and the           |
+|               |                             |  mean methylation to consider a position an outlier                  |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 
 Invoking `epi_parameters()` with no arguments returns a list of the default settings for each method: 
@@ -155,20 +216,16 @@ parameters$manova$pvalue_cutoff
 
 ### Methods from literature
 
-We called `"barbosa"` to the method described in [@barbosa2018] and `"qn"` to the one in [@rousseeuw1993alternatives]. Briefly, these algorithms check for each CpG, if the proband's measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers and they are separated by less than 500 base pairs.
+We called `"barbosa"` to the method described in [@barbosa2018].  Briefly, this algorithm check for each CpG, if the proband's measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers and they are separated by less than 500 base pairs.
 
 ```{r, epi_brb, message=FALSE}
-epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
-```
-
-```{r, epi_qn, message=FALSE}
-epi_qn <- epimutations(case_samples, control_samples, method = "qn")
+epi_brb <- epimutations(methy, method = "barbosa")
 ```
 
 We called `"manova"` to the implementation of [@aref2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs (Differentially Methylated Regions) [@peters2015novo], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and the mean difference between proband and reference group DNA methylation.
 
 ```{r, epi_mvo, message=FALSE, warning=FALSE}
-epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
+epi_mvo <- epimutations(methy, method = "manova")
 ```
 
 ### Altered methods from literature
@@ -176,15 +233,15 @@ epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
 From [@aref2019] implementation, we proposed three different approaches. These three approaches run the `bumphunter` step but test DMR for outliers using different approaches: (1) `"mlm"`, which uses a multivariate linear model; (2) `"isoforest"`, that uses isolation forest; and (3) `"mahdistmcd"`, which uses robust Mahalanobis distance.
 
 ```{r, epi_mlm, message=FALSE, warning=FALSE}
-epi_ml <- epimutations(case_samples, control_samples, method = "mlm")
+epi_ml <- epimutations(methy, method = "mlm")
 ```
 
 ```{r, epi_iso, message=FALSE, warning=FALSE}
-epi_iso <- epimutations(case_samples, control_samples, method = "isoforest")
+epi_iso <- epimutations(methy, method = "isoforest")
 ```
 
 ```{r, epi_mcd, message=FALSE, warning=FALSE}
-epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
+epi_mcd <- epimutations(methy, method = "mahdistmcd")
 ```
 
 ### Other methods
@@ -192,7 +249,7 @@ epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
 We implemented `"beta"` method which  models the DNA methylation data using a beta distribution.
 
 ```{r, epi_beta, message=FALSE, warning=FALSE}
-epi_beta <- epimutations(case_samples, control_samples, method = "beta")
+epi_beta <- epimutations(methy, method = "beta")
 ```
 
 ## Results description
@@ -230,18 +287,20 @@ rbind(epi_brb[1, ], epi_mvo[1, ])
 | `outlier_score`       | For method `manova` it provides the approximation to F-test and the Pillai score, separated by `/`<br>                |
 |                       | For method `mlm` it provides the approximation to F-test and the R2 of the model, separated by `/`<br>                |
 |                       | For method `isoforest` it provides the magnitude of the outlier score.<br>                                            |
+|                       | For method `beta` it provides the mean p-value of all GpGs in that DMR<br>                                            |
 |                       | For methods `barbosa` and `mahdistmcd` it is filled with `NA`.                                                        |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `pvalue`              | For methods `manova` and  `mlm` it provides the p-value obtained from the model.<br>                                  |
-|                       | For method `barbosa`, `isoforest`, `qn` and `mahdistmcd` it is filled with `NA`.                                      |
+|                       | For method `barbosa`, `isoforest`, `beta` and `mahdistmcd` it is filled with `NA`.                                    |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 | `outlier_direction`   | Indicates the direction of the outlier with "hypomethylation" and "hypermethylation".<br>                             | 
 |                       | For `manova`, `mlm`, `isoforest`, and `mahdistmcd` it is computed from the values obtained from `bumphunter`.<br>     |
+|                       | For `beta` is computed from the p value for each CpG using `diff_threshold` and `pvalue_threshold` arguments.<br>     |
 |                       | For `barbosa` it is computed from the location of the sample in the reference distribution (left vs. right outlier).  |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `adj_pvalue`          | For methods `manova` and  `mlm` it provides the adjusted p-value with                                                 |
 |                       | Benjamini-Hochberg based on the total number of regions detected by Bumphunter.<br>                                   |
-|                       | For method `barbosa`, `isoforest`, `qn`, `mahdistmcd` and `beta` it is filled with `NA`.                              |
+|                       | For method `barbosa`, `isoforest`, `mahdistmcd` and `beta` it is filled with `NA`.                                    |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 | `epi_region_id`       | Name of the epimutation region as defined in `candRegsGR`.                                                            |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
@@ -268,16 +327,21 @@ kable(rst_mvo[1:2, c(1, 12:14)], caption = "epimutations annotation")
 ```
 
 
-## Epimutation visualisation
+## Epimutation visualization
 
-The  visualisation approach locates the epimutations along the genome. Furthermore, it includes the gene annotations in the regions in which the epivariation is located.  This can be archived by using the function `plot_epimutations`, already included in `epimutacions`: 
-
-```{r, plot_mvo}
+The  visualization approach locates the epimutations along the genome. The function `plot_epimutations` plots the methylation values of the  individual with the epimutation in red, the control samples in dashed black lines and population mean in blue:  
+```{r}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```
 
+Furthermore, it includes the gene annotations in the regions in which the epivariation is located.  This can be achieved by using the argument  `gene_annot == TRUE`: 
 
-Also, it is possible to plot the chromatin marks H3K4me3, H3K27me3  and H3K27ac by setting the argument `regulation = TRUE` in `plot_epimutations`:
+```{r, plot_mvo_genes_annot}
+plot_epimutations(as.data.frame(epi_mvo[1,]), methy, genes_annot = TRUE)
+```
+
+
+Also, it is possible to plot the chromatin marks H3K4me3, H3K27me3  and H3K27ac by setting the argument `regulation = TRUE`:
 
 * **H3K4me3**: commonly associated with the activation of transcription of nearby genes.
 * **H3K27me3**: is used in epigenetics to look for inactive genes.

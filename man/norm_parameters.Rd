@@ -28,7 +28,9 @@ norm_parameters(
 \item{fixOutliers}{logical. If TRUE low outlier Meth and Unmeth signals will be fixed
 in \code{"quantile"} method. Default is TRUE.}
 
-\item{removeBadSamples}{a numeric specifying the cutoff to label samples
+\item{removeBadSamples}{logical. If TRUE bad samples will be removed.}
+
+\item{badSampleCutoff}{a numeric specifying the cutoff to label samples
 as 'bad' in \code{"quantile"} method. Default is 10.5.}
 
 \item{quantileNormalize}{logical. If TRUE quantile normalization will be performed in
@@ -44,20 +46,21 @@ Default is FALSE.}
 \item{offset}{a numeric specifying an offset for the normexp background correction
 in \code{"noob"} method. Default is 15.}
 
+\item{dyeCorr}{logial. Dye correction will be done in \code{"noob"} and \code{"funnorm"} methods.
+Default is TRUE.}
+
 \item{dyeMethod}{specify the dye bias correction to be done, single sample
 approach or a reference array in \code{"noob"} method.}
 
 \item{nPCs}{numeric specifying the number of principal components
 from the control probes PCA in \code{"funnorm"} method. Default is 2.}
 
-\item{sex}{an optional numeric vector containing the sex of the samples in \code{"funnorm"} method.}
+\item{sex}{an optional numeric vector containing the sex of the samples in
+\code{"quantile"} and \code{"funnorm"} methods.}
 
 \item{bgCorr}{logical. If TRUE NOOB background correction will be done prior
 to functional normalization (see \link[epimutacions]{preprocessNoob})
 in \code{"funnorm"} method. Default is TRUE.}
-
-\item{dyeCorr}{logical. If TRUE dye normalization will be done as a part
-of the NOOB background correction in \code{"funnorm"} method. Default is TRUE.}
 
 \item{keepCN}{logical. If TRUE copy number estimates will be kept in \code{"funnorm"} method.
 Default is FALSE.}

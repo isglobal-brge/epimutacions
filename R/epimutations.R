@@ -96,6 +96,12 @@ epimutations <- function(methy, status = c("status", "control", "case"),
          function from minfi package")
   }
   
+  #Feature data
+  fd <- as.data.frame(GenomicRanges::granges(methy))
+  rownames(fd) <- rownames(methy)
+  fd <- cols_names(fd, cpg_ids_col = FALSE) #epi_plot
+  #Feature data
+  pd <- as.data.frame(SummarizedExperiment::colData(methy))
   
   if(length(status) != 3){
     stop("'status' must specify (1) the colData column, (2) the control level and (3) cases level names")
@@ -111,13 +117,6 @@ epimutations <- function(methy, status = c("status", "control", "case"),
     stop(" '", status[3], "' is not a level of '", status[1], "'")
     
   }
-  
-  #Feature data
-  fd <- as.data.frame(GenomicRanges::granges(methy))
-  rownames(fd) <- rownames(methy)
-  fd <- cols_names(fd, cpg_ids_col = FALSE) #epi_plot
-  #Feature data
-  pd <- as.data.frame(SummarizedExperiment::colData(methy))
   
   #Beta values matrix for control and cases
   keep_cases <- pd[, status[1]] == status[3]
@@ -275,7 +274,7 @@ epimutations <- function(methy, status = c("status", "control", "case"),
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       x <- epi_beta(beta_params, beta_mean, 
                     betas_case[ , case, drop = FALSE], 
-                    SummarizedExperiment::rowRanges(control_panel),
+                    GenomicRanges::makeGRangesFromDataFrame(fd[rownames(betas_control),]),
                     epi_params$beta$pvalue_cutoff, 
                     epi_params$beta$diff_threshold, min_cpg, maxGap)
       if(nrow(x) != 0){
@@ -283,27 +282,6 @@ epimutations <- function(methy, status = c("status", "control", "case"),
       }
       x
     }))
-  }else { # if(method == "qn") {
-    nbetas <- qn_norm(cbind(betas_control, betas_case), qn = TRUE)
-    regions <- qn_bump(nbetas[,cas_sam, drop= FALSE], fd, window = epi_params$qn$window_sz, cutoff = bump_cutoff)
-    rst <- do.call(rbind, lapply(cas_sam, function(case) {
-      x <- qn_outlier(case, regions, nbetas, fd, min_cpg, epi_params$qn$qn_th)
-      if(is.null(x)){
-        x <- NA
-      }else if(nrow(x) != 0){
-        x$sample <- case 
-      }else if (nrow(x) == 0){
-        x <- NA 
-      }
-      x
-    }))
-    suppressWarnings(
-      if(!is.na(rst)){
-        rst <- rst[rst$outlier_direction != "", ]
-      })
-     if(nrow(rst) == 0){
-       rst <- NA
-     }
   }
   #suppressWarnings({
     if(nrow(rst) == 0){

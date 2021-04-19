@@ -12,8 +12,9 @@
 #' \code{"illumina"} method. 
 #' @param fixOutliers logical. If TRUE low outlier Meth and Unmeth signals will be fixed
 #' in \code{"quantile"} method. Default is TRUE. 
-#' @param removeBadSamples a numeric specifying the cutoff to label samples
-#' as 'bad' in \code{"quantile"} method. Default is 10.5. 
+#' @param removeBadSamples logical. If TRUE bad samples will be removed.  
+#' @param badSampleCutoff a numeric specifying the cutoff to label samples
+#' as 'bad' in \code{"quantile"} method. Default is 10.5.
 #' @param quantileNormalize logical. If TRUE quantile normalization will be performed in 
 #' \code{"quantile"} method. Default is TRUE.
 #' @param stratified logical. If TRUE quantile normalization will be performed
@@ -24,18 +25,17 @@
 #' @param sex an optional numeric vector containing the sex of the samples in \code{"quantile"} method. 
 #' @param offset a numeric specifying an offset for the normexp background correction
 #'  in \code{"noob"} method. Default is 15. 
-#' @param dyeCorr logial. Dye correction will be done in \code{"noob"} method. 
+#' @param dyeCorr logial. Dye correction will be done in \code{"noob"} and \code{"funnorm"} methods. 
 #' Default is TRUE. 
 #' @param dyeMethod specify the dye bias correction to be done, single sample 
 #' approach or a reference array in \code{"noob"} method. 
 #' @param nPCs numeric specifying the number of principal components 
 #' from the control probes PCA in \code{"funnorm"} method. Default is 2. 
-#' @param sex an optional numeric vector containing the sex of the samples in \code{"funnorm"} method.
+#' @param sex an optional numeric vector containing the sex of the samples in 
+#' \code{"quantile"} and \code{"funnorm"} methods.
 #' @param bgCorr logical. If TRUE NOOB background correction will be done prior 
 #' to functional normalization (see \link[epimutacions]{preprocessNoob}) 
 #' in \code{"funnorm"} method. Default is TRUE. 
-#' @param dyeCorr logical. If TRUE dye normalization will be done as a part 
-#' of the NOOB background correction in \code{"funnorm"} method. Default is TRUE. 
 #' @param keepCN logical. If TRUE copy number estimates will be kept in \code{"funnorm"} method. 
 #' Default is FALSE.
 #' @details Invoking \code{epi_parameters()} with no arguments returns a list with the

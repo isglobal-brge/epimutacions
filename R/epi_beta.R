@@ -72,11 +72,11 @@ getBetaParams <- function(x){
 defineRegions <- function(regGR, maxGap, up = TRUE){
   
   regGR <- sort(regGR)
-  cl <- bumphunter::clusterMaker(seqnames(regGR), start(regGR), maxGap = maxGap)
+  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), start(regGR), maxGap = maxGap)
   reg_list <- lapply(unique(cl), function(i){
     cpgGR <- regGR[cl == i]
     rang <- range(cpgGR)
-    data.frame(chromosome = seqnames(rang), start = start(rang), 
+    data.frame(chromosome = GenomeInfoDb::seqnames(rang), start = start(rang), 
                end = end(rang),
                length = width(rang), N_CpGs = length(cpgGR), 
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
