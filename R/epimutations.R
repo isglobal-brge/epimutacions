@@ -223,13 +223,27 @@ epimutations <- function(methy, status = c("status", "control", "case"),
           }))
           }
         })
+      if(is.null(bump_out) || nrow(bump_out) == 0){
+        x <- data.frame(
+          chromosome = 0,
+          start = 0,
+          end = 0,
+          length = NA,
+          sz = NA,
+          cpg_ids = NA,
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = NA,
+          sample = case
+        )
+      }
     }))
-    if(is.null(rst)){
-      return(message("No outliers found"))
-    }
-    if(nrow(rst) == 0){
-      return(message("No outliers found"))
-    }
+    #if(is.null(rst)){
+      #return(message("No outliers found"))
+    #}
+    #if(nrow(rst) == 0){
+      #return(message("No outliers found"))
+    #}
   }else if(method == "barbosa") {
     # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
@@ -277,7 +291,20 @@ epimutations <- function(methy, status = c("status", "control", "case"),
                     GenomicRanges::makeGRangesFromDataFrame(fd[rownames(betas_control),]),
                     epi_params$beta$pvalue_cutoff, 
                     epi_params$beta$diff_threshold, min_cpg, maxGap)
-      if(nrow(x) != 0){
+      if(nrow(x) == 0){
+        x <- data.frame(
+          chromosome = 0,
+          start = 0,
+          end = 0,
+          length = NA,
+          sz = NA,
+          cpg_ids = NA,
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = NA,
+          sample = case
+        )
+      } else {
         x$sample <- case 
       }
       x

@@ -23,6 +23,7 @@ Imports:
 	Gviz,
 	gridExtra,
 	S4Vectors,
+	GenomicRanges,
 	GenomeInfoDb
 Suggests: knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
