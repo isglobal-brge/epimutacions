@@ -217,51 +217,27 @@ epimutations <- function(methy, status = c("status", "control", "case"),
               x <- res_isoforest(bump, beta_bump, sts, case)
             } 
           }))
-          if(is.null(bump_out)){
-            x <- data.frame(
-              chromosome = 0,
-              start = 0,
-              end = 0,
-              length = NA,
-              sz = NA,
-              cpg_ids = NA,
-              outlier_score = NA,
-              outlier_significance = NA,
-              outlier_direction = NA,
-              sample = case
-            )
-            x
           }else{
-            bump_out
-          }
-          }else{
-            x <- data.frame(
-              chromosome = 0,
-              start = 0,
-              end = 0,
-              length = NA,
-              sz = NA,
-              cpg_ids = NA,
-              outlier_score = NA,
-              outlier_significance = NA,
-              outlier_direction = NA,
-              sample = case)
-            x
+            bump_out <- NULL
           }
         }else{
-          x <- data.frame(
-            chromosome = 0,
-            start = 0,
-            end = 0,
-            length = NA,
-            sz = NA,
-            cpg_ids = NA,
-            outlier_score = NA,
-            outlier_significance = NA,
-            outlier_direction = NA,
-            sample = case)
-          x
+          bump_out <- NULL
         })
+      if(is.null(bump_out)){
+        bump_out <- data.frame(
+          chromosome = 0,
+          start = 0,
+          end = 0,
+          length = NA,
+          sz = NA,
+          cpg_ids = NA,
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = NA,
+          sample = case
+        )
+      }
+      bump_out
     }))
   }else if(method == "barbosa") {
     # Compute reference statistics
