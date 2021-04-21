@@ -142,7 +142,7 @@ epimutations <- function(methy, status = c("status", "control", "case"),
     stop("'start' and 'end' arguments must be introduced together")
     
   }
-  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "qn", "beta")
+  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "beta")
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
@@ -186,7 +186,6 @@ epimutations <- function(methy, status = c("status", "control", "case"),
                                       pos = fd$start, chr = fd$seqnames, 
                                       maxGap = maxGap,
                                       cutoff = bump_cutoff)$table
-      
       suppressWarnings(
         if(!is.na(bumps)){
           
@@ -194,10 +193,9 @@ epimutations <- function(methy, status = c("status", "control", "case"),
           bumps$sz <- bumps$end - bumps$start
           # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
           if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
-          
           if(nrow(bumps) != 0){
           # Identify outliers according to selected method
-          bump_out  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii) {
+          bump_out  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii){
             bump <- bumps[ii, ]
             beta_bump <- betas_from_bump(bump, fd, betas)
             if(method == "mahdistmcd") {
@@ -206,44 +204,53 @@ epimutations <- function(methy, status = c("status", "control", "case"),
                 threshold <- sqrt(stats::qchisq(p = 0.999975, df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
-                return(res_mahdistmcd(case, bump, beta_bump, outliers))
+                x <- res_mahdistmcd(case, bump, beta_bump, outliers)
               }
             } else if(method == "mlm") {
               sts <- try(epi_mlm(beta_bump, model), silent = TRUE)
               #sts <- epi_mlm(beta_bump, model)
-              return(res_mlm(bump, beta_bump, sts, case))
+              x <- res_mlm(bump, beta_bump, sts, case)
             } else if(method == "manova") {
               sts <- epi_manova(beta_bump, model, case)
-              return(res_manova(bump, beta_bump, sts, case))
+              x <- res_manova(bump, beta_bump, sts, case)
             } else if(method == "isoforest") {
               sts <- epi_isoforest(beta_bump, case, epi_params$isoforest$ntrees)
-              return(res_isoforest(bump, beta_bump, sts, case))
+              x <- res_isoforest(bump, beta_bump, sts, case)
             }
-            
           }))
+          if(is.null(bump_out)){
+            x <- data.frame(
+              chromosome = 0,
+              start = 0,
+              end = 0,
+              length = NA,
+              sz = NA,
+              cpg_ids = NA,
+              outlier_score = NA,
+              outlier_significance = NA,
+              outlier_direction = NA,
+              sample = case
+            )
+            x
+          }else{
+            bump_out
           }
+          }
+        }else{
+          x <- data.frame(
+            chromosome = 0,
+            start = 0,
+            end = 0,
+            length = NA,
+            sz = NA,
+            cpg_ids = NA,
+            outlier_score = NA,
+            outlier_significance = NA,
+            outlier_direction = NA,
+            sample = case)
+          x
         })
-      if(is.null(bump_out) || nrow(bump_out) == 0){
-        x <- data.frame(
-          chromosome = 0,
-          start = 0,
-          end = 0,
-          length = NA,
-          sz = NA,
-          cpg_ids = NA,
-          outlier_score = NA,
-          outlier_significance = NA,
-          outlier_direction = NA,
-          sample = case
-        )
-      }
     }))
-    #if(is.null(rst)){
-      #return(message("No outliers found"))
-    #}
-    #if(nrow(rst) == 0){
-      #return(message("No outliers found"))
-    #}
   }else if(method == "barbosa") {
     # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
@@ -341,15 +348,21 @@ epimutations <- function(methy, status = c("status", "control", "case"),
       # * P value: "manova" and "mlm"
       # * Outlier score: "isoforest"
       if(method == "manova"){
+        rst_na <- rst[which(is.na(rst$adj_pvalue)), , drop = FALSE]
         rst <- rst[which(rst$adj_pvalue < epi_params$manova$pvalue_cutoff), , drop = FALSE]
+        rst <- rbind(rst_na, rst)
       }
       
       if(method == "mlm"){
+        rst_na <- rst[which(is.na(rst$adj_pvalue)), , drop = FALSE]
         rst <- rst[which(rst$adj_pvalue < epi_params$mlm$pvalue_cutoff), , drop = FALSE]
+        rst <- rbind(rst_na, rst)
       }
       
       if(method == "isoforest"){
+        rst_na <- rst[which(is.na(rst$outlier_score)), , drop = FALSE]
         rst <- rst[which(rst$outlier_score > epi_params$isoforest$outlier_score_cutoff),, drop = FALSE]
+        rst <- rbind(rst_na, rst)
       }
       
       ## Add epi_region_id ####
