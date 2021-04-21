@@ -188,7 +188,6 @@ epimutations <- function(methy, status = c("status", "control", "case"),
                                       cutoff = bump_cutoff)$table
       suppressWarnings(
         if(!is.na(bumps)){
-          
           bumps <- bumps[bumps$L >= min_cpg, ]
           bumps$sz <- bumps$end - bumps$start
           # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
@@ -216,7 +215,7 @@ epimutations <- function(methy, status = c("status", "control", "case"),
             } else if(method == "isoforest") {
               sts <- epi_isoforest(beta_bump, case, epi_params$isoforest$ntrees)
               x <- res_isoforest(bump, beta_bump, sts, case)
-            }
+            } 
           }))
           if(is.null(bump_out)){
             x <- data.frame(
@@ -235,6 +234,19 @@ epimutations <- function(methy, status = c("status", "control", "case"),
           }else{
             bump_out
           }
+          }else{
+            x <- data.frame(
+              chromosome = 0,
+              start = 0,
+              end = 0,
+              length = NA,
+              sz = NA,
+              cpg_ids = NA,
+              outlier_score = NA,
+              outlier_significance = NA,
+              outlier_direction = NA,
+              sample = case)
+            x
           }
         }else{
           x <- data.frame(
@@ -318,20 +330,6 @@ epimutations <- function(methy, status = c("status", "control", "case"),
     }))
   }
   #suppressWarnings({
-    if(nrow(rst) == 0){
-      #message("No outliers found")
-      res <-   data.frame(chromosome = character(), start = numeric(), 
-                         end = numeric(),
-                         sz = numeric(), cpg_n = numeric(), 
-                         cpg_ids = character(),
-                         pvalue = numeric(),
-                         outlier_direction = character(),
-                         sample = character(),
-                         adj_pvalue = numeric(), 
-                         epi_id = character(),
-                         epi_region_id = character())
-      return(res)
-    } else {
       #Calculate the adjusted p value "manova" and "mlm"
       if(method == "manova" | method == "mlm"){
         rst$adj_pvalue <- stats::p.adjust(rst$outlier_significance, method = "hochberg")   
@@ -386,4 +384,4 @@ epimutations <- function(methy, status = c("status", "control", "case"),
       return(rst)
     }
   #})
-}
+
