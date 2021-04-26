@@ -26,7 +26,7 @@ in the colData and the given name for controls and cases. These last 2 can be bi
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
-\code{"barbosa"} and \code{"qn"}.
+\code{"barbosa"} and \code{beta}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
 
@@ -91,7 +91,6 @@ with CpGs being outliers.  For that,  different anomaly detection methods can be
 \item Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 \item Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 \item Barbosa (\code{"barbosa"})
-\item Qn (\code{"Qn"})
 }
 }
 \examples{

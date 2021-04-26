@@ -8,7 +8,7 @@
 #' in the colData and the given name for controls and cases. These last 2 can be binomial. 
 #' @param method a character string naming the outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
-#' \code{"barbosa"} and \code{"qn"}. 
+#' \code{"barbosa"} and \code{beta}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
@@ -29,7 +29,6 @@
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
-#'  * Qn (\code{"Qn"})
 #' @return The function returns an object of class tibble containing the outliers regions.  
 #' The results are composed by the following columns: 
 #' * \code{epi_id}: the name of the anomaly detection method that has been used to detect the epimutation
