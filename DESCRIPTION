@@ -23,7 +23,8 @@ Imports:
 	Gviz,
 	gridExtra,
 	S4Vectors,
-	GenomicRanges
+	GenomicRanges,
+	GenomeInfoDb
 Suggests: knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
 Encoding: UTF-8

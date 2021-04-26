@@ -8,7 +8,7 @@
 #' in the colData and the given name for controls and cases. These last 2 can be binomial. 
 #' @param method a character string naming the outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
-#' \code{"barbosa"} and \code{"qn"}. 
+#' \code{"barbosa"} and \code{beta}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
@@ -29,7 +29,6 @@
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
-#'  * Qn (\code{"Qn"})
 #' @return The function returns an object of class tibble containing the outliers regions.  
 #' The results are composed by the following columns: 
 #' * \code{epi_id}: the name of the anomaly detection method that has been used to detect the epimutation
@@ -68,7 +67,7 @@ epimutations_one_leave_out <- function(methy, status = c("status", "control", "c
          can be useful to create a 'GenomicRatioSet' class object")
   }
   
-  pd <- as.data.frame(SummarizedExperiment::colData(methy))
+  pd <- as.data.frame(Biobase::pData(methy))
   
   if(length(status) != 3){
     stop("'status' must specify (1) the colData column, (2) the control level and (3) cases level names")
@@ -84,16 +83,15 @@ epimutations_one_leave_out <- function(methy, status = c("status", "control", "c
     stop(" '", status[3], "' is not a level of '", status[1], "'")
     
   }
-  
   case_samples <- pd[, status[1]] == status[3]
   case_samples_names <- colnames(methy[,case_samples])
   rm(case_samples)
-  
-  rst <- do.call(rbind, lapply(case_samples_names, function(case) {
-    case_samples <- methy[,case]
-    control_panel <- methy[,-which(colnames(methy) == case)]
-    epimutacions::epimutations(case_samples, control_panel, method, chr, start, end, epi_params, bump_cutoff, min_cpg, verbose)
-  }))
+  rst <- do.call(rbind, lapply(case_samples_names, function(case){
+  case_samples <- pd[, status[1]] == status[3]
+  case_samples_names <- colnames(methy[,case_samples])
+  rm(case_samples)
+  epimutacions::epimutations(case_samples, control_panel, method, chr, start, end, epi_params, bump_cutoff, min_cpg, verbose)
+}))
   return(rst)
 }
 

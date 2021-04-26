@@ -10,16 +10,15 @@ epi_parameters(
   isoforest = list(outlier_score_cutoff = 0.5, ntrees = 100),
   mahdistmcd = list(nsamp = "deterministic"),
   barbosa = list(window_sz = 10, offset_mean = 0.15, offset_abs = 0.1),
-  qn = list(window_sz = 10, qn_th = 3),
-  beta = list(pvalue_cutoff = 1e-06)
+  beta = list(pvalue_cutoff = 1e-06, diff_threshold = 0.1)
 )
 }
 \arguments{
-\item{manova, mlm, isoforest, mahdistmcd, barbosa, qn}{method selected in the function
+\item{manova, mlm, isoforest, mahdistmcd, barbosa, beta}{method selected in the function
 \link[epimutacions]{epimutations}.}
 
-\item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers \code{manova}
-and \code{mlm} methods. Default is \code{0.05}.}
+\item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers in
+\code{manova}, \code{mlm} and \code{beta} methods.}
 
 \item{outlier_score_cutoff}{The outlier score threshold to identify outliers CpGs in
 isolation forest (\code{isoforest}) method. Default is \code{0.5}.}
@@ -39,11 +38,14 @@ For \code{nsamp = "deterministic"}. For more information see \link[robustbase]{c
 Default is \code{"deterministic"}.}
 
 \item{window_sz}{the maximum distance between CpGs to be considered in the same DMR.
-This parameter is used in \code{barbosa} and \code{qn}.}
+This parameter is used in \code{barbosa}.}
 
 \item{offset_mean, offset_abs}{the upper and lower threshold to consider a CpG an outlier when using \code{barbosa} method.}
 
-\item{qn_th}{the threshold to consider a CpG an outlier in the \code{qn} method.}
+\item{pvalue_threshold}{Minimum p-value to consider a CpG an outlier}
+
+\item{diff_threshold}{Minimum methylation difference between the CpG and the mean methylation to
+consider a position an outlier.}
 }
 \value{
 the function returns a list of all set parameters for each method used in

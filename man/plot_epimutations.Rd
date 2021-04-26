@@ -8,6 +8,7 @@ plot_epimutations(
   dmr,
   methy,
   genome = "hg19",
+  genes_annot = FALSE,
   regulation = FALSE,
   from = NULL,
   to = NULL
@@ -26,14 +27,16 @@ function. See the constructor function \link[minfi]{GenomicRatioSet},
 It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}.
 The default is \code{"hg19"}.}
 
-\item{regulation}{a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac and H3K4Me3
-are plotted. The default is FALSE. The running process when \code{regulation} is TRUE
-can take several minutes.}
+\item{regulation}{a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3
+and H3K27Me3 are plotted. The default is FALSE.
+The running process when \code{regulation} is TRUE can take several minutes.}
 
 \item{from, to}{scalar, specifying the range of genomic coordinates
 for the plot of gene annotation region.
 If \code{NULL} the plotting ranges are derived from the individual track.
 Note that \code{from} cannot be larger than \code{to}.}
+
+\item{genes}{a boolean. If TRUE gene annotations are plotted. Default is FALSE.}
 }
 \value{
 The function returns a plot divided in two parts:
@@ -42,7 +45,8 @@ The function returns a plot divided in two parts:
 the epimutation in red, the control samples in dashed black lines and
 population mean in blue. Grey shaded regions indicate 1, 1.5 and 2 standard
 deviations from the mean of the distribution.
-\item UCSC gene annotations for the specified genomic region.
+\item UCSC gene annotations for the specified genomic region (if \code{genes == TRUE})
+\item UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3 and H3K27Me3  (if \code{regulation == TRUE})
 }
 }
 \description{
