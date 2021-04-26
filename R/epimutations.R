@@ -6,7 +6,7 @@
 #' @param control_panel a GenomicRatioSet object containing the control panel (control panel).
 #' @param method a character string naming the outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
-#' \code{"barbosa"}, \code{"qn"} and \code{"beta"}. 
+#' \code{"barbosa"} and \code{"beta"}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
@@ -28,7 +28,6 @@
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
-#'  * Qn (\code{"qn"})
 #'  * Beta (\code{"beta"})
 #'  
 #' We defined candidate epimutation regions (found in candRegsGR) based on the 450K 
@@ -56,7 +55,7 @@
 #'    * For method \code{beta} it return a NA.
 #' * \code{pvalue}: 
 #'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-#'    * For method \code{barbosa}, \code{mahdistmcd}, \code{qn} and \code{beta} is filled with NA.    
+#'    * For method \code{barbosa}, \code{mahdistmcd} and \code{beta} is filled with NA.    
 #' * \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
 #' * \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
 #' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.

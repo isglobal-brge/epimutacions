@@ -51,7 +51,7 @@ epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshol
   df <- rbind(posRegs, negRegs)
   
   if (nrow(df) > 0){
-    df <- subset(df, N_CpGs >= min_cpgs, drop = FALSE )
+    df <- subset(df, sz >= min_cpgs, drop = FALSE )
   }
   df
 }
@@ -78,7 +78,7 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
     rang <- range(cpgGR)
     data.frame(chromosome = GenomeInfoDb::seqnames(rang), start = start(rang), 
                end = end(rang),
-               length = width(rang), N_CpGs = length(cpgGR), 
+               length = width(rang), sz = length(cpgGR), 
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
                outlier_score = mean(cpgGR$pvals),
                outlier_significance = NA,
@@ -89,7 +89,7 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
   if (length(reg_list) == 0){
     df <-   data.frame(chromosome = character(), start = numeric(), 
                        end = numeric(),
-                       length = numeric(), N_CpGs = numeric(), 
+                       length = numeric(), sz = numeric(), 
                        cpg_ids = character(),
                        outlier_score = numeric(),
                        outlier_significance = numeric(),

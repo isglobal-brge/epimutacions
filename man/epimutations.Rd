@@ -23,7 +23,7 @@ epimutations(
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
-\code{"barbosa"}, \code{"qn"} and \code{"beta"}.
+\code{"barbosa"} and \code{"beta"}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
 
@@ -73,7 +73,7 @@ of the used anomaly detection method.
 \item \code{pvalue}:
 \itemize{
 \item For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-\item For method \code{barbosa}, \code{mahdistmcd}, \code{qn} and \code{beta} is filled with NA.
+\item For method \code{barbosa}, \code{mahdistmcd} and \code{beta} is filled with NA.
 }
 \item \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
 \item \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
@@ -98,7 +98,6 @@ with CpGs being outliers.  For that, different outlier detection methods can be 
 \item Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 \item Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
 \item Barbosa (\code{"barbosa"})
-\item Qn (\code{"qn"})
 \item Beta (\code{"beta"})
 }
 
