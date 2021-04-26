@@ -84,15 +84,15 @@ epimutations_one_leave_out <- function(methy, status = c("status", "control", "c
     stop(" '", status[3], "' is not a level of '", status[1], "'")
     
   }
-  
-  cases_number <- which(pd[, status[1]] == status[3])
-  pd[, status[1]] <- rep("control", nrow(pd))
-  
-  rst <- do.call(rbind, lapply(cases_number, function(case) {
-    pd[case, status[1]] <- status[3]
-    Biobase::pData(methy) <- S4Vectors::DataFrame(pd)
-    epimutacions::epimutations(methy, status, method, chr, start, end, epi_params, bump_cutoff, min_cpg, verbose)
-  }))
+  case_samples <- pd[, status[1]] == status[3]
+  case_samples_names <- colnames(methy[,case_samples])
+  rm(case_samples)
+  rst <- do.call(rbind, lapply(case_samples_names, function(case){
+  case_samples <- pd[, status[1]] == status[3]
+  case_samples_names <- colnames(methy[,case_samples])
+  rm(case_samples)
+  epimutacions::epimutations(case_samples, control_panel, method, chr, start, end, epi_params, bump_cutoff, min_cpg, verbose)
+}))
   return(rst)
 }
 

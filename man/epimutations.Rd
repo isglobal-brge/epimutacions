@@ -5,8 +5,8 @@
 \title{Epimutations analysis based on outlier detection methods}
 \usage{
 epimutations(
-  methy,
-  status = c("status", "control", "case"),
+  case_samples,
+  control_panel,
   method = "manova",
   chr = NULL,
   start = NULL,
@@ -19,11 +19,7 @@ epimutations(
 )
 }
 \arguments{
-\item{methy}{a GenomicRatioSet object containing the samples for the analysis.
-See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
-
-\item{status}{a vector of 3 character string specifying the name of the status variable
-in the colData and the given name for controls and cases. These last 2 can be binomial.}
+\item{control_panel}{a GenomicRatioSet object containing the control panel (control panel).}
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
@@ -88,6 +84,8 @@ of the used anomaly detection method.
 \description{
 The function identifies  Differentially Methylated Regions
 in a case sample by comparing it against a control panel.
+@param case_samples a GenomicRatioSet object containing the case samples.
+See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.
 }
 \details{
 The function compares a case sample against a control panel to identify epimutations in the given
@@ -113,8 +111,10 @@ to other CpGs can form an epimutation. More information can be found in candRegs
 library(epimutacions)
 data(methy)
 
-#Find epimutations in cases samples from methy dataset
+#Find epimutations in GSM2562701 sample of methy dataset
 
-epimutations(methy, method = "manova")
+case_samples <- methy[,"GSM2562701"]
+control_panel <- methy[,-51]
+epimutations(case_samples, control_panel, method = "manova")
 }
 }
