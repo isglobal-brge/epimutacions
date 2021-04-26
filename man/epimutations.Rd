@@ -19,11 +19,7 @@ epimutations(
 )
 }
 \arguments{
-\item{case_samples}{a GenomicRatioSet object containing the case samples.
-See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
-
-\item{control_panel}{a GenomicRatioSet object containing the control panel (control panel).
-See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
+\item{control_panel}{a GenomicRatioSet object containing the control panel (control panel).}
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
@@ -88,6 +84,8 @@ of the used anomaly detection method.
 \description{
 The function identifies  Differentially Methylated Regions
 in a case sample by comparing it against a control panel.
+@param case_samples a GenomicRatioSet object containing the case samples.
+See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.
 }
 \details{
 The function compares a case sample against a control panel to identify epimutations in the given
@@ -115,9 +113,8 @@ data(methy)
 
 #Find epimutations in GSM2562701 sample of methy dataset
 
-case_sample <- methy[,"GSM2562701"]
+case_samples <- methy[,"GSM2562701"]
 control_panel <- methy[,-51]
-
-epimutations(case_sample, control_panel, method = "manova")
+epimutations(case_samples, control_panel, method = "manova")
 }
 }

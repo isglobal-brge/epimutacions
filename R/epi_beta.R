@@ -1,23 +1,23 @@
 #' @title Identifies epimutations based on a beta distribution.
 #' 
-#' @description This method models the DNA methylation data using a beta distribution. First, 
+#' @description \code{epi_beta} method models the DNA methylation data using a beta distribution. First, 
 #' the beta distribution parameters of the reference population are precomputed and passed
 #' to the method. Then, we compute the probability of observing the methylation values 
 #' of the case from the reference beta distribution. CpGs with p-values smaller than a threshold 
 #' \code{pvalue_threshold} and with a methylation difference with the mean reference methylation
-#' higher than \code{diff_threshold} are defined as outlier CpGs. Finally, epimutations are defined as group
-#' of contiguous outlier CpGs.
+#' higher than \code{diff_threshold} are defined as outlier CpGs. Finally, 
+#' epimutations are defined as a group of contiguous outlier CpGs.
 #' 
-#' @param beta_params Matrix with the parameters of the reference beta distributions for 
+#' @param beta_params matrix with the parameters of the reference beta distributions for 
 #' each CpG in the dataset.
-#' @param betas_case Matrix with the methylation values for a case
-#' @param annot Annotation of the CpGs
-#' @param pvalue_threshold Minimum p-value to consider a CpG an outlier
-#' @param diff_threshold Minimum methylation difference between the CpG and the mean methylation to
+#' @param betas_case matrix with the methylation values for a case.
+#' @param annot annotation of the CpGs.
+#' @param pvalue_threshold minimum p-value to consider a CpG an outlier.
+#' @param diff_threshold minimum methylation difference between the CpG and the mean methylation to
 #' consider a position an outlier. 
-#' @param min_cpgs Minimum number of CpGs to consider an epimutation
-#' @param maxGap Maximum distance between two contiguous CpGs to combine them into an epimutation
-#' @return The function returns a data frame with the regions candidates to be
+#' @param min_cpgs minimum number of CpGs to consider an epimutation.
+#' @param maxGap maximum distance between two contiguous CpGs to combine them into an epimutation.
+#' @return The function returns a data frame with the candidate regions to be
 #' epimutations.
 epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshold, 
                       diff_threshold, min_cpgs = 3, maxGap){
@@ -72,11 +72,11 @@ getBetaParams <- function(x){
 defineRegions <- function(regGR, maxGap, up = TRUE){
   
   regGR <- sort(regGR)
-  cl <- bumphunter::clusterMaker(seqnames(regGR), start(regGR), maxGap = maxGap)
+  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), start(regGR), maxGap = maxGap)
   reg_list <- lapply(unique(cl), function(i){
     cpgGR <- regGR[cl == i]
     rang <- range(cpgGR)
-    data.frame(chromosome = seqnames(rang), start = start(rang), 
+    data.frame(chromosome = GenomeInfoDb::seqnames(rang), start = start(rang), 
                end = end(rang),
                length = width(rang), N_CpGs = length(cpgGR), 
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
