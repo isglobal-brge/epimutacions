@@ -9,6 +9,8 @@
 #' \code{"barbosa"} and \code{beta}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
+#' @param BPPARAM (\code{"BiocParallelParam"}) \link[BiocParallel]{BiocParallelParam} object
+#'  to configure parallelization execution. By default, execution is non-parallel. 
 #' @param verbose logical. If TRUE additional details about the procedure will provide to the user. 
 #' The default is TRUE.
 #' @param ... Further parameters passed to `epimutations`
@@ -52,6 +54,7 @@
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 
+                                       BPPARAM = BiocParallel::SerialParam(),
                                        verbose = TRUE, ...){
   
   if(class(methy) != "GenomicRatioSet")
@@ -61,13 +64,13 @@ epimutations_one_leave_out <- function(methy, method = "manova",
          can be useful to create a 'GenomicRatioSet' class object")
   }
   
-  rst <- do.call(rbind, lapply(colnames(methy), function(case){
+  rst <- do.call(rbind, BiocParallel::bplapply(colnames(methy), function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]
     epimutacions::epimutations(case_samples, control_panel, method, 
                                epi_params = epi_params,
                                verbose = verbose, ...)
-  }))
+  }, BPPARAM = BPPARAM))
   return(rst)
 }
 
