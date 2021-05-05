@@ -8,6 +8,7 @@ epimutations_one_leave_out(
   methy,
   method = "manova",
   epi_params = epi_parameters(),
+  BPPARAM = BiocParallel::SerialParam(),
   verbose = TRUE,
   ...
 )
@@ -21,6 +22,9 @@ This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"ma
 \code{"barbosa"} and \code{beta}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
+
+\item{BPPARAM}{(\code{"BiocParallelParam"}) \link[BiocParallel]{BiocParallelParam} object
+to configure parallelization execution. By default, execution is non-parallel.}
 
 \item{verbose}{logical. If TRUE additional details about the procedure will provide to the user.
 The default is TRUE.}
