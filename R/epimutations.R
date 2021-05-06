@@ -331,6 +331,22 @@ epimutations <- function(case_samples, control_panel,
         rst <- rbind(rst_na, rst)
       }
       
+      ## Check that epimutations remain for mlm and manova
+      if(nrow(rst) == 0){
+        rst <- data.frame(
+          chromosome = 0,
+          start = 0,
+          end = 0,
+          length = NA,
+          sz = NA,
+          cpg_ids = NA,
+          outlier_score = NA,
+          outlier_significance = NA,
+          outlier_direction = NA,
+          sample = cas_sam
+        )
+      }
+      
       ## Add epi_region_id ####
       rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA
       rst_c <- rst
