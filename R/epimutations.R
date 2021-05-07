@@ -343,8 +343,15 @@ epimutations <- function(case_samples, control_panel,
           outlier_score = NA,
           outlier_significance = NA,
           outlier_direction = NA,
-          sample = cas_sam
+          sample = cas_sam,
+          adj_pvalue = NA
         )
+        rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+        colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
+                           "outlier_score", "pvalue", "outlier_direction", 
+                           "sample", "adj_pvalue", "epi_id")
+        rownames(rst) <- seq_len(nrow(rst))
+        rst <- rst[ , c(12, 10, 1:7, 9, 8, 11)]
       }
       
       ## Add epi_region_id ####
