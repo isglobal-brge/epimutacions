@@ -6,23 +6,16 @@
 \usage{
 epimutations_one_leave_out(
   methy,
-  status = c("status", "control", "case"),
   method = "manova",
-  chr = NULL,
-  start = NULL,
-  end = NULL,
   epi_params = epi_parameters(),
-  bump_cutoff = 0.1,
-  min_cpg = 3,
-  verbose = TRUE
+  BPPARAM = BiocParallel::SerialParam(),
+  verbose = TRUE,
+  ...
 )
 }
 \arguments{
 \item{methy}{a GenomicRatioSet object containing the samples for the analysis.
 See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
-
-\item{status}{a vector of 3 character string specifying the name of the status variable
-in the colData and the given name for controls and cases. These last 2 can be binomial.}
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
@@ -30,21 +23,13 @@ This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"ma
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
 
-\item{chr}{a character string containing the sequence names to be analysed. The default value is \code{NULL}.}
-
-\item{start}{an integer specifying the start position. The default value is \code{NULL}.}
-
-\item{end}{an integer specifying the end position. The default value is \code{NULL}.}
-
-\item{epi_params}{The parameters for each method. See the function \link[epimutations]{epi_parameters}.}
-
-\item{bump_cutoff}{a numeric value of the estimate of the genomic profile above the
-cutoff or below the negative of the cutoff will be used as candidate regions.}
-
-\item{min_cpg}{an integer specifying the minimum CpGs number in a DMR.}
+\item{BPPARAM}{(\code{"BiocParallelParam"}) \link[BiocParallel]{BiocParallelParam} object
+to configure parallelization execution. By default, execution is non-parallel.}
 
 \item{verbose}{logical. If TRUE additional details about the procedure will provide to the user.
 The default is TRUE.}
+
+\item{...}{Further parameters passed to \code{epimutations}}
 }
 \value{
 The function returns an object of class tibble containing the outliers regions.
