@@ -169,6 +169,7 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
       cpg_ids = character(),
       outlier_score = numeric(),
       outlier_significance = numeric(),
+      adj_pvalue = numeric(),
       outlier_direction = character()
     )
     if(nrow(flag_df) == 0) {
@@ -186,6 +187,7 @@ epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin,
           cpg_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
           outlier_score = NA,
           outlier_significance = NA,
+          adj_pvalue = NA,
           outlier_direction = x$outlier_direction[1]
         )
       } else {
