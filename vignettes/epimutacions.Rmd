@@ -25,7 +25,7 @@ author:
 date: "`r Sys.Date()`"
 package: "`r pkg_ver('epimutacions')`"
 abstract: >
-    An introductory guide to analysing DNA methylation data with R package `epimutacions`. The areas covered in this document are: installing the package, loading the data, identifying and annotating the epimutations and results visualization.  
+    An introductory guide to analysing DNA methylation data with R package `epimutacions`. The areas covered in this document are: installing the package, loading the data, identifying, annotating and visualizing the epimutations.   
 
 output:
   BiocStyle::html_document
@@ -60,7 +60,7 @@ The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) whi
 
 The `epimutacions` package computes a genome-wide DNA methylation analysis to detect the epigenetic variants to be considered as biomarkers for samples with rare diseases (epimutations). The method compares a case sample with suspected rare disease against a reference panel.  The package focused on the detection of outliers in DNA methylation patterns associated with the diseases as proposed by [@aref2019].  
 
-The identification of relevant genomic methylation regions for a given sample having a rare disease will be is by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter [@jaffe2012bump] approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. Those include multivariate analysis of variance (MANOVA) [@friedrich2017package], multivariate linear model [@martin2020multivariate], isolation forest [@cortes2021package] and robust mahalanobis distance [@maechler2021package]. However, Barbosa [@barbosa2018] and Beta methods do not use bump-hunter output as input. Barbosa [@barbosa2018] checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.  
+The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter [@jaffe2012bump] approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. Those include multivariate analysis of variance (MANOVA) [@friedrich2017package], multivariate linear model [@martin2020multivariate], isolation forest [@cortes2021package] and robust mahalanobis distance [@maechler2021package]. However, Barbosa [@barbosa2018] and Beta methods do not use bump-hunter output. Barbosa [@barbosa2018] checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.  
 
 ## Input data
 
@@ -70,8 +70,8 @@ In the first case, normalization through `epi_preprocess()` function is highly r
 
 Finally, these datasets are used as an input of  `epimutations()` function. It should be mentioned that  case samples and reference panel are introduced separately. 
 
-```{r workflow, echo=FALSE, fig.cap="Input data workflow", out.width = '90%', fig.align='center'}
-knitr::include_graphics("C:/Users/Leire/Documents/GitHub/epimutacions/fig/workflow.png")
+```{r workflow, echo=FALSE, fig.cap="Allowed data formats, normalization and input types", out.width = '90%', fig.align='center'}
+knitr::include_graphics("fig/workflow.png")
 ```
 
 ## Candidate regions
@@ -80,9 +80,14 @@ Epimutations detection has two main steps: (1) definition of candidate regions a
 
 In Illumina 450K array, probes are unequally distributed along the genome, limiting the number of regions that can fulfill the requirements to be considered an epimutation. So, we have computed a dataset containing the regions that are candidates to become an epimutation.  
 
-To define the candidate epimutations, we relied on the clustering from bumphunter. We defined a primary dataset with all the CpGs from the Illumina 450K array.  Then, we run bumphunter and selected those regions with at least 3 CpGs. As a result, we found 40408 candidate epimutations. The code for generating these regions can be found in epimutacion package. 
+To define the candidate epimutations, we relied on the clustering from bumphunter. We defined a primary dataset with all the CpGs from the Illumina 450K array.  Then, we run bumphunter and selected those regions with at least 3 CpGs. As a result, we found 40408 candidate epimutations which are available in `candRegsGR` dataset. The code for generating these regions can be found in epimutacion package. 
 
 In addition, we converted the candidate region from hg19 to hg38 coordinates, using NCBI remap. We selected regions that mapped to one region in hg38 with the same length. This yielded a total of 39944, the 98.85% of total hg19 regions. After converting to hg38, we can use these ranges to be annotated to ENCODE cREs. Overall, we mapped 30163 candidate regions to cREs, representing 74.65% of total candidate regions. 
+
+```{r}
+data("candRegsGR")
+candRegsGR
+```
 
 # Setup
 
@@ -104,17 +109,8 @@ library(epimutacions)
 
 ## Preparing dataset
 
-We defined 40408 candidate epimutation regions (found in `candRegsGR`) based on the 450K  array design. As CpGs are not equally distributed along the genome, only CpGs closer to other CpGs can form an epimutation. We cluster the CpGs that were closer than 1000Kb to their closest CpG.
 
-Next, we mapped epimutations regions to hg38. We selected those regions whose mapping between hg19 and hg38 builds was 100%. Also, we overlapped epimutation regions with ENCODE cREs v13. 
-
-
-```{r}
-data("candRegsGR")
-candRegsGR
-```
-
-In addition, the package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy", package = "epimutacions")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
+The package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy", package = "epimutacions")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
 
 
 ```{r}
