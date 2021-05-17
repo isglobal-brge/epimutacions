@@ -196,7 +196,7 @@ epimutations <- function(case_samples, control_panel,
           if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
           if(nrow(bumps) != 0){
           # Identify outliers according to selected method
-          bump_out  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii){
+          bumps  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii){
             bump <- bumps[ii, ]
             beta_bump <- betas_from_bump(bump, fd, betas)
             if(method == "mahdistmcd") {
@@ -220,29 +220,30 @@ epimutations <- function(case_samples, control_panel,
             } 
           }))
           ## Filter using the adjusted p-value calculated from regions identified in each sample ("manova and "mlm")
-          if(method == "manova" | !is.null(bump_out)){
-            bump_out <- filter_manova(bump_out, epi_params$manova$pvalue_cutoff)
+          if(method == "manova" & !is.null(bumps)){
+            bumps <- filter_manova(bumps, epi_params$manova$pvalue_cutoff)
           }
-          if(method == "mlm" | !is.null(bump_out)){
-            bump_out <- filter_mlm(bump_out, epi_params$mlm$pvalue_cutoff)
+          if(method == "mlm" & !is.null(bumps)){
+            bumps <- filter_mlm(bumps, epi_params$mlm$pvalue_cutoff)
           }
-          #Add a row filled by NAs for the samples with any epimutations
-          if(is.null(nrow(bump_out)) || nrow(bump_out) == 0){
-            bump_out <- data.frame(chromosome = 0,
-                                   start = 0,
-                                   end = 0,
-                                   length = NA,
-                                   sz = NA,
-                                   cpg_ids = NA,
-                                   outlier_score = NA,
-                                   outlier_significance = NA,
-                                   adj_pvalue = NA,
-                                   outlier_direction = NA,
-                                   sample = case)
-          }
-          bump_out
+       
           }
         })
+      #Add a row filled by NAs for the samples with any epimutations
+      if(is.null(nrow(bumps)) || nrow(bumps) == 0){
+        bumps <- data.frame(chromosome = 0,
+                            start = 0,
+                            end = 0,
+                            length = NA,
+                            sz = NA,
+                            cpg_ids = NA,
+                            outlier_score = NA,
+                            outlier_significance = NA,
+                            adj_pvalue = NA,
+                            outlier_direction = NA,
+                            sample = case)
+      }
+      bumps
     }))
     ## Methods that do not need bumphunter ("barbosa" and "beta")
   }else if(method == "barbosa") {
@@ -312,7 +313,7 @@ epimutations <- function(case_samples, control_panel,
       }
       x
     }))
-  }
+  }   
       # 3. Prepare the output and addition of CREs
       ## Prepare the output
       rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
