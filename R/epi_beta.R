@@ -76,7 +76,7 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
   reg_list <- lapply(unique(cl), function(i){
     cpgGR <- regGR[cl == i]
     rang <- range(cpgGR)
-    data.frame(chromosome = GenomeInfoDb::seqnames(rang), start = start(rang), 
+    data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), start = start(rang), 
                end = end(rang),
                length = width(rang), sz = length(cpgGR), 
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
