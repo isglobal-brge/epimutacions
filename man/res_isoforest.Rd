@@ -5,7 +5,7 @@
 \title{Creates a data frame containing the results
 obtained from Isolation Forest}
 \usage{
-res_isoforest(bump, beta_bump, sts, case)
+res_isoforest(bump, beta_bump, sts, case, outlier_score_cutoff)
 }
 \arguments{
 \item{bump}{a DMR obtained from \link[bumphunter]{bumphunter}

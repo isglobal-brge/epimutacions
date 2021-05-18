@@ -82,6 +82,7 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
                outlier_score = mean(cpgGR$pvals),
                outlier_significance = NA,
+               adj_pvalue =  NA,
                outlier_direction = ifelse(up, "hypermethylation", "hypomethylation"),
                sample = NA
     )
@@ -93,8 +94,8 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
                        cpg_ids = character(),
                        outlier_score = numeric(),
                        outlier_significance = numeric(),
-                       outlier_direction = character()
-    )
+                       adj_pvalue = numeric(),
+                       outlier_direction = character())
   } else {
     Reduce(rbind, reg_list)
   }

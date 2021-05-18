@@ -109,8 +109,9 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
   # * lines: 'longdash' for controls and 'solid' for case and population mean
   
   betas_sd_mean$beta_values$status <- ifelse(betas_sd_mean$beta_values$variable == dmr$sample, dmr$sample, "control")
-  betas_sd_mean$beta_values$color <- ifelse(betas_sd_mean$beta_values$status == dmr$sample,"red","black")
   betas_sd_mean$beta_values$lines <- ifelse(betas_sd_mean$beta_values$status == "control","longdash","solid")
+  colors <- c("control" = "black", "mean" = "darkblue", "red")
+  names(colors)[3] <- dmr$sample
   
   #Generate a variable with the CpGs names
   names <- betas_sd_mean$beta_values[betas_sd_mean$beta_values$variable == dmr$sample,]
@@ -120,8 +121,7 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
   
   plot_betas <- ggplot2::ggplot() + 
     ggplot2::geom_line(data = betas_sd_mean$beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), linetype = betas_sd_mean$beta_values$lines) +
-    ggplot2::geom_point(data = betas_sd_mean$beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), color = betas_sd_mean$beta_values$color)
-  
+    ggplot2::geom_point(data = betas_sd_mean$beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status))
   plot_sd <- plot_betas +
     ggplot2::geom_ribbon(data = betas_sd_mean$sd, ggplot2::aes(x = start, ymin = sd_2_lower, ymax = sd_2_upper), fill = "gray39", alpha = 0.4) +
     ggplot2::geom_ribbon(data = betas_sd_mean$sd, ggplot2::aes(x = start, ymin = sd_1.5_lower, ymax = sd_1.5_upper), fill = "gray40", alpha = 0.4) +
@@ -133,11 +133,11 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
   
   plot_cpg_names <- plot_mean +
     ggrepel::geom_text_repel() + 
-    ggplot2::annotate(geom="text", x=names$start, y=names$value + 0.05, label=names$id, color="black")
+    ggplot2::annotate(geom = "text", x = names$start, y = names$value + 0.05, label = names$id, color = "black")
   
   plot <- plot_cpg_names + 
-    #ggplot2::lims(y = c(0,1)) +  
-    ggplot2::scale_colour_manual(name="Status", values=c("black","red","darkblue")) +
+    ggplot2::lims(y = c(0,1)) +  
+    ggplot2::scale_colour_manual(name = "Status", values = colors) +
     ggplot2::theme_bw() + 
     ggplot2::labs(x = "Coordinates") + 
     ggplot2::labs(y = "DNA methylation level")

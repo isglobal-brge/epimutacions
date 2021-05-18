@@ -127,6 +127,7 @@ cols_names <- function(x, cpg_ids_col = FALSE){
 betas_sd_mean <- function(gr){
   
   df <- as.data.frame(gr)
+  colnames(df) <- c("seqnames", "start", "end", "width", "strand",colnames(GenomicRanges::elementMetadata(gr)))
   #Compute: 
   # * beta values
   # * Population mean 
