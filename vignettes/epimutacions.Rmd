@@ -64,7 +64,11 @@ The identification of relevant genomic methylation regions for a given sample ha
 
 ## Input data
 
-The package allows two different types of inputs: (1) `IDAT` files containing the case samples and `RGChannelSet` object as reference panel. The reference panel can be supplied by the user or can be selected through the example datasets that the package provides.  (2) `GenomicRatioSet` object containing case and control samples.  
+The package allows two different types of inputs: 
+
+ * (1) `IDAT` files containing the case samples and `RGChannelSet` object as reference panel. The reference panel can be supplied by the user or can be selected through the example datasets that the package provides. 
+ 
+* (2) `GenomicRatioSet` object containing case and control samples.  
 
 In the first case, normalization through `epi_preprocess()` function is highly recommended. In order to remove the unwanted variation caused by the batch effect when combining data from different sources. As a result, `GenomicRatioSet` object will be obtained.  
 
@@ -120,14 +124,14 @@ methy
 table(methy$status)
 ```
 
-We ar going to create two different datasets for further analysis, `case_samples` and `control_panel`: 
+We are going to create two different datasets for further analysis, `case_samples` and `control_panel`: 
 ```{r}
 case_samples <- methy[,methy$status == "case"]
 control_samples <- methy[,methy$status == "control"]
 ```
 
 # Preprocessing
-The preprocessing in `epimutacions` package is done by `epi_preprocess()` function. It contains 6 preprocessing method corresponding to minfi package:
+The preprocessing in `epimutacions` package is done by `epi_preprocess()` function. It contains 6 preprocessing methods corresponding to minfi package that can be selected by the user:
 
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | Method        |  Function                   | Description                                                          |
@@ -153,7 +157,7 @@ The preprocessing in `epimutacions` package is done by `epi_preprocess()` functi
 |               |                             | HumanMethylation450 platform                                         | 
 +---------------+-----------------------------+----------------------------------------------------------------------+
 
-In addition, `norm_parameters()` function contains  the parameters for each method described above: 
+In addition, the unique parameters for each normalization approach are defined through `norm_parameters()`: 
 
 +----------+-----------------------+-----------------------------------------------------------------------------+
 | Method   |Parameters             |Description                                                                  |
@@ -181,34 +185,45 @@ In addition, `norm_parameters()` function contains  the parameters for each meth
 |          | `keepCN`              | Keeps copy number estimates                                                 |
 +---------------+-----------------------------+------------------------------------------------------------------+
 
-Invoking `norm_parameters()` with no arguments returns a list of the default settings for each method: 
+The default settings for each method can be obtained by invoking  the function `norm_parameters()` with no arguments:
 
 ```{r}
 norm_parameters()
 ```
 
-If we do not want to perform the background correction in `illumina` method we can do as following: 
+However, to modify the parameters related to a  method you can do as the following example for `illumina` approach:
 
 ```{r}
 parameters <- norm_parameters(illumina = list("bg.correct" = FALSE))
 parameters$illumina$bg.correct
 ```
+
 # Epimutations
 
-## Methods included for epimutations identification
+## Epimutations detection
 
-The `epimutacions` package includes 6 methods to detect epimutations. Two of these methods were described elsewhere before [@barbosa2018; @aref2019], and the other three are adaptations of one of them:
+The `epimutacions` package includes 6 methods for epivariants identification: (1) Multivariate Analysis of variance (`manova`), (2) Multivariate Linear Model (`mlm`), (3) isolation forest (`isoforest`), (4) robust mahalanobis distance  (`mahdistmcd`) (5) `barbosa` and (6) `beta`. 
 
-| Method | Short description |
-|:------:|:------------------|
-| `barbosa`     | Previously described [@barbosa2018]                                                                     |
-| `manova`      | Previously described [@aref2019]                                                                        |
-| `mlm`         | Adapted from [@aref2019] using multivariate linear methods to identify outliers                         |
-| `iso.forest`  | Adapted from [@aref2019] using isolation forest to detect outliers                                      |
-| `mahdist.mcd` | Adapted from [@aref2019] using robust Mahalanobis distance with a custom threshold to identify outliers |
-| `beta`        |Identifies epimutations based on a beta distribution                                                     |
 
-### Function parameters for each method
+In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method [@jaffe2012bump]. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, `barbosa` and `beta` do not identify outliers by filtering the DMRs. `barbosa`  utilized a sliding window approach to individually compare the methylation value  in each proband against the referece panel. `Beta` used beta distribution to identify epivariants in the case sample. 
+
+
+```{r, epi_mvo, message=FALSE, warning=FALSE}
+epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
+epi_ml <- epimutations(case_samples, control_samples, method = "mlm")
+epi_iso <- epimutations(case_samples, control_samples, method = "isoforest")
+epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
+```
+
+
+```{r, epi_beta, message=FALSE, warning=FALSE}
+epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
+epi_beta <- epimutations(case_samples, control_samples, method = "beta")
+
+```
+
+
+## Unique parameters
 
 The `epi_parameters()` function  is  useful to set the value of the parameters for the above methods. 
 In the following table each argument is described: 
@@ -246,43 +261,6 @@ parameters <- epi_parameters(manova = list("pvalue_cutoff" = 0.01))
 parameters$manova$pvalue_cutoff
 ```
 
-### Methods from literature
-
-We called `"barbosa"` to the method described in [@barbosa2018].  Briefly, this algorithm check for each CpG, if the proband's measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers and they are separated by less than 500 base pairs.
-
-```{r, epi_brb, message=FALSE}
-epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
-```
-
-We called `"manova"` to the implementation of [@aref2019]. This algorithm starts by running `bumphunter`, a method to detect DMRs (Differentially Methylated Regions) [@peters2015novo], comparing the proband versus the reference group. This first step results in a list of DMRs, regions where the proband has different methylation than the reference group. Then, each DMR is tested for outlier using a MANOVA (Multivariate ANalysis Of VAriance). DMRs are then subset based on the F-statistic magnitude and the mean difference between proband and reference group DNA methylation.
-
-```{r, epi_mvo, message=FALSE, warning=FALSE}
-epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
-```
-
-### Altered methods from literature
-
-From [@aref2019] implementation, we proposed three different approaches. These three approaches run the `bumphunter` step but test DMR for outliers using different approaches: (1) `"mlm"`, which uses a multivariate linear model; (2) `"isoforest"`, that uses isolation forest; and (3) `"mahdistmcd"`, which uses robust Mahalanobis distance.
-
-```{r, epi_mlm, message=FALSE, warning=FALSE}
-epi_ml <- epimutations(case_samples, control_samples, method = "mlm")
-```
-
-```{r, epi_iso, message=FALSE, warning=FALSE}
-epi_iso <- epimutations(case_samples, control_samples, method = "isoforest")
-```
-
-```{r, epi_mcd, message=FALSE, warning=FALSE}
-epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
-```
-
-### Other methods
-
-We implemented `"beta"` method which  models the DNA methylation data using a beta distribution.
-
-```{r, epi_beta, message=FALSE, warning=FALSE}
-epi_beta <- epimutations(case_samples, control_samples, method = "beta")
-```
 
 ## Results description
 
