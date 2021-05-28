@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2021-05-27" />
+<meta name="date" content="2021-05-28" />
 
 <title>Detection of epimutations with state of the art methods in methylation data</title>
 
@@ -208,7 +208,7 @@ function toggle_visibility(id1) {
 <p class="author-name">Leire Abarrategui Martinez<span class="affil-mark">1,2,3*</span>, Carles Hernandez-Ferrer<span class="affil-mark">4,5**</span>, Carlos Ruiz-Arenas<span class="affil-mark">6,7***</span> and Juan R. Gonzalez<span class="affil-mark">1,8****</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)<br><span class="affil-mark">2</span>of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK<br><span class="affil-mark">3</span>University of Barcelona (UAB)<br><span class="affil-mark">4</span>Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation<br><span class="affil-mark">5</span>Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain<br><span class="affil-mark">6</span>de Investigación Biomédica en Red de Enfermedades Raras (CIBERER), Barcelona, Spain<br><span class="affil-mark">7</span>Pompeu Fabra (UPF), Barcelona, Spain<br><span class="affil-mark">8</span>Department of Mathematics, Autonomous University of Barcelona (UAB)</p>
 <p class="author-email"><span class="affil-mark">*</span><a href="mailto:leire.abarrategui-martinez@newcastle.ac.uk">leire.abarrategui-martinez@newcastle.ac.uk</a><br><span class="affil-mark">**</span><a href="mailto:carles.hernandez@cnag.crg.eu">carles.hernandez@cnag.crg.eu</a><br><span class="affil-mark">***</span><a href="mailto:carlos.ruiza@upf.edu">carlos.ruiza@upf.edu</a><br><span class="affil-mark">****</span><a href="mailto:juanr.gonzalez@isglobal.org">juanr.gonzalez@isglobal.org</a></p>
-<h4 class="date">2021-05-27</h4>
+<h4 class="date">2021-05-28</h4>
 <h4 class="abstract">Abstract</h4>
 <p>An introductory guide to analysing DNA methylation data with R package <code>epimutacions</code>. The areas covered in this document are: installing the package, loading the data, identifying, annotating and visualizing the epimutations.</p>
 <h4 class="package">Package</h4>
@@ -259,7 +259,7 @@ The main function to estimate the epivariants is called <code>epimutations()</co
 <div id="methodology" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Methodology</h2>
 <p>The <code>epimutacions</code> package computes a genome-wide DNA methylation analysis to detect the epigenetic variants to be considered as biomarkers for samples with rare diseases (epimutations). The method compares a case sample with suspected rare disease against a reference panel. The package focused on the detection of outliers in DNA methylation patterns associated with the diseases as proposed by <span class="citation">(Aref-Eshghi et al. 2019)</span>.</p>
-<p>The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter <span class="citation">(Jaffe et al. 2012)</span> approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. Those include multivariate analysis of variance (MANOVA) <span class="citation">(Friedrich et al. 2017)</span>, multivariate linear model <span class="citation">(Martı́n 2020)</span>, isolation forest <span class="citation">(Cortes and Cortes 2021)</span> and robust mahalanobis distance <span class="citation">(Maechler et al. 2021)</span>. However, Barbosa <span class="citation">(M et al. 2018)</span> and Beta methods do not use bump-hunter output. Barbosa <span class="citation">(M et al. 2018)</span> checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.</p>
+<p>The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter <span class="citation">(Jaffe et al. 2012)</span> approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. These include Multivariate Analysis of Variance (MANOVA) <span class="citation">(Friedrich et al. 2017)</span>, Multivariate Linear Model <span class="citation">(Martı́n 2020)</span>, isolation forest <span class="citation">(Cortes and Cortes 2021)</span> and robust mahalanobis distance <span class="citation">(Maechler et al. 2021)</span>. However, Barbosa <span class="citation">(M et al. 2018)</span> and Beta methods do not use bump-hunter output. Barbosa <span class="citation">(M et al. 2018)</span> checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.</p>
 </div>
 <div id="input-data" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span> Input data</h2>
@@ -284,7 +284,7 @@ Figure 1: <span class="caption-title">Allowed data formats, normalization and in
 <div id="candidate-regions" class="section level2" number="1.4">
 <h2><span class="header-section-number">1.4</span> Candidate regions</h2>
 <p>Epimutations detection has two main steps: (1) definition of candidate regions and (2) evaluation of outlier significance. Although there are different algorithms to define epimutations regions, they share common features. In general, we define an epimutation as at least 3 contiguous CpGs with a maximum distance of 1kb between them.</p>
-<p>In Illumina 450K array, probes are unequally distributed along the genome, limiting the number of regions that can fulfill the requirements to be considered an epimutation. So, we have computed a dataset containing the regions that are candidates to become an epimutation.</p>
+<p>In Illumina 450K array, probes are unequally distributed along the genome, limiting the number of regions that can fulfil the requirements to be considered an epimutation. So, we have computed a dataset containing the regions that are candidates to become an epimutation.</p>
 <p>To define the candidate epimutations, we relied on the clustering from bumphunter. We defined a primary dataset with all the CpGs from the Illumina 450K array. Then, we run bumphunter and selected those regions with at least 3 CpGs. As a result, we found 40408 candidate epimutations which are available in <code>candRegsGR</code> dataset. The code for generating these regions can be found in epimutacion package.</p>
 <p>In addition, we converted the candidate region from hg19 to hg38 coordinates, using NCBI remap. We selected regions that mapped to one region in hg38 with the same length. This yielded a total of 39944, the 98.85% of total hg19 regions. After converting to hg38, we can use these ranges to be annotated to ENCODE cREs. Overall, we mapped 30163 candidate regions to cREs, representing 74.65% of total candidate regions.</p>
 <pre class="r"><code>data(&quot;candRegsGR&quot;)
@@ -556,7 +556,7 @@ parameters$illumina$bg.correct</code></pre>
 <div id="epimutations-detection" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Epimutations detection</h2>
 <p>The <code>epimutacions</code> package includes 6 methods for epivariants identification: (1) Multivariate Analysis of variance (<code>manova</code>), (2) Multivariate Linear Model (<code>mlm</code>), (3) isolation forest (<code>isoforest</code>), (4) robust mahalanobis distance (<code>mahdistmcd</code>) (5) <code>barbosa</code> and (6) <code>beta</code>.</p>
-<p>In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method <span class="citation">(Jaffe et al. 2012)</span>. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, <code>barbosa</code> and <code>beta</code> do not identify outliers by filtering the DMRs. <code>barbosa</code> utilized a sliding window approach to individually compare the methylation value in each proband against the referece panel. <code>Beta</code> used beta distribution to identify epivariants in the case sample.</p>
+<p>In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method <span class="citation">(Jaffe et al. 2012)</span>. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, <code>barbosa</code> and <code>beta</code> do not identify outliers by filtering the DMRs. <code>barbosa</code> utilized a sliding window approach to individually compare the methylation value in each proband against the reference panel. <code>Beta</code> used beta distribution to identify epivariants in the case sample.</p>
 <pre class="r"><code>epi_mvo &lt;- epimutations(case_samples, control_samples, method = &quot;manova&quot;)
 epi_ml &lt;- epimutations(case_samples, control_samples, method = &quot;mlm&quot;)
 epi_iso &lt;- epimutations(case_samples, control_samples, method = &quot;isoforest&quot;)
@@ -566,8 +566,7 @@ epi_beta &lt;- epimutations(case_samples, control_samples, method = &quot;beta&q
 </div>
 <div id="unique-parameters" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Unique parameters</h2>
-<p>The <code>epi_parameters()</code> function is useful to set the value of the parameters for the above methods.
-In the following table each argument is described:</p>
+<p>The <code>epi_parameters()</code> function is useful to set the individual parameters for each approach. The arguments are described in the following table:</p>
 <div class='horizontal-scroll'><table>
 <colgroup>
 <col width="13%" />
@@ -660,27 +659,14 @@ $beta$pvalue_cutoff
 
 $beta$diff_threshold
 [1] 0.1</code></pre>
-<p>If we want to change the p-value cut off for <code>manova</code> we can do as following:</p>
+<p>The set up of any parameter can be done as the following example of p-value cut-off for <code>manova</code>:</p>
 <pre class="r"><code>parameters &lt;- epi_parameters(manova = list(&quot;pvalue_cutoff&quot; = 0.01))
 parameters$manova$pvalue_cutoff</code></pre>
 <pre><code>[1] 0.01</code></pre>
 </div>
 <div id="results-description" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Results description</h2>
-<p>The two methods from literature returned 14 and 46 epimutations as we can see:</p>
-<pre class="r"><code>nrow(epi_brb) # Results from Barbosa et. al. 2018</code></pre>
-<pre><code>[1] 14</code></pre>
-<pre class="r"><code>nrow(epi_mvo) # Results from Aref-Eshghi et. al. 2019</code></pre>
-<pre><code>[1] 46</code></pre>
-<p>All the implemented methods return the same <code>tibble</code> although the meaning of some of the columns is slightly different. Let’s see one of the outputs from the two methods from literature:</p>
-<pre class="r"><code>rbind(epi_brb[1, ], epi_mvo[1, ])</code></pre>
-<pre><code># A tibble: 2 x 15
-  epi_id  sample  chromosome   start    end    sz cpg_n cpg_ids      outlier_score  outlier_directi~
-  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;        &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt;           
-1 epi_ba~ GSM256~ chr7        9.09e7 9.09e7   807     4 cg08714590,~ &lt;NA&gt;           hypomethylation 
-2 epi_ma~ GSM256~ chr19       1.28e7 1.28e7   167     7 cg20791841,~ 302.558383959~ hypermethylation
-# ... with 5 more variables: pvalue &lt;dbl&gt;, adj_pvalue &lt;dbl&gt;, epi_region_id &lt;chr&gt;, CRE &lt;chr&gt;,
-#   CRE_type &lt;chr&gt;</code></pre>
+<p>The <code>epimutations</code> function returns a tibble containing all the epivariants identified in the given case sample. In case no epimutation is found, a row containing the case sample information and missing values for each argument is returned. The following table describes each argument in the result data frame:</p>
 <div class='horizontal-scroll'><table>
 <colgroup>
 <col width="16%" />
@@ -762,7 +748,7 @@ For method <code>barbosa</code>, <code>isoforest</code>, <code>mahdistmcd</code>
 </div>
 <div id="epimutations-annotations" class="section level2" number="4.4">
 <h2><span class="header-section-number">4.4</span> Epimutations annotations</h2>
-<p>The <code>epimutacions</code> package also includes the <code>annotate_epimutations</code> function dedicated to enrich the epimutations identified by the previously described methods:</p>
+<p>The <code>epimutacions</code> package also includes the <code>annotate_epimutations</code> function dedicated to enriching the epimutations identified by the previously described methods:</p>
 <pre class="r"><code>rst_mvo &lt;- annotate_epimutations(epi_mvo)</code></pre>
 <pre class="r"><code>rst_mvo[1:2, c(1, 12:14)]</code></pre>
 <div class='horizontal-scroll'><table>

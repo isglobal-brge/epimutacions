@@ -60,7 +60,7 @@ The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) whi
 
 The `epimutacions` package computes a genome-wide DNA methylation analysis to detect the epigenetic variants to be considered as biomarkers for samples with rare diseases (epimutations). The method compares a case sample with suspected rare disease against a reference panel.  The package focused on the detection of outliers in DNA methylation patterns associated with the diseases as proposed by [@aref2019].  
 
-The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter [@jaffe2012bump] approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. Those include multivariate analysis of variance (MANOVA) [@friedrich2017package], multivariate linear model [@martin2020multivariate], isolation forest [@cortes2021package] and robust mahalanobis distance [@maechler2021package]. However, Barbosa [@barbosa2018] and Beta methods do not use bump-hunter output. Barbosa [@barbosa2018] checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.  
+The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter [@jaffe2012bump] approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. These include Multivariate Analysis of Variance (MANOVA) [@friedrich2017package], Multivariate Linear Model [@martin2020multivariate], isolation forest [@cortes2021package] and robust mahalanobis distance [@maechler2021package]. However, Barbosa [@barbosa2018] and Beta methods do not use bump-hunter output. Barbosa [@barbosa2018] checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.  
 
 ## Input data
 
@@ -82,7 +82,7 @@ knitr::include_graphics("fig/workflow.png")
 
 Epimutations detection has two main steps: (1) definition of candidate regions and (2) evaluation of outlier significance. Although there are different algorithms to define epimutations regions, they share common features. In general, we define an epimutation as at least 3 contiguous  CpGs with a maximum distance of 1kb between them.  
 
-In Illumina 450K array, probes are unequally distributed along the genome, limiting the number of regions that can fulfill the requirements to be considered an epimutation. So, we have computed a dataset containing the regions that are candidates to become an epimutation.  
+In Illumina 450K array, probes are unequally distributed along the genome, limiting the number of regions that can fulfil the requirements to be considered an epimutation. So, we have computed a dataset containing the regions that are candidates to become an epimutation.  
 
 To define the candidate epimutations, we relied on the clustering from bumphunter. We defined a primary dataset with all the CpGs from the Illumina 450K array.  Then, we run bumphunter and selected those regions with at least 3 CpGs. As a result, we found 40408 candidate epimutations which are available in `candRegsGR` dataset. The code for generating these regions can be found in epimutacion package. 
 
@@ -205,7 +205,7 @@ parameters$illumina$bg.correct
 The `epimutacions` package includes 6 methods for epivariants identification: (1) Multivariate Analysis of variance (`manova`), (2) Multivariate Linear Model (`mlm`), (3) isolation forest (`isoforest`), (4) robust mahalanobis distance  (`mahdistmcd`) (5) `barbosa` and (6) `beta`. 
 
 
-In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method [@jaffe2012bump]. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, `barbosa` and `beta` do not identify outliers by filtering the DMRs. `barbosa`  utilized a sliding window approach to individually compare the methylation value  in each proband against the referece panel. `Beta` used beta distribution to identify epivariants in the case sample. 
+In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method [@jaffe2012bump]. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, `barbosa` and `beta` do not identify outliers by filtering the DMRs. `barbosa`  utilized a sliding window approach to individually compare the methylation value  in each proband against the reference panel. `Beta` used beta distribution to identify epivariants in the case sample. 
 
 
 ```{r, epi_mvo, message=FALSE, warning=FALSE}
@@ -225,8 +225,7 @@ epi_beta <- epimutations(case_samples, control_samples, method = "beta")
 
 ## Unique parameters
 
-The `epi_parameters()` function  is  useful to set the value of the parameters for the above methods. 
-In the following table each argument is described: 
+The `epi_parameters()` function  is  useful to set the individual parameters for each   approach. The arguments are described in the following table: 
 
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | Method        | Parameter                   | Description                                                          |
@@ -254,7 +253,7 @@ Invoking `epi_parameters()` with no arguments returns a list of the default sett
 epi_parameters()
 ```
 
-If we want to change the p-value cut off for `manova` we can do as following: 
+The set up of any parameter can be done as the following example of p-value cut-off for  `manova`: 
 
 ```{r}
 parameters <- epi_parameters(manova = list("pvalue_cutoff" = 0.01))
@@ -264,18 +263,8 @@ parameters$manova$pvalue_cutoff
 
 ## Results description
 
-The two methods from literature returned `r nrow(epi_brb)` and `r nrow(epi_mvo)` epimutations as we can see:
+The `epimutations` function returns a tibble containing all the epivariants identified in the given case sample. In case no epimutation is found, a row containing the case sample information and missing values for each argument is returned. The following table describes each argument in the result data frame: 
 
-```{r, show_brb_mvo_1}
-nrow(epi_brb) # Results from Barbosa et. al. 2018
-nrow(epi_mvo) # Results from Aref-Eshghi et. al. 2019
-```
-
-All the implemented methods return the same `tibble` although the meaning of some of the columns is slightly different. Let's see one of the outputs from the two methods from literature:
-
-```{r, show_brb_mvo_2}
-rbind(epi_brb[1, ], epi_mvo[1, ])
-```
 
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | Column name           | Description                                                                                                           |
@@ -321,7 +310,7 @@ rbind(epi_brb[1, ], epi_mvo[1, ])
 
 ## Epimutations annotations
 
-The `epimutacions` package also includes the `annotate_epimutations` function dedicated to enrich the epimutations identified by the previously described methods:
+The `epimutacions` package also includes the `annotate_epimutations` function dedicated to enriching the epimutations identified by the previously described methods:
 
 ```{r, ann, message=FALSE, tidy = TRUE}
 rst_mvo <- annotate_epimutations(epi_mvo)
