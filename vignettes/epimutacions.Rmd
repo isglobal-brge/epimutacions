@@ -5,7 +5,7 @@ author:
   affiliation:
   - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
   - &Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK
-  - &Autonomous University of Barcelona (UAB)
+  - &Autonomous Autonomous University of Barcelona (UAB)
   email: leire.abarrategui-martinez@newcastle.ac.uk
 - name: Carles Hernandez-Ferrer
   affiliation:
@@ -87,6 +87,10 @@ In Illumina 450K array, probes are unequally distributed along the genome, limit
 To define the candidate epimutations, we relied on the clustering from bumphunter. We defined a primary dataset with all the CpGs from the Illumina 450K array.  Then, we run bumphunter and selected those regions with at least 3 CpGs. As a result, we found 40408 candidate epimutations which are available in `candRegsGR` dataset. The code for generating these regions can be found in epimutacion package. 
 
 In addition, we converted the candidate region from hg19 to hg38 coordinates, using NCBI remap. We selected regions that mapped to one region in hg38 with the same length. This yielded a total of 39944, the 98.85% of total hg19 regions. After converting to hg38, we can use these ranges to be annotated to ENCODE cREs. Overall, we mapped 30163 candidate regions to cREs, representing 74.65% of total candidate regions. 
+
+```{r, message=FALSE, echo = FALSE}
+library(epimutacions)
+```
 
 ```{r}
 data("candRegsGR")

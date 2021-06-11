@@ -139,6 +139,8 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
     ggplot2::lims(y = c(0,1)) +  
     ggplot2::scale_colour_manual(name = "Status", values = colors) +
     ggplot2::theme_bw() + 
+    ggplot2::ggtitle(paste0(dmr$sample,": ", dmr$seqnames, ":", dmr$start, " - ", dmr$end)) +
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
     ggplot2::labs(x = "Coordinates") + 
     ggplot2::labs(y = "DNA methylation level")
   
