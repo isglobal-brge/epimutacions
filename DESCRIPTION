@@ -27,6 +27,7 @@ Imports:
     GenomeInfoDb,
     BiocParallel
 Suggests: knitr, rmarkdown, BiocStyle
+Remotes: dgarrimar/mlm
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.0), Biobase
