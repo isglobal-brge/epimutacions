@@ -249,18 +249,20 @@ epimutations <- function(case_samples, control_panel,
   }else if(method == "barbosa") {
       # Compute reference statistics
     if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
-    bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
-    bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
-    bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
-    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
+    #bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
+    #bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
+    #bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
+    #bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
+    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(epi_params$barbosa$qmin, epi_params$barbosa$qsub), na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
     #case <- betas[ , cas_sam[1], drop=FALSE]
       # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
-      x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
-                       bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
+      #x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
+      #                 bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
+      x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_pmin, bctr_pmax, epi_params$barbosa$window_sz, min_cpg, epi_params$barbosa$offset_abs)
       if(is.null(x) || nrow(x) == 0){
         x <- data.frame(
           chromosome = 0,
