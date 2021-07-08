@@ -4,6 +4,11 @@
 #' Barbosa M, Joshi RS, Garg P, et al. Identification of rare de novo epigenetic
 #'  variations in congenital disorders. Nat Commun. 2018;9(1):2064. Published 
 #'  2018 May 25. doi:10.1038/s41467-018-04540-x
+#' And refined in:
+#' Garg P, Jadhav B, Rodriguez OL, et al. A Survey of Rare Epigenetic Variation 
+#'  in 23,116 Human Genomes Identifies Disease-Relevant Epivariations and CGG 
+#'  Expansions. Am J Hum Genet. 2020 Oct 1;107(4):654-669. 
+#'  doi: 10.1016/j.ajhg.2020.08.019
 #' @param case beta values for a single clase (data.frame). The samples as 
 #' single column and CpGs in rows (named).
 #' @param fd feature description as data.frame having at least chromosome and
@@ -62,6 +67,8 @@ epi_barbosa <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3,
     flag_qm_inf = case[, 1] <= bctr_pmin - offset_abs,
     stringsAsFactors = FALSE
   )
+  
+  flag_result <- flag_result[!is.na(flag_result$flag_qm_sup) & !is.na(flag_result$flag_qm_inf), ]
  
   # flag_result$flag_q_sup[is.na(flag_result$flag_q_sup)] <- FALSE
   # flag_result$flag_m_sup[is.na(flag_result$flag_m_sup)] <- FALSE

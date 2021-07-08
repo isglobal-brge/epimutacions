@@ -248,12 +248,13 @@ epimutations <- function(case_samples, control_panel,
     ## Methods that do not need bumphunter ("barbosa" and "beta")
   }else if(method == "barbosa") {
       # Compute reference statistics
-    if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2019")
+    if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2020")
     #bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
     #bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
     #bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
     #bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
-    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(epi_params$barbosa$qmin, epi_params$barbosa$qsub), na.rm = TRUE))
+    if(verbose) message("Using quantiles ", epi_params$barbosa$qinf, " and ", epi_params$barbosa$qsup)
+    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(epi_params$barbosa$qinf, epi_params$barbosa$qsup), na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
