@@ -6,7 +6,7 @@
 #' @param control_panel a GenomicRatioSet object containing the control panel (control panel).
 #' @param method a character string naming the outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
-#' \code{"barbosa"} and \code{"beta"}. 
+#' \code{"quantile"} and \code{"beta"}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
@@ -27,7 +27,7 @@
 #'  * Multivariate Linear Model (\code{"mlm"})
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
-#'  * Barbosa (\code{"barbosa"})
+#'  * Quantile distribution (\code{"quantile"})
 #'  * Beta (\code{"beta"})
 #'  
 #' We defined candidate epimutation regions (found in candRegsGR) based on the 450K 
@@ -48,14 +48,14 @@
 #'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 #'    * For method \code{isoforest} it provides the magnitude of the outlier score.
 #'    * For method \code{beta} it provides the mean outlier p-value.
-#'    * For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
+#'    * For methods \code{quantile} and \code{mahdistmcd} it is filled with NA.
 #' * \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 #'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
-#'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
+#'    * For \code{quantile} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 #'    * For method \code{beta} it return a NA.
 #' * \code{pvalue}: 
 #'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-#'    * For method \code{barbosa}, \code{mahdistmcd} and \code{beta} is filled with NA.    
+#'    * For method \code{quantile}, \code{mahdistmcd} and \code{beta} is filled with NA.    
 #' * \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
 #' * \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
 #' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
@@ -122,7 +122,7 @@ epimutations <- function(case_samples, control_panel,
     
   }
   
-  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "barbosa", "beta")
+  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "quantile", "beta")
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
@@ -245,25 +245,25 @@ epimutations <- function(case_samples, control_panel,
       }
       bumps
     }))
-    ## Methods that do not need bumphunter ("barbosa" and "beta")
-  }else if(method == "barbosa") {
+    ## Methods that do not need bumphunter ("quantile" and "beta")
+  }else if(method == "quantile") {
       # Compute reference statistics
-    if(verbose) message("Calculating statistics from reference distribution required by Barbosa et. al. 2020")
+    if(verbose) message("Calculating statistics from 'quantile' method")
     #bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
     #bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
     #bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
     #bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
-    if(verbose) message("Using quantiles ", epi_params$barbosa$qinf, " and ", epi_params$barbosa$qsup)
-    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(epi_params$barbosa$qinf, epi_params$barbosa$qsup), na.rm = TRUE))
+    if(verbose) message("Using quantiles ", epi_params$quantile$qinf, " and ", epi_params$quantile$qsup)
+    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(epi_params$quantile$qinf, epi_params$quantile$qsup), na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
     #case <- betas[ , cas_sam[1], drop=FALSE]
       # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
-      #x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
-      #                 bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$barbosa$offset_mean, epi_params$barbosa$offset_abs)
-      x <- epi_barbosa(betas_case[ , case, drop = FALSE], fd, bctr_pmin, bctr_pmax, epi_params$barbosa$window_sz, min_cpg, epi_params$barbosa$offset_abs)
+      #x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
+      #                 bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$quantile$offset_mean, epi_params$quantile$offset_abs)
+      x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_pmin, bctr_pmax, epi_params$quantile$window_sz, min_cpg, epi_params$quantile$offset_abs)
       if(is.null(x) || nrow(x) == 0){
         x <- data.frame(
           chromosome = 0,
