@@ -75,7 +75,7 @@ In the first case, normalization through `epi_preprocess()` function is highly r
 Finally, these datasets are used as an input of  `epimutations()` function. It should be mentioned that  case samples and reference panel are introduced separately. 
 
 ```{r workflow, echo=FALSE, fig.cap="Allowed data formats, normalization and input types", out.width = '90%', fig.align='center'}
-knitr::include_graphics("vignette/fig/workflow.png")
+knitr::include_graphics(file.path(getwd(), "fig/workflow.png"))
 ```
 
 ## Candidate regions
@@ -92,10 +92,16 @@ In addition, we converted the candidate region from hg19 to hg38 coordinates, us
 library(epimutacions)
 ```
 
-```{r}
+```{r, eval = FALSE}
 data("candRegsGR")
 candRegsGR
 ```
+
+```{r}
+load("C:/Users/nla94/Desktop/data/candRegsGR.rda")
+load("C:/Users/nla94/Desktop/data/methy.rda")
+```
+
 
 # Setup
 
@@ -121,7 +127,7 @@ library(epimutacions)
 The package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy", package = "epimutacions")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
 
 
-```{r}
+```{r, eval = FALSE}
 data("methy")
 methy
 
@@ -342,6 +348,7 @@ Furthermore, it includes the gene annotations in the regions in which the epivar
 ```{r, plot_mvo_genes_annot}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy, genes_annot = TRUE)
 ```
+
 
 
 Also, it is possible to plot the chromatin marks H3K4me3, H3K27me3  and H3K27ac by setting the argument `regulation = TRUE`:

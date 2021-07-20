@@ -204,38 +204,53 @@ UCSC_annotation <- function(genome = "hg19"){
 #' 
 UCSC_regulation <- function(genome, chr, from, to){
   
-  cpgIslands <- Gviz::UcscTrack(genome = genome, chromosome = chr,
-                                track = "CpG Island", from = from,
-                                to = to, trackType = "AnnotationTrack",
-                                start = "chromStart", end = "chromEnd",
-                                id = "name", shape = "box",
-                                fill = "#FA9114", name = "CpG",
-                                background.title = "#9D5D10", 
-                                rotation.title = 0)
+  #cpgIslands
+  cpgIslands <- suppressWarnings(Gviz::UcscTrack(genome = genome, chromosome = chr,
+                                                 track = "CpG Island", from = from,
+                                                 to = to, trackType = "AnnotationTrack",
+                                                 start = "chromStart", end = "chromEnd",
+                                                 id = "name", shape = "box",
+                                                 fill = "#FA9114", name = "CpG",
+                                                 background.title = "#9D5D10", 
+                                                 rotation.title = 0))
   
-  H3K27Ac <- Gviz::UcscTrack(genome = genome, chromosome = chr,
-                             track="Layered H3K27Ac",
-                             from = from, to = to,
-                             trackType = "DataTrack",
-                             start = "start", end = "end",
-                             data = "score",
+  #H3K27Ac, H3K4Me3 and H3K27Me3
+  mySession <-  rtracklayer::browserSession("UCSC")
+  genome(mySession) <- "hg19"
+  granges <- GenomicRanges::GRanges(chr, IRanges(from, to))
+  
+  #H3K27Ac
+  H3K27Ac <- suppressWarnings(rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
+                                                    track = "Layered H3K27Ac",
+                                                    range = granges)))
+  H3K27Ac$seqnames <- chr
+  value <- H3K27Ac$value
+  H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
+  values(H3K27Ac) <- value 
+  H3K27Ac <- Gviz::DataTrack(H3K27Ac, 
                              type = "hist", window = "auto",
                              col.histogram = "darkblue",
-                             fill.histogram = "darkblue",
-                             background.title = "#B0CBE4",
-                             name = "H3K27Ac")
+                             fill.histogram = "darkblue", data = "X", 
+                             name = "H3K27Ac", chr = chr,
+                             background.title = "#C0E4B0")
   
-  H3K4Me3 <- Gviz::UcscTrack(genome = genome, chromosome = chr,
-                             track="Layered H3K4Me3",
-                             from = from, to = to,
-                             trackType = "DataTrack",
-                             start = "start", end = "end",
-                             data = "score",
+  
+  #H3K4Me3
+  H3K4Me3 <- suppressWarnings(rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
+                                                                                track = "Layered H3K4Me3",
+                                                                                range = granges)))
+  H3K4Me3$seqnames <- chr
+  value <- H3K4Me3$value
+  H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
+  values(H3K4Me3) <- value 
+  H3K4Me3 <- Gviz::DataTrack(H3K4Me3, 
                              type = "hist", window = "auto",
                              col.histogram = "darkred",
-                             fill.histogram = "darkred",
-                             background.title = "#E4BBB0",
-                            name = "H3K4Me3")
+                             fill.histogram = "darkred", data = "X", 
+                             name = "H3K4Me3", chr = chr,
+                             background.title = "#C0E4B0")
+
+  #H3K27Me3
   
   if(genome == "hg19"){
     ah <- AnnotationHub::AnnotationHub()
@@ -244,8 +259,9 @@ UCSC_regulation <- function(genome, chr, from, to){
                                 type = "hist", window = "auto",
                                 col.histogram = "darkgreen",
                                 fill.histogram = "darkgreen", data = "score", 
-                          name = "H3K27Me3", chr = chr, 
-                          background.title = "#C0E4B0")
+                                name = "H3K27Me3", chr = chr, start = from, 
+                                end = to,
+                                background.title = "#C0E4B0")
   }
 
   
