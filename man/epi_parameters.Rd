@@ -9,12 +9,12 @@ epi_parameters(
   mlm = list(pvalue_cutoff = 0.05),
   isoforest = list(outlier_score_cutoff = 0.5, ntrees = 100),
   mahdistmcd = list(nsamp = "deterministic"),
-  barbosa = list(window_sz = 10, offset_mean = 0.15, offset_abs = 0.1),
+  quantile = list(window_sz = 1000, offset_abs = 0.15, qsup = 0.995, qinf = 0.005),
   beta = list(pvalue_cutoff = 1e-06, diff_threshold = 0.1)
 )
 }
 \arguments{
-\item{manova, mlm, isoforest, mahdistmcd, barbosa, beta}{method selected in the function
+\item{manova, mlm, isoforest, mahdistmcd, quantile, beta}{method selected in the function
 \link[epimutacions]{epimutations}.}
 
 \item{pvalue_cutoff}{the threshold p value to select which CpG regions are outliers in
@@ -38,9 +38,9 @@ For \code{nsamp = "deterministic"}. For more information see \link[robustbase]{c
 Default is \code{"deterministic"}.}
 
 \item{window_sz}{the maximum distance between CpGs to be considered in the same DMR.
-This parameter is used in \code{barbosa}.}
+This parameter is used in \code{quantile} (default: 1000).}
 
-\item{offset_mean, offset_abs}{the upper and lower threshold to consider a CpG an outlier when using \code{barbosa} method.}
+\item{qsup, qinf, offset_abs}{The upper and lower quantiles (threshold) to consider a CpG an outlier when using \code{quantile} method, as well as the offset to consider (defaults: 0.005, 0.995, 0.15).}
 
 \item{pvalue_threshold}{Minimum p-value to consider a CpG an outlier}
 

@@ -1,7 +1,7 @@
 ---
 title: "Detection of epimutations with state of the art methods in methylation data"
 author:
-- name: Leire Abarrategui Martinez
+- name: Leire Abarrategui
   affiliation:
   - &isglobal Bioinformatics Research Group in Epidemiolgy (BRGE), Barcelona Insitute for Global Health (ISGlobal)
   - &Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK
@@ -60,7 +60,7 @@ The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) whi
 
 The `epimutacions` package computes a genome-wide DNA methylation analysis to detect the epigenetic variants to be considered as biomarkers for samples with rare diseases (epimutations). The method compares a case sample with suspected rare disease against a reference panel.  The package focused on the detection of outliers in DNA methylation patterns associated with the diseases as proposed by [@aref2019].  
 
-The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter [@jaffe2012bump] approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. These include Multivariate Analysis of Variance (MANOVA) [@friedrich2017package], Multivariate Linear Model [@martin2020multivariate], isolation forest [@cortes2021package] and robust mahalanobis distance [@maechler2021package]. However, Barbosa [@barbosa2018] and Beta methods do not use bump-hunter output. Barbosa [@barbosa2018] checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.  
+The identification of relevant genomic methylation regions for a given sample having a rare disease will be driven by detecting differentially methylated CpG sites when comparing beta values of all control samples with the given proband. Firstly, bump-hunter [@jaffe2012bump] approach is used to identify the Differentially Methylated Regions (DMRs). After that, CpGs in the proband sample are tested in those DMRs in order to identify regions with CpGs being outliers when comparing with the reference panel. To this end, different anomaly detection statistical approaches are used. These include Multivariate Analysis of Variance (MANOVA) [@friedrich2017package], Multivariate Linear Model [@martin2020multivariate], isolation forest [@cortes2021package] and robust mahalanobis distance [@maechler2021package]. However, quantile [@garg2020survey] and Beta methods do not use bump-hunter output. quantile [@garg2020survey] checks for each CpG, if the proband’s measurement is an outlier. Then, it calls an epimutation to those regions where 3 contiguous CpGs are outliers, and they are separated by less than 500 base pairs. Beta approach models the DNA methylation data using a beta distribution.  
 
 ## Input data
 
@@ -75,7 +75,7 @@ In the first case, normalization through `epi_preprocess()` function is highly r
 Finally, these datasets are used as an input of  `epimutations()` function. It should be mentioned that  case samples and reference panel are introduced separately. 
 
 ```{r workflow, echo=FALSE, fig.cap="Allowed data formats, normalization and input types", out.width = '90%', fig.align='center'}
-knitr::include_graphics("fig/workflow.png")
+knitr::include_graphics(file.path(getwd(), "fig/workflow.png"))
 ```
 
 ## Candidate regions
@@ -92,10 +92,16 @@ In addition, we converted the candidate region from hg19 to hg38 coordinates, us
 library(epimutacions)
 ```
 
-```{r}
+```{r, eval = FALSE}
 data("candRegsGR")
 candRegsGR
 ```
+
+```{r}
+load("C:/Users/nla94/Desktop/data/candRegsGR.rda")
+load("C:/Users/nla94/Desktop/data/methy.rda")
+```
+
 
 # Setup
 
@@ -121,7 +127,7 @@ library(epimutacions)
 The package includes a small `GenomicRatioSet` class dataset (`methy` `r data("methy", package = "epimutacions")`) containing the DNA methylation profiles from a total of  `r ncol(methy)` individuals, `r ncol(methy[,methy$status == "case"])` cases and `r ncol(methy[,methy$status == "control"])` controls. The DNA methylation profiles were generated using the Illumina 450k Human Methylation BeadChip. The data were obtained from [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/) and adapted for the package usage. 
 
 
-```{r}
+```{r, eval = FALSE}
 data("methy")
 methy
 
@@ -206,10 +212,10 @@ parameters$illumina$bg.correct
 
 ## Epimutations detection
 
-The `epimutacions` package includes 6 methods for epivariants identification: (1) Multivariate Analysis of variance (`manova`), (2) Multivariate Linear Model (`mlm`), (3) isolation forest (`isoforest`), (4) robust mahalanobis distance  (`mahdistmcd`) (5) `barbosa` and (6) `beta`. 
+The `epimutacions` package includes 6 methods for epivariants identification: (1) Multivariate Analysis of variance (`manova`), (2) Multivariate Linear Model (`mlm`), (3) isolation forest (`isoforest`), (4) robust mahalanobis distance  (`mahdistmcd`) (5) `quantile` and (6) `beta`. 
 
 
-In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method [@jaffe2012bump]. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, `barbosa` and `beta` do not identify outliers by filtering the DMRs. `barbosa`  utilized a sliding window approach to individually compare the methylation value  in each proband against the reference panel. `Beta` used beta distribution to identify epivariants in the case sample. 
+In the mentioned first 4 methods, firstly, Differentially Methylated Regions (DMRs) are identified using bump-hunter method [@jaffe2012bump]. Then, those DMRs are tested to identify regions with CpGs being outliers when comparing with the reference panel. However, `quantile` and `beta` do not identify outliers by filtering the DMRs. `quantile`  utilized a sliding window approach to individually compare the methylation value  in each proband against the reference panel. `Beta` used beta distribution to identify epivariants in the case sample. 
 
 
 ```{r, epi_mvo, message=FALSE, warning=FALSE}
@@ -221,7 +227,7 @@ epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd")
 
 
 ```{r, epi_beta, message=FALSE, warning=FALSE}
-epi_brb <- epimutations(case_samples, control_samples, method = "barbosa")
+epi_qtl <- epimutations(case_samples, control_samples, method = "quantile")
 epi_beta <- epimutations(case_samples, control_samples, method = "beta")
 
 ```
@@ -243,7 +249,7 @@ The `epi_parameters()` function  is  useful to set the individual parameters for
 +---------------+-----------------------------+----------------------------------------------------------------------+
 |`mahdist.mcd`  | `nsamp`                     | The number of subsets used for initial estimates in the MCD          |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-|  `barbosa`    |`window_sz`<br>              |The maximum distance between CpGs to be considered in the same DMR<br>|                
+|  `quantile`    |`window_sz`<br>              |The maximum distance between CpGs to be considered in the same DMR<br>|                
 |               |`offset_mean`/`offset_abs`   | The upper and lower threshold to consider a CpG an outlier           |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | `beta`        | `pvalue_cutoff`<br>         | The minimum p-value to consider a CpG an outlier<br>                 |
@@ -291,19 +297,19 @@ The `epimutations` function returns a tibble containing all the epivariants iden
 |                       | For method `mlm` it provides the approximation to F-test and the R2 of the model, separated by `/`<br>                |
 |                       | For method `isoforest` it provides the magnitude of the outlier score.<br>                                            |
 |                       | For method `beta` it provides the mean p-value of all GpGs in that DMR<br>                                            |
-|                       | For methods `barbosa` and `mahdistmcd` it is filled with `NA`.                                                        |
+|                       | For methods `quantile` and `mahdistmcd` it is filled with `NA`.                                                        |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `pvalue`              | For methods `manova` and  `mlm` it provides the p-value obtained from the model.<br>                                  |
-|                       | For method `barbosa`, `isoforest`, `beta` and `mahdistmcd` it is filled with `NA`.                                    |
+|                       | For method `quantile`, `isoforest`, `beta` and `mahdistmcd` it is filled with `NA`.                                    |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 | `outlier_direction`   | Indicates the direction of the outlier with "hypomethylation" and "hypermethylation".<br>                             | 
 |                       | For `manova`, `mlm`, `isoforest`, and `mahdistmcd` it is computed from the values obtained from `bumphunter`.<br>     |
 |                       | For `beta` is computed from the p value for each CpG using `diff_threshold` and `pvalue_threshold` arguments.<br>     |
-|                       | For `barbosa` it is computed from the location of the sample in the reference distribution (left vs. right outlier).  |
+|                       | For `quantile` it is computed from the location of the sample in the reference distribution (left vs. right outlier).  |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `adj_pvalue`          | For methods `manova` and  `mlm` it provides the adjusted p-value with                                                 |
 |                       | Benjamini-Hochberg based on the total number of regions detected by Bumphunter.<br>                                   |
-|                       | For method `barbosa`, `isoforest`, `mahdistmcd` and `beta` it is filled with `NA`.                                    |
+|                       | For method `quantile`, `isoforest`, `mahdistmcd` and `beta` it is filled with `NA`.                                    |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 | `epi_region_id`       | Name of the epimutation region as defined in `candRegsGR`.                                                            |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
@@ -342,6 +348,7 @@ Furthermore, it includes the gene annotations in the regions in which the epivar
 ```{r, plot_mvo_genes_annot}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy, genes_annot = TRUE)
 ```
+
 
 
 Also, it is possible to plot the chromatin marks H3K4me3, H3K27me3  and H3K27ac by setting the argument `regulation = TRUE`:

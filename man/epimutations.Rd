@@ -23,7 +23,7 @@ epimutations(
 
 \item{method}{a character string naming the outlier detection method to be used.
 This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
-\code{"barbosa"} and \code{"beta"}.
+\code{"quantile"} and \code{"beta"}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
 
@@ -62,18 +62,18 @@ of the used anomaly detection method.
 \item For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
 \item For method \code{isoforest} it provides the magnitude of the outlier score.
 \item For method \code{beta} it provides the mean outlier p-value.
-\item For methods \code{barbosa} and \code{mahdistmcd} it is filled with NA.
+\item For methods \code{quantile} and \code{mahdistmcd} it is filled with NA.
 }
 \item \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 \itemize{
 \item For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
-\item For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
+\item For \code{quantile} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 \item For method \code{beta} it return a NA.
 }
 \item \code{pvalue}:
 \itemize{
 \item For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-\item For method \code{barbosa}, \code{mahdistmcd} and \code{beta} is filled with NA.
+\item For method \code{quantile}, \code{mahdistmcd} and \code{beta} is filled with NA.
 }
 \item \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
 \item \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
@@ -97,7 +97,7 @@ with CpGs being outliers.  For that, different outlier detection methods can be 
 \item Multivariate Linear Model (\code{"mlm"})
 \item Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
 \item Robust Mahalanobis Distance (\code{"mahdistmcd"}) \link[robustbase]{covMcd}
-\item Barbosa (\code{"barbosa"})
+\item Quantile distribution (\code{"quantile"})
 \item Beta (\code{"beta"})
 }
 

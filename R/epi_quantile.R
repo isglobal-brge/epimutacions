@@ -1,23 +1,12 @@
-#' @title Identifies epimutations the method descrived in Barbosa et. al. 2019
-#' @description  The implementation of the method here is based on teh 
-#' description of the method used in:
-#' Barbosa M, Joshi RS, Garg P, et al. Identification of rare de novo epigenetic
-#'  variations in congenital disorders. Nat Commun. 2018;9(1):2064. Published 
-#'  2018 May 25. doi:10.1038/s41467-018-04540-x
-#' @param case beta values for a single clase (data.frame). The samples as 
+#' @title Identifies epimutations using quantile distribution
+#' @description  Identifies CpGs with outlier methylation values
+#' using a sliding window
+#' approach to compare individual methylation profiles of a single
+#' case sample against all other samples from reference panel (controls)
+#' @param case beta values for a single case (data.frame). The samples as 
 #' single column and CpGs in rows (named).
 #' @param fd feature description as data.frame having at least chromosome and
 #' position as columns and and CpGs in rows (named).
-#' @param bctr_min Lower threshold for epimutation. A beta value has to be lower
-#' that this value (- offset_abs) to be considered an epimutation candidate. The
-#' value corresponds to the minimum beta value observed in controls.
-#' @param bctr_max Higher threshold for epimuation. A beta value has to be 
-#' higher that this value (+ offset_abs) to be considered an epimutation. The
-#' value corresponds to the maximum beta value observed in controls.
-#' candidate.
-#' @param bctr_mean Mean beta value observed in controls. A beta value has to be
-#' lower that this value (- offset_mean) or higher than this value 
-#' (+ offset_mean) to be considered an epimutation. 
 #' @param bctr_pmin Beta value observed at 0.01 quantile in controls. A beta
 #' values has to be lower or equal to this value to be considered an 
 #' epimutation.
@@ -28,37 +17,59 @@
 #' region of CpGs as epimutation (default: 1000).
 #' @param N Minimum number of CpGs, separated in a maximum of window_sz bass,
 #' to defined an epimutation (default: 3).
-#' @param offset_mean Extra enforcement defining an epimuation based on 
-#' control's mean beta value (default: 0.15).
 #' @param offset_abs Extra enforcement defining an epimutation based on 
-#' beta values at 0.01 and 0.99 quantiles (default: 0.1).
+#' beta values at 0.005 and 0.995 quantiles (default: 0.15).
 #' @return The function returns a data frame with the regions candidates to be
 #' epimutations.
 #' 
-epi_barbosa <- function(case, fd, bctr_min, bctr_max, bctr_mean, bctr_pmin, 
-                        bctr_pmax, window_sz = 1000, N = 3, offset_mean = 0.15, offset_abs = 0.1) {
+epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3,
+                        offset_abs = 0.15) {
   # Check that there is a single proband
   if(ncol(case) != 1) {
-    stop("Epimutation detection with barbosa approach can only works with a singe proband")
+    stop("Epimutation detection with 'quantile' approach can only works with a singe proband")
   }
   
   # Identify outlier at the proband side using reference statistics
+  # @param bctr_min Lower threshold for epimutation. A beta value has to be lower
+  # that this value (- offset_abs) to be considered an epimutation candidate. The
+  # value corresponds to the minimum beta value observed in controls.
+  # @param bctr_max Higher threshold for epimuation. A beta value has to be 
+  # higher that this value (+ offset_abs) to be considered an epimutation. The
+  # value corresponds to the maximum beta value observed in controls.
+  # candidate.
+  # @param bctr_mean Mean beta value observed in controls. A beta value has to be
+  # lower that this value (- offset_mean) or higher than this value 
+  # (+ offset_mean) to be considered an epimutation. 
+  # @param offset_mean Extra enforcement defining an epimuation based on 
+  # control's mean beta value (default: 0.15).
+  # bctr_min, bctr_max, bctr_mean
+  # offset_mean = 0.15
+  # flag_result <- data.frame(
+  #   chr = as.character(fd[rownames(case), "seqnames"]),
+  #   pos = fd[rownames(case), "start"],
+  #   flag_q_sup = case[, 1] >= bctr_pmax & case[, 1] >= bctr_max + offset_abs,
+  #   flag_q_inf = case[, 1] <= bctr_pmin & case[, 1] <= bctr_min - offset_abs,
+  #   flag_m_sup = case[, 1] >= bctr_mean + offset_mean,
+  #   flag_m_inf = case[, 1] <= bctr_mean - offset_mean,
+  #   stringsAsFactors = FALSE
+  # )
+  
   flag_result <- data.frame(
     chr = as.character(fd[rownames(case), "seqnames"]),
     pos = fd[rownames(case), "start"],
-    flag_q_sup = case[, 1] >= bctr_pmax & case[, 1] >= bctr_max + offset_abs,
-    flag_q_inf = case[, 1] <= bctr_pmin & case[, 1] <= bctr_min - offset_abs,
-    flag_m_sup = case[, 1] >= bctr_mean + offset_mean,
-    flag_m_inf = case[, 1] <= bctr_mean - offset_mean,
+    flag_qm_sup = case[, 1] >= bctr_pmax + offset_abs,
+    flag_qm_inf = case[, 1] <= bctr_pmin - offset_abs,
     stringsAsFactors = FALSE
   )
+  
+  flag_result <- flag_result[!is.na(flag_result$flag_qm_sup) & !is.na(flag_result$flag_qm_inf), ]
  
-  flag_result$flag_q_sup[is.na(flag_result$flag_q_sup)] <- FALSE
-  flag_result$flag_m_sup[is.na(flag_result$flag_m_sup)] <- FALSE
-  flag_result$flag_q_inf[is.na(flag_result$flag_q_inf)] <- FALSE
-  flag_result$flag_m_inf[is.na(flag_result$flag_m_inf)] <- FALSE
-  flag_result$flag_qm_sup <- flag_result$flag_q_sup & flag_result$flag_m_sup
-  flag_result$flag_qm_inf <- flag_result$flag_q_inf & flag_result$flag_m_inf
+  # flag_result$flag_q_sup[is.na(flag_result$flag_q_sup)] <- FALSE
+  # flag_result$flag_m_sup[is.na(flag_result$flag_m_sup)] <- FALSE
+  # flag_result$flag_q_inf[is.na(flag_result$flag_q_inf)] <- FALSE
+  # flag_result$flag_m_inf[is.na(flag_result$flag_m_inf)] <- FALSE
+  # flag_result$flag_qm_sup <- flag_result$flag_q_sup & flag_result$flag_m_sup
+  # flag_result$flag_qm_inf <- flag_result$flag_q_inf & flag_result$flag_m_inf
   
   # Function used to detect regions of N CpGs closer than window size
   get_regions <- function(flag_df, window_sz = 1000, N = 3, pref = "R") {
