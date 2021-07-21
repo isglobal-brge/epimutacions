@@ -51,22 +51,23 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 res_isoforest <- function(bump, beta_bump, sts, case, outlier_score_cutoff){
   if(sts > outlier_score_cutoff){
 	bump$outlier_score <- sts
-	bump$outlier_significance <- NA
+	bump$pvalue <- NA
 	bump$adj_pvalue <- NA
 	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", "hypermethylation")
-	bump$CpG_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
+	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
 	bump$sample <- case
-	bump[ , c("chr", "start", "end", "sz", "L", "CpG_ids", "outlier_score", "outlier_significance", "adj_pvalue", "outlier_direction", "sample")]
-  }else{
-    data.frame(chr = character(), start = numeric(), 
+	bump[ , c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", "outlier_score",
+	          "outlier_direction", "pvalue", "adj_pvalue",  "sample")]
+	}else{
+    data.frame(chromosome = character(), start = numeric(), 
                end = numeric(),
                sz = numeric(),
-               L = numeric(),
-               CpG_ids = character(),
+               cpg_n = numeric(),
+               cpg_ids = character(),
                outlier_score = numeric(),
-               outlier_significance = numeric(),
-               adj_pvalue = numeric(),
                outlier_direction = character(),
+               pvalue = numeric(),
+               adj_pvalue = numeric(),
                sample = character())
   }
 	 }

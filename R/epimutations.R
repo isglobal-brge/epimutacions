@@ -190,8 +190,13 @@ epimutations <- function(case_samples, control_panel,
                                       cutoff = bump_cutoff)$table
       suppressWarnings(
         if(!is.na(bumps)){
-          bumps <- bumps[bumps$L >= min_cpg, ]
+          
+          ## Homogeneize output of bumphunter to epimutacions naming
+          bumps$chromosome <- bumps$chr
+          bumps$cpg_n <- bumps$L
           bumps$sz <- bumps$end - bumps$start
+          
+          bumps <- bumps[bumps$L >= min_cpg, ]
           # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
           if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
           if(nrow(bumps) != 0){
@@ -234,13 +239,13 @@ epimutations <- function(case_samples, control_panel,
         bumps <- data.frame(chromosome = 0,
                             start = 0,
                             end = 0,
-                            length = NA,
                             sz = NA,
+                            cpg_n = NA,
                             cpg_ids = NA,
                             outlier_score = NA,
-                            outlier_significance = NA,
-                            adj_pvalue = NA,
                             outlier_direction = NA,
+                            pvalue = NA,
+                            adj_pvalue = NA,
                             sample = case)
       }
       bumps
@@ -269,13 +274,13 @@ epimutations <- function(case_samples, control_panel,
           chromosome = 0,
           start = 0,
           end = 0,
-          length = NA,
           sz = NA,
+          cpg_n = NA,
           cpg_ids = NA,
           outlier_score = NA,
-          outlier_significance = NA,
-          adj_pvalue = NA,
           outlier_direction = NA,
+          pvalue = NA,
+          adj_pvalue = NA,
           sample = case
         )
       } else {
@@ -302,13 +307,13 @@ epimutations <- function(case_samples, control_panel,
           chromosome = 0,
           start = 0,
           end = 0,
-          length = NA,
           sz = NA,
+          cpg_n = NA,
           cpg_ids = NA,
           outlier_score = NA,
-          outlier_significance = NA,
-          adj_pvalue = NA,
           outlier_direction = NA,
+          pvalue = NA,
+          adj_pvalue = NA,
           sample = case
         )
       } else {
@@ -320,11 +325,8 @@ epimutations <- function(case_samples, control_panel,
       # 3. Prepare the output and addition of CREs
       ## Prepare the output
       rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
-      colnames(rst) <- c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", 
-                         "outlier_score", "pvalue", "adj_pvalue", "outlier_direction", 
-                         "sample", "epi_id")
       rownames(rst) <- seq_len(nrow(rst))
-      rst <- rst[ , c(12, 11, 1:7, 10, 8:9)]
+      rst <- rst[ , c(12, 11, 1:10)]
       
       ## Add CREs and epi_region_id
       rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA

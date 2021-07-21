@@ -175,13 +175,13 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
       chromosome = character(),
       start = numeric(),
       end = numeric(),
-      length = numeric(),
       sz = numeric(),
+      cpg_n = numeric(),
       cpg_ids = character(),
       outlier_score = numeric(),
-      outlier_significance = numeric(),
-      adj_pvalue = numeric(),
-      outlier_direction = character()
+      outlier_direction = character(),
+      pvalue = numeric(),
+      adj_pvalue = numeric()
     )
     if(nrow(flag_df) == 0) {
       return(empty)
@@ -193,13 +193,13 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
           chromosome = x$chr[1],
           start = min(x$pos),
           end = max(x$pos),
-          length = max(x$pos) - min(x$pos),
           sz = nrow(x),
+          cpg_n = max(x$pos) - min(x$pos),
           cpg_ids = paste(x$CpG_ids, collapse = ",", sep = ""),
           outlier_score = NA,
-          outlier_significance = NA,
-          adj_pvalue = NA,
-          outlier_direction = x$outlier_direction[1]
+          outlier_direction = x$outlier_direction[1],
+          pvalue = NA,
+          adj_pvalue = NA
         )
       } else {
         empty
