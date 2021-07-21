@@ -72,14 +72,14 @@ epi_mahdistmcd <- function(mixture, nsamp = c("best", "exact", "deterministic"))
 res_mahdistmcd <- function(case, bump, beta_bump, outliers) {
 	bump$outlier <- case %in% outliers
 	bump$outlier_score <- NA
-	bump$outlier_significance <- NA 
+	bump$pvalue <- NA 
 	bump$adj_pvalue <- NA
 	bump$outlier_direction <- NA
-	bump$CpG_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
+	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
 	bump$sample <- case
 	bump <- bump[bump$outlier, ]
-	bump <- bump[ , c("chr", "start", "end", "sz", "L", "CpG_ids", "outlier_score", "outlier_significance", "adj_pvalue", "outlier_direction", "sample")]
-	
+	bump <- bump[ , c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", "outlier_score",
+	          "outlier_direction", "pvalue", "adj_pvalue",  "sample")]	
 	return(bump)
 }
 

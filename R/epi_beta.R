@@ -78,24 +78,24 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
     rang <- range(cpgGR)
     data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), start = start(rang), 
                end = end(rang),
-               length = width(rang), sz = length(cpgGR), 
+               sz = length(cpgGR), cpg_n = width(rang),
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
                outlier_score = mean(cpgGR$pvals),
-               outlier_significance = NA,
-               adj_pvalue =  NA,
                outlier_direction = ifelse(up, "hypermethylation", "hypomethylation"),
+               pvalue = NA,
+               adj_pvalue =  NA,
                sample = NA
     )
   })
   if (length(reg_list) == 0){
     df <-   data.frame(chromosome = character(), start = numeric(), 
                        end = numeric(),
-                       length = numeric(), sz = numeric(), 
+                       sz = numeric(), cpg_n = numeric(),
                        cpg_ids = character(),
                        outlier_score = numeric(),
-                       outlier_significance = numeric(),
-                       adj_pvalue = numeric(),
-                       outlier_direction = character())
+                       outlier_direction = character(),
+                       pvalue = numeric(),
+                       adj_pvalue = numeric())
   } else {
     Reduce(rbind, reg_list)
   }
