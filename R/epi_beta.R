@@ -51,7 +51,7 @@ epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshol
   df <- rbind(posRegs, negRegs)
   
   if (nrow(df) > 0){
-    df <- subset(df, sz >= min_cpgs, drop = FALSE )
+    df <- subset(df, cpg_n >= min_cpgs, drop = FALSE )
   }
   df
 }
@@ -78,7 +78,7 @@ defineRegions <- function(regGR, maxGap, up = TRUE){
     rang <- range(cpgGR)
     data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), start = start(rang), 
                end = end(rang),
-               sz = length(cpgGR), cpg_n = width(rang),
+               sz = width(rang), cpg_n = length(cpgGR),
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
                outlier_score = mean(cpgGR$pvals),
                outlier_direction = ifelse(up, "hypermethylation", "hypomethylation"),
