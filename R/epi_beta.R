@@ -51,7 +51,7 @@ epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshol
   df <- rbind(posRegs, negRegs)
   
   if (nrow(df) > 0){
-    df <- subset(df, sz >= min_cpgs, drop = FALSE )
+    df <- subset(df, cpg_n >= min_cpgs, drop = FALSE )
   }
   df
 }
