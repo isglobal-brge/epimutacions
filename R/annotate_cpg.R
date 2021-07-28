@@ -83,7 +83,7 @@ annotate_cpg <- function(data, db, split = ',',
 								filters = "hgnc_symbol",
 								values = gene_list
 								)
-		# get accesion per gene
+		# get accession per gene
 		accesions <- lapply(gene_list, function(gene){
 			acc <- omims[omims$hgnc_symbol==gene,]$mim_morbid_accession
 			acc[is.na(acc)] <- ''

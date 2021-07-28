@@ -25,7 +25,9 @@ Imports:
     S4Vectors,
     GenomicRanges,
     GenomeInfoDb,
-    BiocParallel
+    BiocParallel,
+    ExperimentHub,
+    ExperimentHubData
 Suggests: knitr, rmarkdown, BiocStyle
 Remotes: dgarrimar/mlm
 VignetteBuilder: knitr
