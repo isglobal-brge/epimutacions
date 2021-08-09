@@ -39,7 +39,12 @@ Information about close genes and regulatory elements for epimutations.
 \examples{
 \dontrun{
 library(epimutacions)
-data(methy)
+
+# The data for this example is available in epimutacionsData (ExperimentHub) package
+library(ExperimentHub)
+eh <- ExperimentHub()
+query(eh, c("epimutacionsData"))
+methy <- eh[["EH6692"]]
 
 #Find epimutations in GSM2562701 sample of methy dataset
 
