@@ -60,8 +60,7 @@ Despite the successful contributions of sequence-based approaches (e.g. exome an
 Earlier studies [@aref2019; @garg2020survey] relied on a unique outlier statistical approach to detect  disease-relevant epimutations. The method by Grag and colleagues was implemented as a Perl script, while the method from Aref-Eshghi and colleagues was only described in the manuscript. We have developed `epimutacions` R/Bioconductor package with the aim of creating a common repository of multiple outlier detection methods written in the same programming language.
 
 
-The package `epimutacions ` provides tools to  raw DNA methylation microarray intensities normalization and epimutations identification, visualization and annotate
-ion epimutations.  The full `epimutacions ` user´s guide is available in this vignette.  The main function to estimate the epimutations is called `epimutations()`. 
+The package `epimutacions ` provides tools to  raw DNA methylation microarray intensities normalization and epimutations identification, visualization and annotation.  The full `epimutacions ` user´s guide is available in this vignette.  The main function to estimate the epimutations is called `epimutations()`. 
 
 The name of the package is `epimutacions` (pronounced `ɛ pi mu ta 'sj ons`) which means epimutations in Catalan, a language from the northeast of Spain.
 
