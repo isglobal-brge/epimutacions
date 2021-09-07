@@ -26,13 +26,12 @@ Imports:
     GenomicRanges,
     GenomeInfoDb,
     BiocParallel,
-    ExperimentHub,
     ExperimentHubData
 Suggests: knitr, rmarkdown, BiocStyle
-Remotes: dgarrimar/mlm
+Remotes: dgarrimar/mlm, LeireAbarrategui/epimutacionsData
 VignetteBuilder: knitr
 Encoding: UTF-8
-Depends: R (>= 4.0), Biobase
+Depends: R (>= 4.0), Biobase, ExperimentHub
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

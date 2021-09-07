@@ -135,11 +135,13 @@ betas_sd_mean <- function(gr){
   betas <- as.data.frame(S4Vectors::values(gr))
   mean <- rowMeans(betas)
   sd <- apply(betas,1,sd)
-  sd_1_lower <- mean - sd
+  sd_1_lower <- abs(mean - sd)
   sd_1_upper <- mean + sd
   sd_1.5_lower <- mean - 1.5*sd
+  sd_1.5_lower <- ifelse(sd_1.5_lower > 0, sd_1.5_lower, 0)
   sd_1.5_upper <- mean +  1.5*sd
   sd_2_lower <- mean - 2*sd
+  sd_2_lower <- ifelse(sd_2_lower > 0, sd_2_lower, 0)
   sd_2_upper <- mean +  2*sd
   
   sd <- cbind(df[,c("seqnames", "start","end","width","strand")], sd_1_lower, sd_1_upper, sd_1.5_lower,sd_1.5_upper,sd_2_lower,sd_2_upper)

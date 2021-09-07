@@ -454,6 +454,7 @@ kable(rst_mvo[c(1,29), c(1, 12:14)], caption = "epimutations annotation")
 ## Epimutation visualization
 
 The  visualization approach locates the epimutations along the genome. The function `plot_epimutations` plots the methylation values of the  individual with the epimutation in red, the control samples in dashed black lines and population mean in blue:  
+
 ```{r plot_default}
 plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 ```

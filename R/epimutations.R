@@ -339,6 +339,8 @@ epimutations <- function(case_samples, control_panel,
       rst_c <- tryCatch({
         rstGR <- GenomicRanges::makeGRangesFromDataFrame(rst)
         ensembldb::seqlevelsStyle(rstGR) <- "UCSC" ## Ensure chromosomes have the same format
+        #Get candidate regions 
+        candRegsGR <- get_candRegsGR()
         over <- GenomicRanges::findOverlaps(rstGR, candRegsGR)
         
         rst$epi_region_id[S4Vectors::from(over)] <- names(candRegsGR[S4Vectors::to(over)])
