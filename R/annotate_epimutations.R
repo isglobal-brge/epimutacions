@@ -20,9 +20,6 @@
 #' for an in-depth description of these variables.
 #' 
 #' @examples 
-#' \dontrun{
-#' library(epimutacions)
-#' 
 #' # The data for this example is available in epimutacionsData (ExperimentHub) package
 #' library(ExperimentHub)
 #' eh <- ExperimentHub()
@@ -39,7 +36,6 @@
 #' #Annotate the epimutations
 #' anno_results <- annotate_epimutations(as.data.frame(epi_results))
 #' anno_results[1:2, c(1, 12:14)]
-#' }
 #' 
 #' @export
 annotate_epimutations <- function(epi_results, db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", build = "37", ...){

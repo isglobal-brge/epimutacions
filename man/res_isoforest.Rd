@@ -18,6 +18,8 @@ DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
 \link[epimutacions]{epi_isoforest} function results.}
 
 \item{case}{a character string specifying the case sample name.}
+
+\item{outlier_score_cutoff}{numeric specifying the outlier score cut off}
 }
 \value{
 The function returns a data frame containing the following information

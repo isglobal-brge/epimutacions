@@ -19,6 +19,8 @@ epi_beta(
 \item{beta_params}{matrix with the parameters of the reference beta distributions for
 each CpG in the dataset.}
 
+\item{beta_mean}{beta values mean.}
+
 \item{betas_case}{matrix with the methylation values for a case.}
 
 \item{annot}{annotation of the CpGs.}

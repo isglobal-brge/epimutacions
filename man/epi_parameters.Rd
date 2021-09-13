@@ -42,8 +42,6 @@ This parameter is used in \code{quantile} (default: 1000).}
 
 \item{qsup, qinf, offset_abs}{The upper and lower quantiles (threshold) to consider a CpG an outlier when using \code{quantile} method, as well as the offset to consider (defaults: 0.005, 0.995, 0.15).}
 
-\item{pvalue_threshold}{Minimum p-value to consider a CpG an outlier}
-
 \item{diff_threshold}{Minimum methylation difference between the CpG and the mean methylation to
 consider a position an outlier.}
 }
@@ -60,7 +58,6 @@ Invoking \code{epi_parameters()} with no arguments returns return a list with th
 default values.
 }
 \examples{
- \dontrun{
  library(epumutacions)
  #Default set of parameters
  epi_parameters()
@@ -74,5 +71,4 @@ default values.
 
  epimutations(case_sample, control_panel, method = "manova", 
               epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
- }
 }

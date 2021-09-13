@@ -13,7 +13,7 @@ annotate_cpg(
   feat_col = "Regulatory_Feature_Group",
   relat_col = "Relation_to_Island",
   build = "37",
-  omim = T
+  omim = TRUE
 )
 }
 \arguments{

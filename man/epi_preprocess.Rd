@@ -7,28 +7,31 @@
 epi_preprocess(
   cases_dir,
   reference_panel,
+  pattern = "csv$",
   normalize = "raw",
   norm_param = norm_parameters(),
   verbose = FALSE
 )
 }
 \arguments{
+\item{cases_dir}{the base directory from which the search is started.}
+
 \item{reference_panel}{an \link[minfi]{RGChannelSet} object containing the reference
 panel (controls) samples.}
 
+\item{pattern}{What pattern is used to identify a sample sheet file.}
+
 \item{normalize}{a character string specifying the selected preprocess method.
 For more information see \strong{Details} or
-\link{minfi package user's Guide}(https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html.
+\href{https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html}{minfi package user's Guide}.
 It can be set as: \code{"raw"}, \code{"illumina"}, \code{"swan"}, \code{"quantile"},
 \code{"noob"} or \code{"funnorm"}.)}
 
 \item{norm_param}{the parameters for each preprocessing method.
-See the function \link[epimutations]{norm_parameters}.}
+See the function \link[epimutacions]{norm_parameters}.}
 
 \item{verbose}{logical. If TRUE additional details about the procedure will provide to the user.
 The default is FALSE.}
-
-\item{case_dir}{the base directory from which the search is started.}
 }
 \value{
 \code{epi_preprocess} function returns a \link[minfi]{GenomicRatioSet} object
@@ -53,8 +56,6 @@ The final dataset is normalized using different minfi package preprocess methods
 }
 }
 \examples{
-\dontrun{
-library(epimutacions)
 
 # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
 library(ExperimentHub)
@@ -66,5 +67,4 @@ cases_dir <- system.file("data", package = "epimutacions")
 #Preprocessing
 epi_preprocess(cases_dir, reference_panel)
 
-}
 }

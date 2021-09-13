@@ -16,10 +16,11 @@ get_ENSEMBL_data(chromosome, start, end, mart)
 \item{mart}{\code{Mart} object to perform the ENSEMBL query}
 }
 \value{
-\code{data.frame} of one row with the ENSEMBL regulatory regions overlapping
-the genomic coordinate
+\code{data.frame} of one row with the ENSEMBL regulatory
+regions overlapping the genomic coordinate.
 }
 \description{
-This function queries for ENSEMBL regulatory features and collapse them to return
+This function queries for ENSEMBL regulatory
+features and collapse them to return
 a single record.
 }

@@ -13,7 +13,8 @@ merge_records(tab)
 \code{data.frame} of one row after collapsing the
 }
 \description{
-This function collapses the activity status of a given an ENSEMBL regulatory
-element in different tissues. Notice that tissues identified as inactive will
-not be reported.
+This function collapses the activity status of a
+given an ENSEMBL regulatory
+element in different tissues. Notice that tissues
+identified as inactive will not be reported.
 }

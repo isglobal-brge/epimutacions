@@ -17,7 +17,7 @@ annotate_cpg <- function(data, db, split = ',',
 		# illumina annotation parameters
 		epi_col = 'cpg_ids', gene_col = 'GencodeBasicV12_NAME', feat_col = 'Regulatory_Feature_Group', relat_col = 'Relation_to_Island',
 		# biomart parameters
-		build = "37", omim = T)
+		build = "37", omim = TRUE)
 {
 	
 	
@@ -33,24 +33,24 @@ annotate_cpg <- function(data, db, split = ',',
 	# Basic annotation
 	message('Annotating:')
 	
-	message(paste('-', gene_col))
+	message(paste0('-', gene_col))
 	annotated_genes <- lapply(epids_list, function(x){
 	  x_in_anno <- which(x %in% rownames(anno))
 	  x <- x[x_in_anno]
 	  not_empty <- which(anno[x,][[gene_col]] != "")
 	  x <- x[not_empty]
 	  if(length(x) != 0){
-	    paste(anno[x,][[gene_col]], collapse='///')
+	    paste0(anno[x,][[gene_col]], collapse=' /// ')
 	  }
 	})
 	
 
-	message(paste('-', feat_col))
+	message(paste0('-', feat_col))
 	annotated_regions <- lapply(epids_list, function(x){
 		paste(anno[x,][[feat_col]], collapse='///')
 	})
 	
-	message(paste('-', relat_col))
+	message(paste0('-', relat_col))
 	annotated_relation <- lapply(epids_list, function(x){
 		paste(anno[x,][[relat_col]], collapse='///')
 	})
@@ -64,7 +64,7 @@ annotate_cpg <- function(data, db, split = ',',
 	
 
 	# OMIM annotation
-	if (omim==T){
+	if (omim == TRUE){
 	# Using biomart  to extract OMIMs
 	message('- Extracting and annotating OMIMs')
 	gene_mart <- biomaRt::useEnsembl(biomart = "ENSEMBL_MART_ENSEMBL", 

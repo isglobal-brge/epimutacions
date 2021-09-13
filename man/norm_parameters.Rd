@@ -59,7 +59,7 @@ from the control probes PCA in \code{"funnorm"} method. Default is 2.}
 \code{"quantile"} and \code{"funnorm"} methods.}
 
 \item{bgCorr}{logical. If TRUE NOOB background correction will be done prior
-to functional normalization (see \link[epimutacions]{preprocessNoob})
+to functional normalization.
 in \code{"funnorm"} method. Default is TRUE.}
 
 \item{keepCN}{logical. If TRUE copy number estimates will be kept in \code{"funnorm"} method.
@@ -67,22 +67,20 @@ Default is FALSE.}
 }
 \value{
 the function returns a list of all set parameters for each normalization method used in
-\link[epimutacions]{epi_peprocess}.
+\code{epi_peprocess}.
 }
 \description{
 \code{norm_parameters} function allows the user to set the values of the parameters to compute the functions
-\link[epimutacions]{epi_preprocess}.
+\code{epi_preprocess}.
 }
 \details{
 Invoking \code{epi_parameters()} with no arguments returns a list with the
 default values for each normalization parameter.
 }
 \examples{
- \dontrun{
  library(epumutacions)
  #Default set of parameters
  norm_parameters()
  #change p value for manova method
  norm_parameters(illumina = list("bg.correct" = FALSE))
- }
 }

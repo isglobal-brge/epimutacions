@@ -27,6 +27,8 @@ function. See the constructor function \link[minfi]{GenomicRatioSet},
 It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}.
 The default is \code{"hg19"}.}
 
+\item{genes_annot}{a boolean. If TRUE gene annotations are plotted. Default is FALSE.}
+
 \item{regulation}{a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3
 and H3K27Me3 are plotted. The default is FALSE.
 The running process when \code{regulation} is TRUE can take several minutes.}
@@ -35,8 +37,6 @@ The running process when \code{regulation} is TRUE can take several minutes.}
 for the plot of gene annotation region.
 If \code{NULL} the plotting ranges are derived from the individual track.
 Note that \code{from} cannot be larger than \code{to}.}
-
-\item{genes}{a boolean. If TRUE gene annotations are plotted. Default is FALSE.}
 }
 \value{
 The function returns a plot divided in two parts:
@@ -62,9 +62,6 @@ Note that if you want to see the UCSC annotations maybe you need to take a bigge
 genomic region.
 }
 \examples{
-\dontrun{
-library(epimutacions)
-
 # The data for this example is available in epimutacionsData (ExperimentHub) package
 library(ExperimentHub)
 eh <- ExperimentHub()
@@ -79,6 +76,5 @@ control_panel <- methy[,-51]
 results <- epimutations(case_sample, control_panel, method = "manova")
 
 plot_epimutations(as.data.frame(results[1,]), methy)
-}
 
 }

@@ -23,6 +23,8 @@ This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"ma
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
 
+\item{epi_params}{the parameters for each method. See the function \link[epimutacions]{epi_parameters}.}
+
 \item{BPPARAM}{(\code{"BiocParallelParam"}) \link[BiocParallel]{BiocParallelParam} object
 to configure parallelization execution. By default, execution is non-parallel.}
 
@@ -79,9 +81,6 @@ with CpGs being outliers.  For that,  different anomaly detection methods can be
 }
 }
 \examples{
-\dontrun{
-library(epimutacions)
-
 # The data for this example is available in epimutacionsData (ExperimentHub) package
 library(ExperimentHub)
 eh <- ExperimentHub()
@@ -91,5 +90,4 @@ methy <- eh[["EH6692"]]
 #Find epimutations in case samples of methy dataset
 
 epimutations_one_leave_out(methy)
-}
 }

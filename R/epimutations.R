@@ -1,7 +1,7 @@
 #' @title Epimutations analysis based on outlier detection methods
 #' @description The function identifies  Differentially Methylated Regions
 #' in a case sample by comparing it against a control panel. 
-#'  @param case_samples a GenomicRatioSet object containing the case samples.
+#' @param case_samples a GenomicRatioSet object containing the case samples.
 #' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
 #' @param control_panel a GenomicRatioSet object containing the control panel (control panel).
 #' @param method a character string naming the outlier detection method to be used. 
@@ -12,7 +12,7 @@
 #' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
 #' @param start an integer specifying the start position. The default value is \code{NULL}.
 #' @param end an integer specifying the end position. The default value is \code{NULL}.
-#' @param epi_params the parameters for each method. See the function \link[epimutations]{epi_parameters}.  
+#' @param epi_params the parameters for each method. See the function \link[epimutacions]{epi_parameters}.  
 #' @param maxGap the maximum location gap used in \link[bumphunter]{bumphunter} method. 
 #' @param bump_cutoff a numeric value of the estimate of the genomic profile above the 
 #' cutoff or below the negative of the cutoff will be used as candidate regions. 
@@ -61,9 +61,6 @@
 #' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
 #' * \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
 #' @examples 
-#' \dontrun{
-#' library(epimutacions)
-#' 
 #' # The data for this example is available in epimutacionsData (ExperimentHub) package
 #' library(ExperimentHub)
 #' eh <- ExperimentHub()
@@ -75,7 +72,7 @@
 #' case_samples <- methy[,"GSM2562701"]
 #' control_panel <- methy[,-51]
 #' epimutations(case_samples, control_panel, method = "manova")
-#' }
+#' @importFrom methods is
 #' @export
 epimutations <- function(case_samples, control_panel,
                          method = "manova", 
@@ -95,10 +92,10 @@ epimutations <- function(case_samples, control_panel,
     stop("The argument 'case_samples' must be introduced")
   }
 
-  if(class(case_samples) != "GenomicRatioSet"){
+  if(!is(case_samples, "GenomicRatioSet")){
     stop("'case_samples' must be of class 'GenomicRatioSet'") 
   }
-  if(class(control_panel) != "GenomicRatioSet"){
+  if(!is(control_panel, "GenomicRatioSet")){
     stop("'control_panel' must be of class 'GenomicRatioSet'. 
          To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
          function from minfi package")
@@ -114,7 +111,7 @@ epimutations <- function(case_samples, control_panel,
     if(length(start) != length(end) & length(chr) != length(start)){
       stop("'start' and 'end' length must be same")
     }
-    for(i in 1:length(start)){
+    for(i in seq_along(start)){
       if(start[i] > end[i]){
         stop("'start' cannot be higher than 'end'")
       }
@@ -154,7 +151,7 @@ epimutations <- function(case_samples, control_panel,
   if(!is.null(chr)){
     if(!is.null(start) & !is.null(end)){
       fd_split <- NULL
-      for(i in 1:length(chr)){
+      for(i in seq_along(chr)){
         fd_split <- rbind(fd_split, fd[fd$seqnames %in% chr[i] & fd$start >= start[i] & fd$end <= end[i],])
       }
       fd <- fd_split
@@ -211,7 +208,7 @@ epimutations <- function(case_samples, control_panel,
             beta_bump <- betas_from_bump(bump, fd, betas)
             if(method == "mahdistmcd") {
               dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp), silent = TRUE)
-              if(class(dst) != "try-error"){
+              if(!is(dst, "try-error")){
                 threshold <- sqrt(stats::qchisq(p = 0.999975, df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
@@ -273,7 +270,8 @@ epimutations <- function(case_samples, control_panel,
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       #x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
       #                 bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$quantile$offset_mean, epi_params$quantile$offset_abs)
-      x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_pmin, bctr_pmax, epi_params$quantile$window_sz, min_cpg, epi_params$quantile$offset_abs)
+      x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_pmin, bctr_pmax, 
+                        epi_params$quantile$window_sz, min_cpg, epi_params$quantile$offset_abs)
       if(is.null(x) || nrow(x) == 0){
         x <- data.frame(
           chromosome = 0,

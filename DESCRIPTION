@@ -1,37 +1,60 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 0.9.3
+Version: 0.1.0
 Authors@R: 
     c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "nla94@newcastle.ac.uk"),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
       person("Carlos", "Ruiz-Arenas", ,"carlos.ruiza@upf.edu", role = "aut"),
       person("Carles", "Hernandez-Ferrer", ,"carles.hernandez@cnag.crg.eu", role = "aut"))
-Description: Collection of functions for robust outlier identification in DNA methylation data. 
+Description: The package includes several functions for outlier detection in DNA methylation data. It also contains epimutation (rare alterations in the methylation pattern at specific loci) annotation and visualization functions. 
+biocViews: 
+  DNAMethylation,
+  BiologicalQuestion,
+  Preprocessing,
+  StatisticalMethod,
+  Normalization
 License: MIT + file LICENSE
 Imports:
+    ExperimentHub,
     minfi,
-    reshape2,
-    a4Base,
     bumphunter,
-    mlm,
     isotree,
     robustbase,
-    rrcovHD,
-    tibble,
     ggplot2,
-    ggrepel,
     Gviz,
-    gridExtra,
-    S4Vectors,
     GenomicRanges,
     GenomeInfoDb,
-    BiocParallel,
-    ExperimentHubData
-Suggests: knitr, rmarkdown, BiocStyle
-Remotes: dgarrimar/mlm, LeireAbarrategui/epimutacionsData
+    AnnotationDbi,
+    AnnotationHub, 
+    GenomicFeatures,
+    Homo.sapiens, 
+    IRanges,
+    SummarizedExperiment,
+    mlm,
+    ExperimentHubData,
+    methods
+Suggests: 
+  knitr, 
+  rmarkdown, 
+  BiocStyle,
+  reshape2,
+  a4Base,
+  ggrepel,
+  gridExtra,
+  S4Vectors,
+  BiocParallel,
+  kableExtra, 
+  matrixStats,
+  purrr,
+  rtracklayer,
+  TxDb.Hsapiens.UCSC.hg18.knownGene,
+  TxDb.Hsapiens.UCSC.hg19.knownGene,
+  TxDb.Hsapiens.UCSC.hg38.knownGene, 
+  biomaRt,
+  ensembldb,
+  tibble
 VignetteBuilder: knitr
 Encoding: UTF-8
-Depends: R (>= 4.0), Biobase, ExperimentHub
-LazyData: true
+Depends: R (>= 4.1.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

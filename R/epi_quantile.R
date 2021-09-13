@@ -21,7 +21,8 @@
 #' beta values at 0.005 and 0.995 quantiles (default: 0.15).
 #' @return The function returns a data frame with the regions candidates to be
 #' epimutations.
-#' 
+#' @import IRanges
+#' @importFrom methods is
 epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3,
                         offset_abs = 0.15) {
   # Check that there is a single proband

@@ -10,7 +10,7 @@
 #' @param genome a character string specifying the genome of reference. 
 #' It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}. 
 #' The default is \code{"hg19"}.
-#' @param genes a boolean. If TRUE gene annotations are plotted. Default is FALSE.  
+#' @param genes_annot a boolean. If TRUE gene annotations are plotted. Default is FALSE.  
 #' @param regulation a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3
 #' and H3K27Me3 are plotted. The default is FALSE.
 #' The running process when \code{regulation} is TRUE can take several minutes.
@@ -35,9 +35,6 @@
 #' * UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3 and H3K27Me3  (if \code{regulation == TRUE})
 #' 
 #' @examples 
-#' \dontrun{
-#' library(epimutacions)
-#' 
 #' # The data for this example is available in epimutacionsData (ExperimentHub) package
 #' library(ExperimentHub)
 #' eh <- ExperimentHub()
@@ -52,7 +49,6 @@
 #' results <- epimutations(case_sample, control_panel, method = "manova")
 #' 
 #' plot_epimutations(as.data.frame(results[1,]), methy)
-#' }
 #' 
 #' @export
 plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, regulation = FALSE, from = NULL, to = NULL){

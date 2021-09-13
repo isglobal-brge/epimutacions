@@ -3,16 +3,17 @@
 #' @description The \code{epi_preprocess} function reads Illumina methylation sample 
 #' sheet for case samples and it merges them with \link[minfi]{RGChannelSet} reference panel.
 #'  The final dataset is normalized using minfi package preprocess methods. 
-#' @param case_dir the base directory from which the search is started. 
+#' @param cases_dir the base directory from which the search is started. 
 #' @param reference_panel an \link[minfi]{RGChannelSet} object containing the reference 
 #' panel (controls) samples.
+#' @param pattern What pattern is used to identify a sample sheet file. 
 #' @param normalize a character string specifying the selected preprocess method. 
 #' For more information see \strong{Details} or 
-#' [minfi package user's Guide](https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html. 
+#' [minfi package user's Guide](https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html). 
 #' It can be set as: \code{"raw"}, \code{"illumina"}, \code{"swan"}, \code{"quantile"},
 #' \code{"noob"} or \code{"funnorm"}.)
 #' @param norm_param the parameters for each preprocessing method. 
-#' See the function \link[epimutations]{norm_parameters}.
+#' See the function \link[epimutacions]{norm_parameters}.
 #' @param verbose logical. If TRUE additional details about the procedure will provide to the user. 
 #' The default is FALSE. 
 #' @details 
@@ -27,9 +28,8 @@
 #' * \code{"funnorm"}: \link[minfi]{preprocessFunnorm}
 #' @return \code{epi_preprocess} function returns a \link[minfi]{GenomicRatioSet} object
 #' containing case and control (reference panel) samples.  
+#' @importFrom methods is
 #' @examples 
-#' \dontrun{
-#' library(epimutacions)
 #' 
 #' # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
 #' library(ExperimentHub)
@@ -41,9 +41,8 @@
 #' #Preprocessing
 #' epi_preprocess(cases_dir, reference_panel)
 #' 
-#' }
 
-epi_preprocess <-function(cases_dir, reference_panel,  normalize = "raw", norm_param = norm_parameters(), verbose = FALSE){
+epi_preprocess <-function(cases_dir, reference_panel, pattern = "csv$",  normalize = "raw", norm_param = norm_parameters(), verbose = FALSE){
   
   if(is.null(cases_dir))
   {
@@ -57,7 +56,7 @@ epi_preprocess <-function(cases_dir, reference_panel,  normalize = "raw", norm_p
   if(is.na(normalize)) stop("Invalid normalisation ('normalize') method was selected'")
   
   #Reading case samples idat files
-  targets <- minfi::read.metharray.sheet(cases_dir)
+  targets <- minfi::read.metharray.sheet(cases_dir, pattern = pattern)
   if(is.null(targets)){
     warning("There is not any sample sheet in the base directory")
     RGset_cases <- minfi::read.metharray.exp(cases_dir)
@@ -67,7 +66,7 @@ epi_preprocess <-function(cases_dir, reference_panel,  normalize = "raw", norm_p
   
  #Reference panel
 
-  if(class(reference_panel) != "RGChannelSet"){
+  if(!is(reference_panel, "RGChannelSet")){
     stop("Reference panel must be a 'RGChannelSet' class object")
   }
  

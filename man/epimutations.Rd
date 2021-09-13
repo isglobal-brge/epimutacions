@@ -19,6 +19,9 @@ epimutations(
 )
 }
 \arguments{
+\item{case_samples}{a GenomicRatioSet object containing the case samples.
+See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.}
+
 \item{control_panel}{a GenomicRatioSet object containing the control panel (control panel).}
 
 \item{method}{a character string naming the outlier detection method to be used.
@@ -33,7 +36,7 @@ For more information see \strong{Details}.}
 
 \item{end}{an integer specifying the end position. The default value is \code{NULL}.}
 
-\item{epi_params}{the parameters for each method. See the function \link[epimutations]{epi_parameters}.}
+\item{epi_params}{the parameters for each method. See the function \link[epimutacions]{epi_parameters}.}
 
 \item{maxGap}{the maximum location gap used in \link[bumphunter]{bumphunter} method.}
 
@@ -84,8 +87,6 @@ of the used anomaly detection method.
 \description{
 The function identifies  Differentially Methylated Regions
 in a case sample by comparing it against a control panel.
-@param case_samples a GenomicRatioSet object containing the case samples.
-See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}.
 }
 \details{
 The function compares a case sample against a control panel to identify epimutations in the given
@@ -106,9 +107,6 @@ array design. As CpGs are not equally distributed along the genome, only CpGs cl
 to other CpGs can form an epimutation. More information can be found in candRegsGR documentation.
 }
 \examples{
-\dontrun{
-library(epimutacions)
-
 # The data for this example is available in epimutacionsData (ExperimentHub) package
 library(ExperimentHub)
 eh <- ExperimentHub()
@@ -120,5 +118,4 @@ methy <- eh[["EH6692"]]
 case_samples <- methy[,"GSM2562701"]
 control_panel <- methy[,-51]
 epimutations(case_samples, control_panel, method = "manova")
-}
 }

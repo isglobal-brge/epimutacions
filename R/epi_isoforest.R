@@ -35,6 +35,7 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 #' @param sts the outlier score from
 #'  \link[epimutacions]{epi_isoforest} function results. 
 #' @param case a character string specifying the case sample name. 
+#' @param outlier_score_cutoff numeric specifying the outlier score cut off
 #' @returns The function returns a data frame containing the following information
 #' for each DMR: 
 #' * genomic ranges

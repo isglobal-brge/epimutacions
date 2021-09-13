@@ -7,25 +7,31 @@
 add_ensemble_regulatory(epimutations, build = "37")
 }
 \arguments{
-\item{epimutations}{a data frame object containing the result from \code{epimutations}
+\item{epimutations}{a data frame object containing
+the result from \code{epimutations}
 or \code{epimutations_one_leave_out} functions.}
 
-\item{build}{the build used to define epimutations coordinates. By default, it is \code{'37'},
+\item{build}{the build used to define epimutations coordinates.
+By default, it is \code{'37'},
 corresponding to Illumina annotation.}
 }
 \value{
 The function returns a data frame object
-containing the results of  \code{epimutations} or \code{epimutations_one_leave_out}
+containing the results of  \code{epimutations}
+or \code{epimutations_one_leave_out}
 with some additional variables describing regulatory
 elements from ENSEMBL.
 
 Note that a single epimutation might overlap with more than one
-regulatory region. In that case, the different regulatory regions are separated by \verb{///}.
+regulatory region.
+In that case, the different regulatory regions are separated by \verb{///}.
 \itemize{
 \item{ensembl_reg_id}{Region identifier from ENSEMBL}
-\item{ensembl_reg_coordinates}{Coordinates for the ENSEMBL regulatory regions}
+\item{ensembl_reg_coordinates}{Coordinates for
+the ENSEMBL regulatory regions}
 \item{ensembl_reg_type}{Type of regulatory region}
-\item{ensembl_reg_tissues}{Activity of the regulatory region per tissue. The different
+\item{ensembl_reg_tissues}{Activity of the regulatory
+region per tissue. The different
 activation states are separated by \code{/}}
 }
 }

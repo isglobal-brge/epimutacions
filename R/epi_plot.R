@@ -7,13 +7,13 @@
 #' CpGs in the DMR of interest. 
 #' @return  The function returns a GRanges object containing the beta values and the
 #' genomic ranges of the CpGs of interest. 
-#' 
+#' @importFrom methods is
 create_GRanges_class <- function(methy, cpg_ids){
   
   #Identify type of input and extract required data:
   # * The object class  must be 'GenomicRatioSet'
   # * beta values and genomic ranges
-  if(class(methy) == "GenomicRatioSet") {
+  if(is(methy,"GenomicRatioSet")) {
     betas <- minfi::getBeta(methy)
     fd <- as.data.frame(SummarizedExperiment::rowRanges(methy))
     rownames(fd) <- rownames(betas)
@@ -81,7 +81,7 @@ cols_names <- function(x, cpg_ids_col = FALSE){
     stop("End column name  must be specified as: 'end' or 'stop'")
   }
   
-  if(cpg_ids_col == T){
+  if(cpg_ids_col == TRUE){
     
     if(sample_field %in% colnames(x)){
       sample_pos <- which(colnames(x) %in% sample_field)
@@ -218,8 +218,9 @@ UCSC_regulation <- function(genome, chr, from, to){
   
   #H3K27Ac, H3K4Me3 and H3K27Me3
   mySession <-  rtracklayer::browserSession("UCSC")
-  genome(mySession) <- "hg19"
-  granges <- GenomicRanges::GRanges(chr, IRanges(from, to))
+  rtracklayer::genome(mySession) <- "hg19"
+  granges <- GenomicRanges::GRanges(chr, 
+                                    IRanges::IRanges(from, to))
   
   #H3K27Ac
   H3K27Ac <- suppressWarnings(rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
@@ -228,7 +229,7 @@ UCSC_regulation <- function(genome, chr, from, to){
   H3K27Ac$seqnames <- chr
   value <- H3K27Ac$value
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
-  values(H3K27Ac) <- value 
+  S4Vectors::values(H3K27Ac) <- value 
   H3K27Ac <- Gviz::DataTrack(H3K27Ac, 
                              type = "hist", window = "auto",
                              col.histogram = "darkblue",
@@ -244,7 +245,7 @@ UCSC_regulation <- function(genome, chr, from, to){
   H3K4Me3$seqnames <- chr
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
-  values(H3K4Me3) <- value 
+  S4Vectors::values(H3K4Me3) <- value 
   H3K4Me3 <- Gviz::DataTrack(H3K4Me3, 
                              type = "hist", window = "auto",
                              col.histogram = "darkred",

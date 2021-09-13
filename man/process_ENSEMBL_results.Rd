@@ -10,9 +10,10 @@ process_ENSEMBL_results(ensembl_res)
 \item{ensembl_res}{Results from \code{biomaRt::getBM}}
 }
 \value{
-\code{data.frame} of one row after collapsing the input ENSEMBL regulatory regions
+\code{data.frame} of one row after collapsing
+the input ENSEMBL regulatory regions
 }
 \description{
-Process data from ENSEMBL to combine results from the same regulatory elements in
-a unique record.
+Process data from ENSEMBL to combine results
+from the same regulatory elements in a unique record.
 }

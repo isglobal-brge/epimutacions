@@ -9,6 +9,7 @@
 #' \code{"barbosa"} and \code{beta}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
+#' @param epi_params the parameters for each method. See the function \link[epimutacions]{epi_parameters}.
 #' @param BPPARAM (\code{"BiocParallelParam"}) \link[BiocParallel]{BiocParallelParam} object
 #'  to configure parallelization execution. By default, execution is non-parallel. 
 #' @param verbose logical. If TRUE additional details about the procedure will provide to the user. 
@@ -43,9 +44,6 @@
 #'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
 #'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 #' @examples 
-#' \dontrun{
-#' library(epimutacions)
-#' 
 #' # The data for this example is available in epimutacionsData (ExperimentHub) package
 #' library(ExperimentHub)
 #' eh <- ExperimentHub()
@@ -55,14 +53,14 @@
 #' #Find epimutations in case samples of methy dataset
 #' 
 #' epimutations_one_leave_out(methy)
-#' }
+#' @importFrom methods is
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 
                                        BPPARAM = BiocParallel::SerialParam(),
                                        verbose = TRUE, ...){
   
-  if(class(methy) != "GenomicRatioSet")
+  if(!is(methy, "GenomicRatioSet"))
   {
     stop("Input data 'methy' must be a 'GenomicRatioSet'. 
          'makeGenomicRatioSetFromMatrix' function from 'minfi' package 

@@ -23,7 +23,6 @@
 #' @param window_sz the maximum distance between CpGs to be considered in the same DMR. 
 #' This parameter is used in \code{quantile} (default: 1000). 
 #' @param qsup,qinf,offset_abs The upper and lower quantiles (threshold) to consider a CpG an outlier when using \code{quantile} method, as well as the offset to consider (defaults: 0.005, 0.995, 0.15).
-#' @param pvalue_threshold Minimum p-value to consider a CpG an outlier
 #' @param diff_threshold Minimum methylation difference between the CpG and the mean methylation to
 #' consider a position an outlier. 
 #' @details Invoking \code{epi_parameters()} with no arguments returns return a list with the
@@ -31,8 +30,6 @@
 #' @return  the function returns a list of all set parameters for each method used in 
 #' \link[epimutacions]{epimutations} and \link[epimutacions]{epimutations_one_leave_out} functions.
 #' @examples 
-#'  \dontrun{
-#'  library(epumutacions)
 #'  #Default set of parameters
 #'  epi_parameters()
 #'  #change p value for manova method
@@ -45,7 +42,6 @@
 #' 
 #'  epimutations(case_sample, control_panel, method = "manova", 
 #'               epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
-#'  }
 #' @export
 
 epi_parameters <- function(manova = list("pvalue_cutoff" = 0.05), 
