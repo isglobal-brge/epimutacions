@@ -1,37 +1,30 @@
 # epimutacions
 
-`epimutacions` is a R package to detect epimutations from DNA methylation data. epimutacions will be developed during Europe Biohackathon 2020. 
+`epimutacions` is a R package to detect epimutations (rare alterations in the methylation pattern at specific loci) from DNA methylation data.
 
-## Background
 
-Diagnoses of patients with rare disease is currently performed with tools that tools explore genetic and genomic mutations. Despite the great success of genetics to diagnose these patients, around 60% of the cases still remained undiagnosed. Epimutations, aberrant methylation pattern of contiguous CpGs, can be an underlying cause of undiagnosed patients. However, there are no robust methods to diagnose these aberrations.
+# Installation
 
-## Objective
+```
+install.packages('devtools')
 
-Our aim during the Biohackathon is to implement different approaches to detect epimutations in a R package, following Bioconductor guidelines. Thus, we will work on three main directions:
 
-1. Implementation of approaches to detect epimutations
-2. Implementation of plotting and repporting funcionts
-3. Preparation of documentation. 
+devtools::install_github("isglobal-brge/epimutacions")
+```
 
-More information of the background and the rationale can be found in the [wiki](https://github.com/yocra3/epimutacions/wiki). A more specific description of the tasks available can be found in the [projects tab](https://github.com/yocra3/epimutacions/projects/1). 
 
-## How to collaborate
+# Usage 
 
-If you are interested in collaborating with our project, you can join us in our channel (5_epimutations) in BioHackEU20 slack. 
+* See vignette:  https://github.com/isglobal-brge/epimutacions/blob/master/vignettes/epimutacions.html
 
-### Before the Biohackathon
+# Acknowledgements
 
-We are open to implement different approaches to detect epimutations. If you have any idea, we can discuss it via slack or via mail.
+The authors would like to thank the team who collaborated in the initial design of the package in the European BioHackathon 2020:  Lordstrong Akano, James Baye, Alejandro Caceres, Pavlo Hrab, Raquel Manzano and Margherita Mutarelli. The authors also want to thank the organization of European BioHackathon 2020 for its support.
 
-### During the Biohackathon
 
-In the Biohackathon, we will be focused in writing R code. If you have experienced with R, Bioconductor and/or plotting, feel free to contact us via slack. 
+# Contact
 
-### After the Biohackathon
-
-We will evaluate the methods implemented in `epimutacions` in DNA methylation datasets. Collaborations to apply our method to new datasets can be considered.
-
-## Contact
-
-Team leader: Carlos Ruiz [(carlos.ruiza@upf.edu)](carlos.ruiza@upf.edu)
+* Leire Abarrategui: leire.abarrategui-martinez@newcastle.ac.uk
+* Juan R. Gonzalez: juanr.gonzalez@isglobal.org
+* Carlos Ruiz-Arenas: carlos.ruiza@upf.edu
+* Carles Hernandez-Ferrer: carles.hernandez@cnag.crg.eu
