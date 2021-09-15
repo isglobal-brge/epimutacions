@@ -32,7 +32,8 @@ Imports:
     SummarizedExperiment,
     mlm,
     ExperimentHubData,
-    methods
+    methods,
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 Suggests: 
   knitr, 
   rmarkdown, 

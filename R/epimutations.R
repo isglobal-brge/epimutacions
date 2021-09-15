@@ -60,18 +60,15 @@
 #' * \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
 #' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
 #' * \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
-#' @examples 
-#' # The data for this example is available in epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' methy <- eh[["EH6692"]]
+#' @examples
+#' data(GRset)
 #' 
-#' #Find epimutations in GSM2562701 sample of methy dataset
+#' #Find epimutations in GSM2562701 sample of GRset dataset
 #' 
-#' case_samples <- methy[,"GSM2562701"]
-#' control_panel <- methy[,-51]
-#' epimutations(case_samples, control_panel, method = "manova")
+#' case_samples <- GRset[,"GSM2562701"]
+#' control_panel <- GRset[,-11]
+#' epimutations(case_samples, control_panel, method = "beta")
+
 #' @importFrom methods is
 #' @export
 epimutations <- function(case_samples, control_panel,

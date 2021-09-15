@@ -78,9 +78,9 @@ Invoking \code{epi_parameters()} with no arguments returns a list with the
 default values for each normalization parameter.
 }
 \examples{
- library(epumutacions)
  #Default set of parameters
  norm_parameters()
  #change p value for manova method
  norm_parameters(illumina = list("bg.correct" = FALSE))
+ 
 }

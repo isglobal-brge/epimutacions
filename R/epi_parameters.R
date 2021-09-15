@@ -34,14 +34,6 @@
 #'  epi_parameters()
 #'  #change p value for manova method
 #'  epi_parameters(manova = list("pvalue_cutoff" = 0.01))
-#'  #Use in epumutations() function
-#'  data(methy)
-#'  ##Find epimutations in GSM2562701 sample of methy dataset
-#'  case_sample <- methy[,"GSM2562701"]
-#'  control_panel <- methy[,-51]
-#' 
-#'  epimutations(case_sample, control_panel, method = "manova", 
-#'               epi_params =  epi_parameters(manova = list("pvalue_cutoff" = 0.01)))
 #' @export
 
 epi_parameters <- function(manova = list("pvalue_cutoff" = 0.05), 

@@ -44,15 +44,8 @@
 #'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
 #'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 #' @examples 
-#' # The data for this example is available in epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' methy <- eh[["EH6692"]]
-#' 
-#' #Find epimutations in case samples of methy dataset
-#' 
-#' epimutations_one_leave_out(methy)
+#' data(GRset)
+#' epimutations_one_leave_out(GRset, method = "beta")
 #' @importFrom methods is
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 

@@ -56,15 +56,15 @@ The final dataset is normalized using different minfi package preprocess methods
 }
 }
 \examples{
-
+\dontrun{
 # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
 library(ExperimentHub)
 eh <- ExperimentHub()
 query(eh, c("epimutacionsData"))
 reference_panel <- eh[["EH6691"]]
-cases_dir <- system.file("data", package = "epimutacions")
+cases_dir <- system.file("extdata", package = "epimutacionsData")
 
 #Preprocessing
-epi_preprocess(cases_dir, reference_panel)
-
+epi_preprocess(cases_dir, reference_panel, pattern = "SampleSheet.csv")
+}
 }

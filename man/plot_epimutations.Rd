@@ -62,19 +62,14 @@ Note that if you want to see the UCSC annotations maybe you need to take a bigge
 genomic region.
 }
 \examples{
-# The data for this example is available in epimutacionsData (ExperimentHub) package
-library(ExperimentHub)
-eh <- ExperimentHub()
-query(eh, c("epimutacionsData"))
-methy <- eh[["EH6692"]]
 
-#Find epimutations in GSM2562701 sample of methy dataset
+data(GRset)
 
-case_sample <- methy[,"GSM2562701"]
-control_panel <- methy[,-51]
+case_sample <- GRset[,"GSM2562701"]
+control_panel <- GRset[,-11]
 
-results <- epimutations(case_sample, control_panel, method = "manova")
+results <- epimutations(case_sample, control_panel, method = "beta")
 
-plot_epimutations(as.data.frame(results[1,]), methy)
+plot_epimutations(as.data.frame(results[1,]), GRset)
 
 }

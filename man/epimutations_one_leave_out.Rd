@@ -81,13 +81,6 @@ with CpGs being outliers.  For that,  different anomaly detection methods can be
 }
 }
 \examples{
-# The data for this example is available in epimutacionsData (ExperimentHub) package
-library(ExperimentHub)
-eh <- ExperimentHub()
-query(eh, c("epimutacionsData"))
-methy <- eh[["EH6692"]]
-
-#Find epimutations in case samples of methy dataset
-
-epimutations_one_leave_out(methy)
+data(GRset)
+epimutations_one_leave_out(GRset, method = "beta")
 }

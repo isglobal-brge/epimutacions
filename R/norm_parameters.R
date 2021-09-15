@@ -43,11 +43,11 @@
 #' @return  the function returns a list of all set parameters for each normalization method used in 
 #' \code{epi_peprocess}. 
 #' @examples 
-#'  library(epumutacions)
 #'  #Default set of parameters
 #'  norm_parameters()
 #'  #change p value for manova method
 #'  norm_parameters(illumina = list("bg.correct" = FALSE))
+#'  
 norm_parameters <- function(illumina = list("bg.correct" = TRUE, "normalize" = c("controls", "no"), reference = 1),
                             quantile = list("fixOutliers" = TRUE, "removeBadSamples" = FALSE,
                                             "badSampleCutoff" = 10.5, "quantileNormalize" = TRUE,

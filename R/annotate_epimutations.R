@@ -18,20 +18,14 @@
 #' 
 #' See \link[epimutacions]{annotate_cpg} and \link[epimutacions]{add_ensemble_regulatory}
 #' for an in-depth description of these variables.
-#' 
+#' @import IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 #' @examples 
-#' # The data for this example is available in epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' methy <- eh[["EH6692"]]
+#' data(GRset)
 #' 
-#' #Find epimutations in GSM2562701 sample of methy dataset
+#' case_samples <- GRset[,"GSM2562701"]
+#' control_panel <- GRset[,-11]
 #' 
-#' case_sample <- methy[,"GSM2562701"]
-#' control_panel <- methy[,-51]
-#' 
-#' epi_results <- epimutations(case_sample, control_panel, method = "manova")
+#' epi_results <- epimutations(case_samples, control_panel, method = "beta")
 #' 
 #' #Annotate the epimutations
 #' anno_results <- annotate_epimutations(as.data.frame(epi_results))

@@ -107,15 +107,11 @@ array design. As CpGs are not equally distributed along the genome, only CpGs cl
 to other CpGs can form an epimutation. More information can be found in candRegsGR documentation.
 }
 \examples{
-# The data for this example is available in epimutacionsData (ExperimentHub) package
-library(ExperimentHub)
-eh <- ExperimentHub()
-query(eh, c("epimutacionsData"))
-methy <- eh[["EH6692"]]
+data(GRset)
 
-#Find epimutations in GSM2562701 sample of methy dataset
+#Find epimutations in GSM2562701 sample of GRset dataset
 
-case_samples <- methy[,"GSM2562701"]
-control_panel <- methy[,-51]
-epimutations(case_samples, control_panel, method = "manova")
+case_samples <- GRset[,"GSM2562701"]
+control_panel <- GRset[,-11]
+epimutations(case_samples, control_panel, method = "beta")
 }
