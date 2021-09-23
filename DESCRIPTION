@@ -30,7 +30,6 @@ Imports:
     Homo.sapiens, 
     IRanges,
     SummarizedExperiment,
-    mlm,
     ExperimentHubData,
     methods,
     IlluminaHumanMethylationEPICanno.ilm10b2.hg19
