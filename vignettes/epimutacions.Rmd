@@ -92,6 +92,12 @@ devtools::install_github("isglobal-brge/epimutacions")
 library(epimutacions)
 ```
 
+## Remote repositories
+The package uses a remote repository available at GitHub: 
+
+```{r eval = FALSE}
+devtools::install_github("dgarrimar/mlm")
+```
 
 ## Quick start
 
