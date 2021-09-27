@@ -153,13 +153,13 @@ query(eh, c("epimutacionsData"))
 
 IDAT files directory in `epimutacionsData` package:
 
-```{r IDAT files}
+```{r IDAT files, eval = FALSE}
 baseDir <- system.file("extdata", package = "epimutacionsData")
 ```
 
 The reference panel can be found in `EH6691` record of the  `eh` object: 
 
-```{r message = FALSE}
+```{r message = FALSE, eval = FALSE}
 reference_panel <- eh[["EH6691"]]
 ```
 
@@ -288,9 +288,8 @@ parameters$illumina$bg.correct
 
 We are going to preprocess the IDAT files and reference panel (\@ref(datasets)). We need to specify the IDAT files directory and the reference panel in `RGChannelSet` format. As a result, we will obtain a `GenomicRatioSet` object containing the control and case samples: 
 
-```{r}
-GRset <- epi_preprocess(baseDir, reference_panel, pattern = "SampleSheet.csv")
-GRset
+```{r eval = FALSE}
+GRset <- epi_preprocess(baseDir, reference_panel, pattern = "SampleSheet.csv"
 ```
 
 
