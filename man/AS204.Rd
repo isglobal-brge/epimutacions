@@ -92,7 +92,5 @@ Series C (applied Statistics), Vol. 33, No. 3 (1984), 332-339
 }
 \author{
 Diego Garrido-Martín
-
-#useDynLib mlm ruben
 }
 \keyword{internal}
