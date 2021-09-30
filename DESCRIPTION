@@ -1,6 +1,6 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: 
     c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "nla94@newcastle.ac.uk"),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
@@ -52,11 +52,11 @@ Suggests:
   TxDb.Hsapiens.UCSC.hg38.knownGene, 
   biomaRt,
   ensembldb,
-  tibble,
-  mlm,
-  epimutacionsData
+  tibble
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+URL: https://github.com/isglobal-brge/epimutacions
+BugReports: https://github.com/isglobal-brge/epimutacions/issues
+RoxygenNote: 7.1.2
