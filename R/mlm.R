@@ -36,15 +36,15 @@
 #'  at GitHub: https://github.com/dgarrimar/mlm
 #' 
 #'  @return \code{mlm} returns an object of \code{\link{class}} "MLM", a list containing:
-#'  \item{call}{the matched call.}
-#'  \item{aov.tab}{ANOVA table with Df, Sum Sq, Mean Sq, F values, 
-#'  partial R-squared and P-values.}
-#'  \item{type}{the type of sum of squares (\code{"I"}, \code{"II"} or \code{"III"}).}
-#'  \item{precision}{the precision in P-value computation.}
-#'  \item{transform}{the transformation applied to the response variables.}
-#'  \item{na.omit}{incomplete cases removed (see \code{\link{na.omit}}).}
-#'  \item{fit}{if \code{fit = TRUE} the multivariate fit done on the transformed 
-#'  and centered response variables is also returned.}
+#'  * \code{call}: the matched call.
+#'  * \code{aov.tab}: ANOVA table with Df, Sum Sq, Mean Sq, F values, 
+#'  partial R-squared and P-values.
+#'  * \code{type}: the type of sum of squares (\code{"I"}, \code{"II"} or \code{"III"}).
+#'  * \code{precision}: the precision in P-value computation.
+#'  * \code{transform}: the transformation applied to the response variables.
+#'  * \code{na.omit}: incomplete cases removed (see \code{\link{na.omit}}).
+#'  * \code{fit}: if \code{fit = TRUE} the multivariate fit done on the transformed 
+#'  and centered response variables is also returned.
 #' 
 #' @seealso \code{\link{lm}}, \code{\link[car]{Anova}}
 #' 
@@ -53,7 +53,7 @@
 #' @import stats
 #' 
 #' @export
-#'  @details 
+#'
 #'
 #' 
 mlm <- function(formula, data, transform = "none", type = "II", 
