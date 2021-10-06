@@ -34,6 +34,7 @@ Imports:
     methods,
     IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 Suggests: 
+  utils,
   knitr, 
   rmarkdown, 
   BiocStyle,
@@ -56,7 +57,7 @@ Suggests:
   BiocGenerics
 VignetteBuilder: knitr
 Encoding: UTF-8
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.1.0), epimutacionsData
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/isglobal-brge/epimutacions
 BugReports: https://github.com/isglobal-brge/epimutacions/issues
