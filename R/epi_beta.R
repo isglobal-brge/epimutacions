@@ -74,13 +74,13 @@ getBetaParams <- function(x){
 defineRegions <- function(regGR, maxGap, up = TRUE){
   
   regGR <- sort(regGR)
-  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), IRanges::start(regGR), maxGap = maxGap)
+  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), stats::start(regGR), maxGap = maxGap)
   reg_list <- lapply(unique(cl), function(i){
     cpgGR <- regGR[cl == i]
     rang <- range(cpgGR)
-    data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), start = IRanges::start(rang), 
-               end = IRanges::end(rang),
-               sz = IRanges::width(rang), cpg_n = length(cpgGR),
+    data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), start = stats::start(rang), 
+               end = stats::end(rang),
+               sz = BiocGenerics::width(rang), cpg_n = length(cpgGR),
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
                outlier_score = mean(cpgGR$pvals),
                outlier_direction = ifelse(up, "hypermethylation", "hypomethylation"),

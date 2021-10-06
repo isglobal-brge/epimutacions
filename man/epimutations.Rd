@@ -113,5 +113,5 @@ data(GRset)
 
 case_samples <- GRset[,"GSM2562701"]
 control_panel <- GRset[,-11]
-epimutations(case_samples, control_panel, method = "beta")
+#epimutations(case_samples, control_panel, method = "manova")
 }

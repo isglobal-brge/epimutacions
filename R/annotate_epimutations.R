@@ -25,11 +25,11 @@
 #' case_samples <- GRset[,"GSM2562701"]
 #' control_panel <- GRset[,-11]
 #' 
-#' epi_results <- epimutations(case_samples, control_panel, method = "beta")
+#' #epi_results <- epimutations(case_samples, control_panel, method = "beta")
 #' 
 #' #Annotate the epimutations
-#' anno_results <- annotate_epimutations(as.data.frame(epi_results))
-#' anno_results[1:2, c(1, 12:14)]
+#' #anno_results <- annotate_epimutations(as.data.frame(epi_results))
+#' #anno_results[1:2, c(1, 12:14)]
 #' 
 #' @export
 annotate_epimutations <- function(epi_results, db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", build = "37", ...){

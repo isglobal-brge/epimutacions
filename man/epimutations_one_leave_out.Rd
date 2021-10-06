@@ -82,5 +82,5 @@ with CpGs being outliers.  For that,  different anomaly detection methods can be
 }
 \examples{
 data(GRset)
-epimutations_one_leave_out(GRset, method = "beta")
+#epimutations_one_leave_out(GRset, method = "manova")
 }

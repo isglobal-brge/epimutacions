@@ -67,7 +67,7 @@
 #' 
 #' case_samples <- GRset[,"GSM2562701"]
 #' control_panel <- GRset[,-11]
-#' epimutations(case_samples, control_panel, method = "beta")
+#' #epimutations(case_samples, control_panel, method = "manova")
 
 #' @importFrom methods is
 #' @export
@@ -212,9 +212,8 @@ epimutations <- function(case_samples, control_panel,
                 x <- res_mahdistmcd(case, bump, beta_bump, outliers)
               }
             } else if(method == "mlm") {
-              sts <- try(epi_mlm(beta_bump, model), silent = TRUE)
-              #sts <- epi_mlm(beta_bump, model)
-              x <- res_mlm(bump, beta_bump, sts, case)
+              #sts <- try(epi_mlm(beta_bump, model), silent = TRUE)
+              #x <- res_mlm(bump, beta_bump, sts, case)
             } else if(method == "manova") {
               sts <- epi_manova(beta_bump, model, case)
               x <- res_manova(bump, beta_bump, sts, case)
@@ -228,7 +227,7 @@ epimutations <- function(case_samples, control_panel,
             bumps <- filter_manova(bumps, epi_params$manova$pvalue_cutoff)
           }
           if(method == "mlm" & !is.null(bumps)){
-            bumps <- filter_mlm(bumps, epi_params$mlm$pvalue_cutoff)
+            #bumps <- filter_mlm(bumps, epi_params$mlm$pvalue_cutoff)
           }
        
           }

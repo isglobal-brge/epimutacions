@@ -41,9 +41,9 @@
 #' case_sample <- GRset[,"GSM2562701"]
 #' control_panel <- GRset[,-11]
 #' 
-#' results <- epimutations(case_sample, control_panel, method = "beta")
+#' #results <- epimutations(case_sample, control_panel, method = "manova")
 #' 
-#' plot_epimutations(as.data.frame(results[1,]), GRset)
+#' #plot_epimutations(as.data.frame(results[1,]), GRset)
 #' 
 #' @export
 plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, regulation = FALSE, from = NULL, to = NULL){

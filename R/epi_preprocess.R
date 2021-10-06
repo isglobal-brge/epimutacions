@@ -29,18 +29,6 @@
 #' @return \code{epi_preprocess} function returns a \link[minfi]{GenomicRatioSet} object
 #' containing case and control (reference panel) samples.  
 #' @importFrom methods is
-#' @examples 
-#' \dontrun{
-#' # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' reference_panel <- eh[["EH6691"]]
-#' cases_dir <- system.file("extdata", package = "epimutacionsData")
-#' 
-#' #Preprocessing
-#' epi_preprocess(cases_dir, reference_panel, pattern = "SampleSheet.csv")
-#' }
 
 epi_preprocess <-function(cases_dir, reference_panel, pattern = "csv$",  normalize = "raw", norm_param = norm_parameters(), verbose = FALSE){
   
