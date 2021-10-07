@@ -40,3 +40,5 @@ vignettes/*.pdf
 
 # MAC OS store
 .DS*
+
+src/*o
