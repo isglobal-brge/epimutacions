@@ -20,6 +20,9 @@ printCoefmat.mp(
   ...
 )
 }
+\value{
+Coefficient Matrices
+}
 \description{
 Modification of \code{\link{printCoefmat}} to use multiple P-value
 precision limits.

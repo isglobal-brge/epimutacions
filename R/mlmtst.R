@@ -148,7 +148,7 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
   # r2adj <- 1-( (1-r2)*(n-1) / df.e )
   
   # Get eigenvalues from cov(R)*(n-1)/df.e
-  e <- eigen(SSCP.e/df.e, symmetric = T, only.values = T)$values
+  e <- eigen(SSCP.e/df.e, symmetric = TRUE, only.values = TRUE)$values
   e <- e[e/sum(e) > tol]
   
   return(list("SS" = c(SS, "Residuals" = SS.e),

@@ -48,7 +48,6 @@
 ##' 
 ##' @import stats
 ##' 
-##' @export
 ##' 
 mlm <- function(formula, data, transform = "none", type = "II", 
                 contrasts = NULL, subset = NULL, fit = FALSE){
@@ -215,6 +214,8 @@ print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ # #n
 ##' precision limits.
 ##' 
 ##' @seealso \code{\link{printCoefmat}}
+##' 
+##' @return Coefficient Matrices
 ##' 
 ##' @author Diego Garrido-Martín
 ##' 

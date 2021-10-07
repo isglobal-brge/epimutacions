@@ -1,6 +1,6 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 0.99.7
+Version: 0.99.8
 Authors@R: 
     c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "abarrategui.leire@gmail.com"),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
@@ -32,9 +32,9 @@ Imports:
     SummarizedExperiment,
     ExperimentHubData,
     methods,
-    IlluminaHumanMethylationEPICanno.ilm10b2.hg19
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
+    stats
 Suggests: 
-  utils,
   knitr, 
   rmarkdown, 
   BiocStyle,

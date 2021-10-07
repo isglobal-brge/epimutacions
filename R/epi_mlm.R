@@ -4,8 +4,6 @@
 #' @param mixture beta values matrix.  Samples in columns and
 #' CpGs in rows. 
 #' @param  model design (or model) matrix.
-#' @import utils
-#' @importFrom utils installed.packages
 #' @return The function returns the F statistic, R2 test statistic and Pillai.
 #' 
 epi_mlm <- function(mixture, model) {
