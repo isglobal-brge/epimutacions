@@ -3,22 +3,33 @@
 `epimutacions` is a R package to detect epimutations (rare alterations in the methylation pattern at specific loci) from DNA methylation data.
 
 
-# Installation
+# Installation via GitHub
 
+For installing the `epimutacions` pacakge by GitHub use the `install_github()` function. 
+
+```
+if(!requireNamespace("remotes", quietly = TRUE)){
+    install.packages("remotes")
+}
+
+remotes::install_github("isglobal-brge/epimutacions")
+
+```
+The `epimutacions` package depends on `epimutacionsData`  package which can be installed  as following: 
+
+```
+remotes::install_github("LeireAbarrategui/epimutacionsData")
+
+```
+# Installation via Biconductor
+
+(Once `epimutacions` and `epimutacionsData`  packages are available on Bioconductor)
 ```
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 BiocManager::install("epimutacions")
-```
-
-The `epimutacions` package depends on `epimutacionsData`  package which can be installed  as following: 
-
-
-```
-install.packages("devtools")
-devtools::install_github("LeireAbarrategui/epimutacionsData")
-
+BiocManager::install("epimutacionsData")
 ```
 
 # Usage 

@@ -16,8 +16,7 @@ printCoefmat.mp(
   P.values = NULL,
   has.Pvalue = nc >= 4 && substr(colnames(x)[nc], 1, 3) == "Pr(",
   eps.Pvalue = .Machine$double.eps,
-  na.print = "NA",
-  ...
+  na.print = "NA"
 )
 }
 \value{

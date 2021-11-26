@@ -29,16 +29,14 @@
 #' @return \code{epi_preprocess} function returns a \link[minfi]{GenomicRatioSet} object
 #' containing case and control (reference panel) samples.  
 #' @examples 
-#' \donttest{
 #' # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' reference_panel <- eh[["EH6691"]]
-#' cases_dir <- system.file("extdata", package = "minfiData")
+#' #library(ExperimentHub)
+#' #eh <- ExperimentHub()
+#' #query(eh, c("epimutacionsData"))
+#' #reference_panel <- eh[["EH6691"]]
+#' #cases_dir <- system.file("extdata", package = "minfiData")
 #' #Preprocessing
-#' epi_preprocess(cases_dir, reference_panel)
-#' }
+#' #epi_preprocess(cases_dir, reference_panel)
 #' 
 #' @importFrom methods is
 
