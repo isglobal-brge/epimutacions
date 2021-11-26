@@ -6,7 +6,10 @@ Authors@R:
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
       person("Carlos", "Ruiz-Arenas", ,"carlos.ruiza@upf.edu", role = "aut"),
       person("Carles", "Hernandez-Ferrer", ,"carles.hernandez@cnag.crg.eu", role = "aut"))
-Description: The package includes several functions for outlier detection in DNA methylation data. It also contains epimutation (rare alterations in the methylation pattern at specific loci) annotation and visualization functions. 
+Description: The package includes some statistical outlier detection methods for epimutations detection in DNA methylation data.
+The methods included in the package are MANOVA, Multivariate linear models, isolation forest, robust mahalanobis distance, quantile and beta. 
+The methods compare a case sample with a suspected disease against a reference panel (composed of healthy individuals) to identify epimutations in the given case sample. 
+It also contains functions to annotate and visualize the identified epimutations.  
 biocViews: 
   DNAMethylation,
   BiologicalQuestion,
@@ -32,7 +35,6 @@ Imports:
     SummarizedExperiment,
     ExperimentHubData,
     methods,
-    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
     stats
 Suggests: 
   knitr, 
@@ -55,6 +57,7 @@ Suggests:
   ensembldb,
   tibble,
   BiocGenerics
+  IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.1.0), epimutacionsData
