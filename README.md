@@ -6,12 +6,20 @@
 # Installation
 
 ```
-install.packages('devtools')
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
-
-devtools::install_github("isglobal-brge/epimutacions")
+BiocManager::install("epimutacions")
 ```
 
+The `epimutacions` package depends on `epimutacionsData`  package which can be installed  as following: 
+
+
+```
+install.packages("devtools")
+devtools::install_github("LeireAbarrategui/epimutacionsData")
+
+```
 
 # Usage 
 
