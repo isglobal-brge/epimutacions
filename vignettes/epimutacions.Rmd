@@ -259,20 +259,12 @@ df <- data.frame(Method = c(rep("illumina",3), rep("quantile", 7), rep("noob", 3
                                 "fixOutliers", "removeBadSamples", "badSampleCutoff","quantileNormalize", "stratified", "mergeManifest", "sex",
                                 "offset","dyeCorr", "dyeMethod", 
                                 "nPCs", "sex", "bgCorr", "dyeCorr", "keepCN"),
-                 Description = c("Performs background correction", "Performs controls normalization", 
-                                 "The reference array for control normalization",
-                                 "Low outlier Meth and Unmeth signals will be fixed", 
-                                 "Remove bad samples", 
-                                 "The cutoff to label samples as ‘bad’",
-                                 "Performs quantile normalization", 
-                                 "Performs quantile normalization within region strata", 
-                                 "Merged to the output the information in the associated manifest package", 
-                                 "Sex of the samples",
-                                 "Offset for the normexp background correct", 
-                                 "Performs dye normalization",
-                                 "Dye bias correction to be done",
-                                 "The number of principal components from the control probes", 
-                                 "Sex of the samples",
+                 Description = c("Performs background correction", "Performs controls normalization", "The reference array for control normalization",
+                                 "Low outlier Meth and Unmeth signals will be fixed", "Remove bad samples", "The cutoff to label samples as ‘bad’",
+                                 "Performs quantile normalization", "Performs quantile normalization within region strata", 
+                                 "Merged to the output the information in the associated manifest package", "Sex of the samples",
+                                 "Offset for the normexp background correct", "Performs dye normalization", "Dye bias correction to be done",
+                                 "The number of principal components from the control probes", "Sex of the samples",
                                  "Performs NOOB background correction before functional normalization",
                                  "Performs dye normalization", "Keeps copy number estimates"))
 
@@ -297,7 +289,7 @@ parameters$illumina$bg.correct
 We are going to preprocess the IDAT files and reference panel (\@ref(datasets)). We need to specify the IDAT files directory and the reference panel in `RGChannelSet` format. As a result, we will obtain a `GenomicRatioSet` object containing the control and case samples: 
 
 ```{r eval = FALSE}
-GRset <- epi_preprocess(baseDir, reference_panel, pattern = "SampleSheet.csv")
+GRset <- epi_preprocess(baseDir, reference_panel, pattern = "SampleSheet.csv"
 ```
 
 
@@ -443,7 +435,6 @@ colnames(rst_mvo[2:3, c(1, 12:14)])
 
 ```{r ann results, eval = FALSE}
 rst_mvo[c(1,29), c(1, 12:14)]```
-```
 
 ```{r echo = FALSE}
 library(knitr)

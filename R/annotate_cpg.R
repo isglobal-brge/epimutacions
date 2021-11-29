@@ -33,24 +33,24 @@ annotate_cpg <- function(data, db, split = ',',
 	# Basic annotation
 	message('Annotating:')
 	
-	message(gene_col)
+	message(paste0('-', gene_col))
 	annotated_genes <- lapply(epids_list, function(x){
 	  x_in_anno <- which(x %in% rownames(anno))
 	  x <- x[x_in_anno]
 	  not_empty <- which(anno[x,][[gene_col]] != "")
 	  x <- x[not_empty]
 	  if(length(x) != 0){
-	    paste(anno[x,][[gene_col]], collapse=' /// ')
+	    paste0(anno[x,][[gene_col]], collapse=' /// ')
 	  }
 	})
 	
 
-	message(feat_col)
+	message(paste0('-', feat_col))
 	annotated_regions <- lapply(epids_list, function(x){
 		paste(anno[x,][[feat_col]], collapse='///')
 	})
 	
-	message(relat_col)
+	message(paste0('-', relat_col))
 	annotated_relation <- lapply(epids_list, function(x){
 		paste(anno[x,][[relat_col]], collapse='///')
 	})
@@ -59,7 +59,7 @@ annotate_cpg <- function(data, db, split = ',',
 	data[[gene_col]] <- annotated_genes
 	data[[feat_col]] <- annotated_regions
 	data[[relat_col]] <- annotated_relation
-	data <- data[- which(vapply(data[[gene_col]], is.null)),]
+	data <- data[- which(sapply(data[[gene_col]], is.null)),]
 	
 	
 

@@ -108,7 +108,7 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
         term <- terms[i]
         subs.term <- which(asgn == i)
         if(n.terms > 1) { # Obtain relatives
-          relatives <- (1:n.terms)[-i][vapply(terms[-i], 
+          relatives <- (1:n.terms)[-i][sapply(terms[-i], 
                                               function(term2) 
                                                 is.relative(term, term2, fac))]
         } else { 

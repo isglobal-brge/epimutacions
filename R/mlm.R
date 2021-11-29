@@ -175,14 +175,14 @@ mlm <- function(formula, data, transform = "none", type = "II",
 print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ # #nocov start
   
   ## Print Call and type of SS
-  message("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
+  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
       "\n\n", sep = "")
-  message("Type", x$type, "Sum of Squares\n\n")
+  cat("Type", x$type, "Sum of Squares\n\n")
   
   ## Print ANOVA table
   cmat <- x$aov.tab
   if (!is.null(heading <- attr(cmat, "heading"))) 
-    message(heading, sep = "\n")
+    cat(heading, sep = "\n")
   nc <- dim(cmat)[2L]
   if (is.null(cn <- colnames(cmat))) 
     stop("'aov.tab' object must have colnames")
@@ -228,7 +228,8 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
                              cs.ind = 1:k, tst.ind = k + 1, zap.ind = integer(), 
                              P.values = NULL, has.Pvalue = nc >= 4 && 
                                substr(colnames(x)[nc], 1, 3) == "Pr(", 
-                             eps.Pvalue = .Machine$double.eps, na.print = "NA") { # #nocov start
+                             eps.Pvalue = .Machine$double.eps, na.print = "NA", 
+                             ...) { # #nocov start
   if (is.null(d <- dim(x)) || length(d) != 2L) 
     stop("'x' must be coefficient matrix/data frame")
   nc <- d[2L]

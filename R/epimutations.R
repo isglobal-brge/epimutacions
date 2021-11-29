@@ -173,7 +173,7 @@ epimutations <- function(case_samples, control_panel,
   # 2. Epimutations definition (using different methods)
   ## Methods that need bumphunter ("manova", "mlm", "mahdistmcd" and "isoforest")
   if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
-    #if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
+    if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
     # Prepare model to be evaluated
     rst <- do.call(rbind, lapply(cas_sam, function(case){
       samples_names <- c(ctr_sam, case)
@@ -197,7 +197,7 @@ epimutations <- function(case_samples, control_panel,
           
           bumps <- bumps[bumps$L >= min_cpg, ]
           # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
-          #if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
+          if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
           if(nrow(bumps) != 0){
           # Identify outliers according to selected method
           bumps  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii){
@@ -323,9 +323,9 @@ epimutations <- function(case_samples, control_panel,
   }   
       # 3. Prepare the output and addition of CREs
       ## Prepare the output
-      rst$epi_id <- vapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+      rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
       rownames(rst) <- seq_len(nrow(rst))
-      rst <- rst[ ,c(12, 11, 1:10)]
+      rst <- rst[ , c(12, 11, 1:10)]
       
       ## Add CREs and epi_region_id
       rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA
