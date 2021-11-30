@@ -20,15 +20,25 @@
 ##' 
 ##' @keywords internal
 ##' 
-p.asympt <- function(ss, df, lambda, eps = 1e-14, eps.updt = 2, eps.stop = 1e-10){
+p.asympt <- function(ss, 
+                     df, 
+                     lambda, 
+                     eps = 1e-14, 
+                     eps.updt = 2, 
+                     eps.stop = 1e-10){
   
-  pv  <- AS204(c = ss, lambda = lambda, mult = rep(df, length(lambda)), eps = eps)
+  pv  <- AS204(c = ss, 
+               lambda = lambda, 
+               mult = rep(df, length(lambda)), eps = eps)
   while (is.null(pv)) {
     eps <- eps * eps.updt
     if(eps > eps.stop){
       stop(sprintf("Precision of asymptotic P-value > %.2e", eps.stop))
     }
-    pv  <- AS204(c = ss, lambda = lambda, mult = rep(df, length(lambda)), eps = eps)
+    pv  <- AS204(c = ss, 
+                 lambda = lambda, 
+                 mult = rep(df, length(lambda)), 
+                 eps = eps)
   }
   if(pv < eps){
     pv <- eps
@@ -38,7 +48,8 @@ p.asympt <- function(ss, df, lambda, eps = 1e-14, eps.updt = 2, eps.stop = 1e-10
 
 ##' Algorithm AS 204
 ##' 
-##' Distribution of a positive linear combination of \eqn{\chi^2} random variables.
+##' Distribution of a positive linear combination 
+##' of \eqn{\chi^2} random variables.
 ##' 
 ##' Algorithm AS 204 evaluates the expression
 ##' \deqn{
@@ -104,8 +115,11 @@ p.asympt <- function(ss, df, lambda, eps = 1e-14, eps.updt = 2, eps.stop = 1e-10
 ##' 
 ##' @keywords internal
 ##' 
-AS204 <- function (c, lambda, mult = rep(1, length(lambda)), delta = rep(0, length(lambda)),
-                   maxit = 100000, eps = 1e-14, mode = 1) {
+AS204 <- function (c, lambda, 
+                   mult = rep(1, length(lambda)),
+                   delta = rep(0, length(lambda)),
+                   maxit = 100000, 
+                   eps = 1e-14, mode = 1) {
   
   out <- .C("ruben", lambda = as.double(lambda), mult = as.integer(mult), 
             delta = as.double(delta), n = as.integer(length(lambda)), 
@@ -118,6 +132,7 @@ AS204 <- function (c, lambda, mult = rep(1, length(lambda)), delta = rep(0, leng
   } else if (out$ifault %in% c(4, 5, 9)){
     return(NULL)
   } else {
-    stop(sprintf("Algorithm AS 204 failed with fault indicator: %s", out$ifault))
+    stop(sprintf("Algorithm AS 204 failed with fault
+                 indicator: %s", out$ifault))
   }
 }

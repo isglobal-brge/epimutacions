@@ -29,20 +29,25 @@
 #' @return \code{epi_preprocess} function returns a \link[minfi]{GenomicRatioSet} object
 #' containing case and control (reference panel) samples.  
 #' @examples 
-#' \donttest{
+#'
 #' # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' reference_panel <- eh[["EH6691"]]
-#' cases_dir <- system.file("extdata", package = "minfiData")
+#' #library(ExperimentHub)
+#' #eh <- ExperimentHub()
+#' #query(eh, c("epimutacionsData"))
+#' #reference_panel <- eh[["EH6691"]]
+#' #cases_dir <- system.file("extdata", package = "minfiData")
 #' #Preprocessing
-#' epi_preprocess(cases_dir, reference_panel)
-#' }
+#' #epi_preprocess(cases_dir, reference_panel)
+#' 
 #' 
 #' @importFrom methods is
 
-epi_preprocess <-function(cases_dir, reference_panel, pattern = "csv$",  normalize = "raw", norm_param = norm_parameters(), verbose = FALSE){
+epi_preprocess <-function(cases_dir, 
+                          reference_panel, 
+                          pattern = "csv$",  
+                          normalize = "raw", 
+                          norm_param = norm_parameters(), 
+                          verbose = FALSE){
   
   if(is.null(cases_dir))
   {
@@ -53,7 +58,8 @@ epi_preprocess <-function(cases_dir, reference_panel, pattern = "csv$",  normali
   avail <- c("raw","illumina", "swan", "quantile", "noob", "funnorm")
   normalize <- charmatch(normalize, avail)
   normalize <- avail[normalize]
-  if(is.na(normalize)) stop("Invalid normalisation ('normalize') method was selected'")
+  if(is.na(normalize)) 
+    stop("Invalid normalisation ('normalize') method was selected'")
   
   #Reading case samples idat files
   targets <- minfi::read.metharray.sheet(cases_dir, pattern = pattern)
@@ -82,24 +88,28 @@ epi_preprocess <-function(cases_dir, reference_panel, pattern = "csv$",  normali
  if(normalize == "raw"){
    Mset <- minfi::preprocessRaw(RGset)
  }else if(normalize == "illumina"){
-   Mset <- minfi::preprocessIllumina(RGset, bg.correct = norm_param$illumina$bg.correct,
-                                     normalize = norm_param$illumina$normalize,
-                                     reference = norm_param$illumina$reference)
+   Mset <-minfi::preprocessIllumina(RGset, 
+                                    bg.correct = norm_param$illumina$bg.correct,
+                                    normalize = norm_param$illumina$normalize,
+                                    reference = norm_param$illumina$reference)
  }else if(normalize == "swan"){
    Mset <- minfi::preprocessSWAN(RGset, verbose = verbose)
  }else if(normalize == "quantile"){
-   GRset <- minfi::preprocessQuantile(RGset, fixOutliers = norm_param$quantile$fixOutliers,
-                                      removeBadSamples = norm_param$quantile$removeBadSamples,
-                                      badSampleCutoff = norm_param$quantile$badSampleCutoff,
-                                      quantileNormalize = norm_param$quantile$quantileNormalize,
-                                      stratified = norm_param$quantile$stratified,
-                                      mergeManifest = norm_param$quantile$mergeManifest, 
-                                      sex = norm_param$quantile$sex,
-                                      verbose = verbose)
+   GRset <- minfi::preprocessQuantile(
+              RGset, 
+              fixOutliers = norm_param$quantile$fixOutliers,
+              removeBadSamples = norm_param$quantile$removeBadSamples,
+              badSampleCutoff = norm_param$quantile$badSampleCutoff,
+              quantileNormalize = norm_param$quantile$quantileNormalize,
+              stratified = norm_param$quantile$stratified,
+              mergeManifest = norm_param$quantile$mergeManifest, 
+              sex = norm_param$quantile$sex,
+              verbose = verbose)
    
  }else if(normalize == "noob"){
    Mset <- minfi::preprocessNoob(RGset, offset = norm_param$noob$offset,
-                                 dyeCorr = norm_param$noob$dyeCorr, verbose = verbose,
+                                 dyeCorr = norm_param$noob$dyeCorr, 
+                                 verbose = verbose,
                                  dyeMethod = norm_param$noob$dyeMethod)
  }else if(normalize == "funnorm"){
    GRset <- minfi::preprocessFunnorm(RGset, nPCs = norm_param$funnorm$nPCs,

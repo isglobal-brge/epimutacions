@@ -1,15 +1,15 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 0.99.8
+Version: 0.99.10
 Authors@R: 
     c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "abarrategui.leire@gmail.com"),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
       person("Carlos", "Ruiz-Arenas", ,"carlos.ruiza@upf.edu", role = "aut"),
       person("Carles", "Hernandez-Ferrer", ,"carles.hernandez@cnag.crg.eu", role = "aut"))
 Description: The package includes some statistical outlier detection methods for epimutations detection in DNA methylation data.
-The methods included in the package are MANOVA, Multivariate linear models, isolation forest, robust mahalanobis distance, quantile and beta. 
-The methods compare a case sample with a suspected disease against a reference panel (composed of healthy individuals) to identify epimutations in the given case sample. 
-It also contains functions to annotate and visualize the identified epimutations.  
+             The methods included in the package are MANOVA, Multivariate linear models, isolation forest, robust mahalanobis distance, quantile and beta. 
+             The methods compare a case sample with a suspected disease against a reference panel (composed of healthy individuals) to identify epimutations in the given case sample. 
+             It also contains functions to annotate and visualize the identified epimutations.  
 biocViews: 
   DNAMethylation,
   BiologicalQuestion,
@@ -35,7 +35,10 @@ Imports:
     SummarizedExperiment,
     ExperimentHubData,
     methods,
-    stats
+    stats,
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
+    CompQuadForm,
+    car
 Suggests: 
   knitr, 
   rmarkdown, 
@@ -57,7 +60,6 @@ Suggests:
   ensembldb,
   tibble,
   BiocGenerics
-  IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.1.0), epimutacionsData

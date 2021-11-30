@@ -97,8 +97,9 @@ epimutations <- function(case_samples, control_panel,
          To create a 'GenomicRatioSet' object use 'makeGenomicRatioSetFromMatrix'
          function from minfi package")
   }
-  if(minfi::annotation(case_samples)[1] != minfi::annotation(control_panel)[1] & minfi::annotation(case_samples)[2] != minfi::annotation(control_panel)[2]){
-    stop("The annotation of 'case_samples' and 'control_panel' must be the same")
+  if(minfi::annotation(case_samples)[1] != minfi::annotation(control_panel)[1] &
+     minfi::annotation(case_samples)[2] != minfi::annotation(control_panel)[2]){
+    stop("'case_samples' and 'control_panel' annotations must be the same")
   }
   
   if(!is.null(start) & !is.null(end)){
@@ -149,7 +150,10 @@ epimutations <- function(case_samples, control_panel,
     if(!is.null(start) & !is.null(end)){
       fd_split <- NULL
       for(i in seq_along(chr)){
-        fd_split <- rbind(fd_split, fd[fd$seqnames %in% chr[i] & fd$start >= start[i] & fd$end <= end[i],])
+        fd_split <- rbind(fd_split, 
+                          fd[fd$seqnames %in% chr[i] & 
+                               fd$start >= start[i] & 
+                               fd$end <= end[i],])
       }
       fd <- fd_split
       rm(fd_split)
@@ -171,9 +175,11 @@ epimutations <- function(case_samples, control_panel,
   
   
   # 2. Epimutations definition (using different methods)
-  ## Methods that need bumphunter ("manova", "mlm", "mahdistmcd" and "isoforest")
+  ##Methods that need bumphunter ("manova", "mlm", "mahdistmcd" and "isoforest")
   if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
-    if(verbose) message(paste0("Selected method '", method, "' required of 'bumphunter'"))
+    if(verbose) message("Selected method '", 
+                        method, 
+                        "' required of 'bumphunter'")
     # Prepare model to be evaluated
     rst <- do.call(rbind, lapply(cas_sam, function(case){
       samples_names <- c(ctr_sam, case)
@@ -197,16 +203,20 @@ epimutations <- function(case_samples, control_panel,
           
           bumps <- bumps[bumps$L >= min_cpg, ]
           # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
-          if(verbose) message(paste0(nrow(bumps), " candidate regions were found for case sample '", case, "'"))
+          if(verbose) message(nrow(bumps), 
+                              "candidate regions were found for case sample '",
+                              case, "'")
           if(nrow(bumps) != 0){
           # Identify outliers according to selected method
           bumps  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii){
             bump <- bumps[ii, ]
             beta_bump <- betas_from_bump(bump, fd, betas)
             if(method == "mahdistmcd") {
-              dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp), silent = TRUE)
+              dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp),
+                         silent = TRUE)
               if(!is(dst, "try-error")){
-                threshold <- sqrt(stats::qchisq(p = 0.999975, df = ncol(beta_bump)))
+                threshold <- sqrt(stats::qchisq(p = 0.999975, 
+                                                df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
                 x <- res_mahdistmcd(case, bump, beta_bump, outliers)
@@ -218,11 +228,17 @@ epimutations <- function(case_samples, control_panel,
               sts <- epi_manova(beta_bump, model, case)
               x <- res_manova(bump, beta_bump, sts, case)
             } else if(method == "isoforest") {
-              sts <- epi_isoforest(beta_bump, case, epi_params$isoforest$ntrees)
-              x <- res_isoforest(bump, beta_bump, sts, case, epi_params$isoforest$outlier_score_cutoff)
+              sts <- epi_isoforest(beta_bump, case, 
+                                   epi_params$isoforest$ntrees)
+              x <- res_isoforest(bump,
+                                 beta_bump, 
+                                 sts,
+                                 case, 
+                                 epi_params$isoforest$outlier_score_cutoff)
             } 
           }))
-          ## Filter using the adjusted p-value calculated from regions identified in each sample ("manova and "mlm")
+          ## Filter using the adjusted p-value calculated from regions 
+          ##identified in each sample ("manova and "mlm")
           if(method == "manova" & !is.null(bumps)){
             bumps <- filter_manova(bumps, epi_params$manova$pvalue_cutoff)
           }
@@ -255,19 +271,31 @@ epimutations <- function(case_samples, control_panel,
     #bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
     #bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
     #bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
-    #bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(0.999975, 0.000025), na.rm = TRUE))
-    if(verbose) message("Using quantiles ", epi_params$quantile$qinf, " and ", epi_params$quantile$qsup)
-    bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, probs = c(epi_params$quantile$qinf, epi_params$quantile$qsup), na.rm = TRUE))
+    #bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, 
+                                 #probs = c(0.999975, 0.000025), na.rm = TRUE))
+    if(verbose) message("Using quantiles ", 
+                        epi_params$quantile$qinf, 
+                        " and ", 
+                        epi_params$quantile$qsup)
+    bctr_prc <- suppressWarnings(apply(betas_control, 
+                                       1, 
+                                       quantile, 
+                                       probs = c(epi_params$quantile$qinf,
+                                                 epi_params$quantile$qsup), 
+                                       na.rm = TRUE))
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
     #case <- betas[ , cas_sam[1], drop=FALSE]
       # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
-      #x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_min, bctr_max, bctr_mean, 
-      #                 bctr_pmin, bctr_pmax, window_sz, min_cpg, epi_params$quantile$offset_mean, epi_params$quantile$offset_abs)
-      x <- epi_quantile(betas_case[ , case, drop = FALSE], fd, bctr_pmin, bctr_pmax, 
-                        epi_params$quantile$window_sz, min_cpg, epi_params$quantile$offset_abs)
+      x <- epi_quantile(betas_case[ , case, drop = FALSE],
+                        fd,
+                        bctr_pmin,
+                        bctr_pmax, 
+                        epi_params$quantile$window_sz,
+                        min_cpg, 
+                        epi_params$quantile$offset_abs)
       if(is.null(x) || nrow(x) == 0){
         x <- data.frame(
           chromosome = 0,
@@ -296,11 +324,13 @@ epimutations <- function(case_samples, control_panel,
     
     message("Defining Regions")
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      fd_sub <- fd[rownames(betas_control),]
       x <- epi_beta(beta_params, beta_mean, 
                     betas_case[ , case, drop = FALSE], 
-                    GenomicRanges::makeGRangesFromDataFrame(fd[rownames(betas_control),]),
+                    GenomicRanges::makeGRangesFromDataFrame(fd_sub),
                     epi_params$beta$pvalue_cutoff, 
                     epi_params$beta$diff_threshold, min_cpg, maxGap)
+      rm(fd_sub)
       if(nrow(x) == 0){
         x <- data.frame(
           chromosome = 0,
@@ -323,7 +353,9 @@ epimutations <- function(case_samples, control_panel,
   }   
       # 3. Prepare the output and addition of CREs
       ## Prepare the output
-      rst$epi_id <- sapply(seq_len(nrow(rst)), function(ii) paste0("epi_", method, "_", ii))
+      rst$epi_id <- vapply(seq_len(nrow(rst)), 
+                           function(ii) paste0("epi_", method, "_", ii), 
+                           character(1))
       rownames(rst) <- seq_len(nrow(rst))
       rst <- rst[ , c(12, 11, 1:10)]
       
@@ -332,15 +364,20 @@ epimutations <- function(case_samples, control_panel,
       rst_c <- rst
       rst_c <- tryCatch({
         rstGR <- GenomicRanges::makeGRangesFromDataFrame(rst)
-        ensembldb::seqlevelsStyle(rstGR) <- "UCSC" ## Ensure chromosomes have the same format
+        ## Ensure chromosomes have the same format
+        ensembldb::seqlevelsStyle(rstGR) <- "UCSC" 
         #Get candidate regions 
         candRegsGR <- get_candRegsGR()
         over <- GenomicRanges::findOverlaps(rstGR, candRegsGR)
+        #variables (avoid long code)
+        ids <- names(candRegsGR[S4Vectors::to(over)])
+        cre <- candRegsGR[S4Vectors::to(over)]$CRE
+        cre_type <- candRegsGR[S4Vectors::to(over)]$CRE_type
         
-        rst$epi_region_id[S4Vectors::from(over)] <- names(candRegsGR[S4Vectors::to(over)])
-        rst$CRE[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE
-        rst$CRE_type[S4Vectors::from(over)] <- candRegsGR[S4Vectors::to(over)]$CRE_type
-        
+        rst$epi_region_id[S4Vectors::from(over)] <- ids
+        rst$CRE[S4Vectors::from(over)] <- cre
+        rst$CRE_type[S4Vectors::from(over)] <- cre_type
+        rm(c("ids", "cre", "cre_type"))
         rst
       }, error = function(e) { rst })
       

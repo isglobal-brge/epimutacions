@@ -33,7 +33,7 @@ annotate_cpg <- function(data, db, split = ',',
 	# Basic annotation
 	message('Annotating:')
 	
-	message(paste0('-', gene_col))
+	message(gene_col)
 	annotated_genes <- lapply(epids_list, function(x){
 	  x_in_anno <- which(x %in% rownames(anno))
 	  x <- x[x_in_anno]
@@ -45,12 +45,12 @@ annotate_cpg <- function(data, db, split = ',',
 	})
 	
 
-	message(paste0('-', feat_col))
+	message(feat_col)
 	annotated_regions <- lapply(epids_list, function(x){
 		paste(anno[x,][[feat_col]], collapse='///')
 	})
 	
-	message(paste0('-', relat_col))
+	message(relat_col)
 	annotated_relation <- lapply(epids_list, function(x){
 		paste(anno[x,][[relat_col]], collapse='///')
 	})
@@ -59,7 +59,7 @@ annotate_cpg <- function(data, db, split = ',',
 	data[[gene_col]] <- annotated_genes
 	data[[feat_col]] <- annotated_regions
 	data[[relat_col]] <- annotated_relation
-	data <- data[- which(sapply(data[[gene_col]], is.null)),]
+	data <- data[- which(vapply(data[[gene_col]], is.null, logical(1))),]
 	
 	
 
@@ -79,7 +79,9 @@ annotate_cpg <- function(data, db, split = ',',
 		# extract OMIM info from db
 	
 		omims <- biomaRt::getBM(mart = gene_mart,
-								attributes = c("hgnc_symbol", "mim_morbid_accession", "mim_morbid_description"),
+								attributes = c("hgnc_symbol", 
+								               "mim_morbid_accession", 
+								               "mim_morbid_description"),
 								filters = "hgnc_symbol",
 								values = gene_list
 								)

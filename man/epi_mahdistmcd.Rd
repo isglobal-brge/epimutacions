@@ -19,10 +19,11 @@ The function returns the computed Robust Mahalanobis distance.
 }
 \description{
 This function identifies regions with CpGs being outliers
-using the Minimum Covariance Determinant (MCD) estimator (\link[robustbase]{covMcd})
-to compute the Mahalanobis distance.
+using the Minimum Covariance Determinant (MCD) estimator
+(\link[robustbase]{covMcd}) to compute the Mahalanobis distance.
 }
 \details{
-The implementation of the method here is based on the discussion in this
+The implementation of the method here is based
+on the discussion in this
 thread of \href{https://cutt.ly/Kka0M87}{Cross Validated}
 }

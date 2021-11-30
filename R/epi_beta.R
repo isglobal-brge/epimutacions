@@ -20,13 +20,19 @@
 #' @param maxGap maximum distance between two contiguous CpGs to combine them into an epimutation.
 #' @return The function returns a data frame with the candidate regions to be
 #' epimutations.
-epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshold, 
-                      diff_threshold, min_cpgs = 3, maxGap){
+epi_beta <-  function(beta_params, 
+                      beta_mean, 
+                      betas_case, annot, 
+                      pvalue_threshold, 
+                      diff_threshold, 
+                      min_cpgs = 3, 
+                      maxGap){
   
   
   ## Compute p-value for case
   pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], beta_params[, 2]), 
-                           function(x, shape1, shape2) stats::pbeta(x, shape1, shape2))
+                           function(x, shape1, shape2) 
+                                    stats::pbeta(x, shape1, shape2))
   names(pvals) <- rownames(betas_case)
   
   ## Select CpGs with difference in mean methylation higher than threshold
@@ -60,7 +66,8 @@ epi_beta <-  function(beta_params, beta_mean, betas_case, annot, pvalue_threshol
 
 
 #' @title  Model methylation as a beta distribution
-#' @param x Matrix of methylation expressed as a beta. CpGs are in columns and samples in rows.   
+#' @param x Matrix of methylation expressed as a beta. 
+#' CpGs are in columns and samples in rows.   
 #' @return Beta distribution.                    
 getBetaParams <- function(x){
   xbar <- colMeans(x, na.rm = TRUE)
@@ -74,16 +81,20 @@ getBetaParams <- function(x){
 defineRegions <- function(regGR, maxGap, up = TRUE){
   
   regGR <- sort(regGR)
-  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), stats::start(regGR), maxGap = maxGap)
+  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), 
+                                 BiocGenerics::start(regGR), 
+                                 maxGap = maxGap)
   reg_list <- lapply(unique(cl), function(i){
     cpgGR <- regGR[cl == i]
     rang <- range(cpgGR)
-    data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), start = stats::start(rang), 
-               end = stats::end(rang),
+    data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), 
+               start = BiocGenerics::start(rang), 
+               end = BiocGenerics::end(rang),
                sz = BiocGenerics::width(rang), cpg_n = length(cpgGR),
                cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
                outlier_score = mean(cpgGR$pvals),
-               outlier_direction = ifelse(up, "hypermethylation", "hypomethylation"),
+               outlier_direction = ifelse(up, "hypermethylation", 
+                                          "hypomethylation"),
                pvalue = NA,
                adj_pvalue =  NA,
                sample = NA

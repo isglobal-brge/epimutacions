@@ -7,7 +7,8 @@
 getBetaParams(x)
 }
 \arguments{
-\item{x}{Matrix of methylation expressed as a beta. CpGs are in columns and samples in rows.}
+\item{x}{Matrix of methylation expressed as a beta.
+CpGs are in columns and samples in rows.}
 }
 \value{
 Beta distribution.

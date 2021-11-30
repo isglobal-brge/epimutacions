@@ -5,8 +5,8 @@
 #' \link[epimutacions]{epimutations_one_leave_out} function.  
 #' @param cpg_ids a character string specifying the name of the
 #' CpGs in the DMR of interest. 
-#' @return  The function returns a GRanges object containing the beta values and the
-#' genomic ranges of the CpGs of interest. 
+#' @return  The function returns a GRanges object containing the 
+#' beta values and the genomic ranges of the CpGs of interest. 
 #' @importFrom methods is
 create_GRanges_class <- function(methy, cpg_ids){
   
@@ -62,11 +62,15 @@ cols_names <- function(x, cpg_ids_col = FALSE){
   sample_field <- "sample"
   
   #Identify the column name for each argument
-  if(seqnames_field[1] %in% colnames(x) | seqnames_field[2] %in% colnames(x) | seqnames_field[3] %in% colnames(x) | seqnames_field[4] %in% colnames(x) | seqnames_field[5] %in% colnames(x) | seqnames_field[6] %in% colnames(x) | seqnames_field[7] %in% colnames(x)){
+  if(seqnames_field[1] %in% colnames(x) | seqnames_field[2] %in% colnames(x) | 
+     seqnames_field[3] %in% colnames(x) | seqnames_field[4] %in% colnames(x) | 
+     seqnames_field[5] %in% colnames(x) | seqnames_field[6] %in% colnames(x) | 
+     seqnames_field[7] %in% colnames(x)){
     seqnames_pos <- which(colnames(x) %in% seqnames_field)
     seqnames <- x[,seqnames_pos]
   }else{
-    stop("Chromosome column name must be specified as: 'seqnames', 'seqname', 'chromosome', 'chrom', 'chr', 'chromosome_name' or 'seqid'")
+    stop("Chromosome column name must be specified as: 'seqnames', 
+         'seqname', 'chromosome', 'chrom', 'chr', 'chromosome_name' or 'seqid'")
   }
   if(start_field %in% colnames(x)){
     start_pos <- which(colnames(x) %in% start_field)
@@ -90,13 +94,19 @@ cols_names <- function(x, cpg_ids_col = FALSE){
       stop("Sample column name  must be specified as: 'sample'")
     }
     
-    if(cpg_field[1] %in% colnames(x) | cpg_field[2] %in% colnames(x) |cpg_field[3] %in% colnames(x)){
+    if(cpg_field[1] %in% colnames(x) | cpg_field[2] %in% colnames(x) |
+       cpg_field[3] %in% colnames(x)){
       cpg_pos <- which(colnames(x) %in% cpg_field)
       cpg_ids <- x[,cpg_pos]
     }else{
-      stop("CpGs column name  must be specified as: 'cpg_ids', 'cpgnames' or 'cpg'")
+      stop("CpGs column name  must be specified as: 
+           'cpg_ids', 'cpgnames' or 'cpg'")
     }
-    df <- data.frame("sample" = sample, "seqnames" = seqnames, "start" = start, "end" = end, "cpg_ids" = cpg_ids)
+    df <- data.frame("sample" = sample, 
+                     "seqnames" = seqnames, 
+                     "start" = start, 
+                     "end" = end, 
+                     "cpg_ids" = cpg_ids)
   }else{
     if( strand_field %in% colnames(x)){
       strand_pos <- which(colnames(x) %in% strand_field)
@@ -104,7 +114,9 @@ cols_names <- function(x, cpg_ids_col = FALSE){
     }else{
       stop("In feature dataset strand column name  must be specified as: 'strand'")
     }
-    df <- data.frame("seqnames" = seqnames, "start" = start, "end" = end, "strand" = strand)
+    df <- data.frame("seqnames" = seqnames, 
+                     "start" = start, 
+                     "end" = end, "strand" = strand)
   }
   #establish common column names
   x_rownames <- rownames(x)
@@ -127,7 +139,9 @@ cols_names <- function(x, cpg_ids_col = FALSE){
 betas_sd_mean <- function(gr){
   
   df <- as.data.frame(gr)
-  colnames(df) <- c("seqnames", "start", "end", "width", "strand",colnames(GenomicRanges::elementMetadata(gr)))
+  colnames(df) <- c("seqnames", "start", 
+                    "end", "width", "strand",
+                    colnames(GenomicRanges::elementMetadata(gr)))
   #Compute: 
   # * beta values
   # * Population mean 
@@ -144,15 +158,36 @@ betas_sd_mean <- function(gr){
   sd_2_lower <- ifelse(sd_2_lower > 0, sd_2_lower, 0)
   sd_2_upper <- mean +  2*sd
   
-  sd <- cbind(df[,c("seqnames", "start","end","width","strand")], sd_1_lower, sd_1_upper, sd_1.5_lower,sd_1.5_upper,sd_2_lower,sd_2_upper)
+  sd <- cbind(df[,c("seqnames", "start","end","width","strand")], 
+              sd_1_lower, sd_1_upper, 
+              sd_1.5_lower,sd_1.5_upper,sd_2_lower,sd_2_upper)
   mean <- cbind(df[,c("seqnames", "start","end","width","strand")], mean)
   
   
   #Melt beta values, mean and sd object (necessary for the ggplot)
   
-  beta_values <- reshape2::melt(df, id = c("seqnames", "start", "end", "width", "strand"))
-  mean <- reshape2::melt(mean, id = c("seqnames", "start", "end", "width", "strand","mean"))
-  sd <- reshape2::melt(sd, id = c("seqnames", "start", "end", "width", "strand","sd_1_lower", "sd_1_upper", "sd_1.5_lower","sd_1.5_upper","sd_2_lower","sd_2_upper"))
+  beta_values <- reshape2::melt(df, id = c("seqnames", 
+                                           "start", 
+                                           "end", 
+                                           "width", 
+                                           "strand"))
+  mean <- reshape2::melt(mean, id = c("seqnames", 
+                                      "start", 
+                                      "end", 
+                                      "width", 
+                                      "strand",
+                                      "mean"))
+  sd <- reshape2::melt(sd, id = c("seqnames", 
+                                  "start", 
+                                  "end", 
+                                  "width", 
+                                  "strand",
+                                  "sd_1_lower", 
+                                  "sd_1_upper", 
+                                  "sd_1.5_lower",
+                                  "sd_1.5_upper",
+                                  "sd_2_lower",
+                                  "sd_2_upper"))
   
   #Create the output list
   output <- list("beta_values" = beta_values, "mean" = mean, "sd" = sd)
@@ -170,12 +205,15 @@ betas_sd_mean <- function(gr){
 UCSC_annotation <- function(genome = "hg19"){
   if(genome == "hg19" & requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
     txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
-  } else if (genome == "hg38" & requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
+  } else if (genome == "hg38" & 
+             requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
     txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
-  } else if(genome == "hg18" & requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
+  } else if(genome == "hg18" & 
+            requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
     txdb <- TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
   } else{
-    warning("Genes are not shown since TxDb database is not installed in you computer")
+    warning("Genes are not shown since TxDb database 
+            is not installed in you computer")
     txdb <- NULL
   }
   
@@ -207,12 +245,18 @@ UCSC_annotation <- function(genome = "hg19"){
 UCSC_regulation <- function(genome, chr, from, to){
   
   #cpgIslands
-  cpgIslands <- suppressWarnings(Gviz::UcscTrack(genome = genome, chromosome = chr,
-                                                 track = "CpG Island", from = from,
-                                                 to = to, trackType = "AnnotationTrack",
-                                                 start = "chromStart", end = "chromEnd",
-                                                 id = "name", shape = "box",
-                                                 fill = "#FA9114", name = "CpG",
+  cpgIslands <- suppressWarnings(Gviz::UcscTrack(genome = genome, 
+                                                 chromosome = chr,
+                                                 track = "CpG Island", 
+                                                 from = from,
+                                                 to = to, 
+                                                 trackType = "AnnotationTrack",
+                                                 start = "chromStart", 
+                                                 end = "chromEnd",
+                                                 id = "name", 
+                                                 shape = "box",
+                                                 fill = "#FA9114", 
+                                                 name = "CpG",
                                                  background.title = "#9D5D10", 
                                                  rotation.title = 0))
   
@@ -223,9 +267,11 @@ UCSC_regulation <- function(genome, chr, from, to){
                                     IRanges::IRanges(from, to))
   
   #H3K27Ac
-  H3K27Ac <- suppressWarnings(rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
-                                                    track = "Layered H3K27Ac",
-                                                    range = granges)))
+  H3K27Ac <- suppressWarnings(
+              rtracklayer::getTable(
+                rtracklayer::ucscTableQuery(mySession, 
+                                            track = "Layered H3K27Ac",
+                                            range = granges)))
   H3K27Ac$seqnames <- chr
   value <- H3K27Ac$value
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
@@ -239,9 +285,11 @@ UCSC_regulation <- function(genome, chr, from, to){
   
   
   #H3K4Me3
-  H3K4Me3 <- suppressWarnings(rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
-                                                                                track = "Layered H3K4Me3",
-                                                                                range = granges)))
+  H3K4Me3 <- suppressWarnings(
+                rtracklayer::getTable(
+                  rtracklayer::ucscTableQuery(mySession, 
+                                              track = "Layered H3K4Me3",
+                                              range = granges)))
   H3K4Me3$seqnames <- chr
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
@@ -268,5 +316,8 @@ UCSC_regulation <- function(genome, chr, from, to){
   }
 
   
-  return(list("cpgIslands" = cpgIslands, "H3K27Ac" = H3K27Ac, "H3K4Me3" = H3K4Me3, "H3K27Me3" = H3K27Me3))
+  return(list("cpgIslands" = cpgIslands, 
+              "H3K27Ac" = H3K27Ac, 
+              "H3K4Me3" = H3K4Me3, 
+              "H3K27Me3" = H3K27Me3))
 }

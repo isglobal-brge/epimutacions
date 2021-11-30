@@ -37,7 +37,8 @@ the fault indicator is 4, 5 or 9, as the corresponding faults can be
 corrected by increasing "\code{eps}". Other faults raise an error.
 }
 \description{
-Distribution of a positive linear combination of \eqn{\chi^2} random variables.
+Distribution of a positive linear combination
+of \eqn{\chi^2} random variables.
 }
 \details{
 Algorithm AS 204 evaluates the expression

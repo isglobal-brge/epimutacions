@@ -20,8 +20,8 @@ DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
 \link[epimutacions]{epi_mahdistmcd} function results.}
 }
 \value{
-The function returns a data frame containing the following information
-for each DMR:
+The function returns a data frame containing
+the following information for each DMR:
 \itemize{
 \item genomic ranges
 \item DMR base pairs

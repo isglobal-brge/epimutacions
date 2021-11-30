@@ -108,9 +108,10 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
         term <- terms[i]
         subs.term <- which(asgn == i)
         if(n.terms > 1) { # Obtain relatives
-          relatives <- (1:n.terms)[-i][sapply(terms[-i], 
+          relatives <- (1:n.terms)[-i][vapply(terms[-i], 
                                               function(term2) 
-                                                is.relative(term, term2, fac))]
+                                                is.relative(term, term2, fac),
+                                                            logical = TRUE)]
         } else { 
           relatives <- NULL
         }
@@ -124,7 +125,8 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
         } else {
           SSCP1 <- sscp(L1, B, V)
         }
-        L2 <- I.p[c(subs.relatives, subs.term), , drop = FALSE] # Hyp. matrix (relatives + term) 
+        L2 <- I.p[c(subs.relatives, subs.term), , drop = FALSE] 
+        # Hyp. matrix (relatives + term) 
         SSCP2 <- sscp(L2, B, V)
         SS[i] <- sum(diag(SSCP2 - SSCP1))
         df[i] <- length(subs.term)

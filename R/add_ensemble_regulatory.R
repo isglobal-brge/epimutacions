@@ -84,10 +84,14 @@ process_ENSEMBL_results <- function(ensembl_res){
 	reg_vals <- lapply(reg_elements, function(i) 
 		merge_records(ensembl_res[ensembl_res$regulatory_stable_id == i, ]))
 	reg_vals_df <- Reduce(rbind, reg_vals)
-	out <- data.frame(ensembl_reg_id = paste(reg_vals_df$ensembl_reg_id, collapse = "///"),
-					  ensembl_reg_coordinates = paste(reg_vals_df$ensembl_reg_coordinates, collapse = "///"),
-					  ensembl_reg_type = paste(reg_vals_df$ensembl_reg_type, collapse = "///"),
-					  ensembl_reg_tissues = paste(reg_vals_df$ensembl_reg_tissues, collapse = "///"))
+	out <- data.frame(ensembl_reg_id = paste(reg_vals_df$ensembl_reg_id,
+	                                         collapse = "///"),
+					  ensembl_reg_coordinates = paste(reg_vals_df$ensembl_reg_coordinates, 
+					                                  collapse = "///"),
+					  ensembl_reg_type = paste(reg_vals_df$ensembl_reg_type, 
+					                           collapse = "///"),
+					  ensembl_reg_tissues = paste(reg_vals_df$ensembl_reg_tissues, 
+					                              collapse = "///"))
 	out
 }
 

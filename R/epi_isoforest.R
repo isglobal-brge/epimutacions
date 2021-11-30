@@ -54,11 +54,16 @@ res_isoforest <- function(bump, beta_bump, sts, case, outlier_score_cutoff){
 	bump$outlier_score <- sts
 	bump$pvalue <- NA
 	bump$adj_pvalue <- NA
-	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", "hypermethylation")
+	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", 
+	                                 "hypermethylation")
 	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
 	bump$sample <- case
-	bump[ , c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", "outlier_score",
-	          "outlier_direction", "pvalue", "adj_pvalue",  "sample")]
+	bump[ , c("chromosome", 
+	          "start", "end",
+	          "sz", "cpg_n", 
+	          "cpg_ids", "outlier_score",
+	          "outlier_direction", "pvalue", 
+	          "adj_pvalue",  "sample")]
 	}else{
     data.frame(chromosome = character(), start = numeric(), 
                end = numeric(),

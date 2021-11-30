@@ -35,8 +35,8 @@ epi_manova <-  function(mixture, model, case_id){
 #' @param sts  F statistic, Pillai and P value from
 #'  \link[epimutacions]{epi_manova} function results. 
 #' @param case a character string specifying the case sample name. 
-#' @returns The function returns a data frame containing the following information
-#' for each DMR: 
+#' @returns The function returns a data frame 
+#' containing the following information for each DMR: 
 #' * genomic ranges
 #' * DMR base pairs
 #' * number and name of CpGs in DMR
@@ -52,15 +52,18 @@ res_manova <- function(bump, beta_bump, sts, case) {
 	bump$outlier_score <- paste0(sts[[1]][1], "/", sts[[1]][2])
 	bump$pvalue <- sts[[1]][3]
 	bump$adj_pvalue <- NA
-	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", "hypermethylation")
+	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", 
+	                                 "hypermethylation")
 	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
 	bump$sample <- case
-	bump[ , c("chromosome", "start", "end", "sz", "cpg_n", "cpg_ids", "outlier_score",
+	bump[ , c("chromosome", "start", "end", "sz", 
+	          "cpg_n", "cpg_ids", "outlier_score",
 	          "outlier_direction", "pvalue", "adj_pvalue",  "sample")]
 	}
 
 filter_manova <- function(bump_out, pvalue_cutoff){
   bump_out$adj_pvalue <- stats::p.adjust(bump_out$pvalue, method = "hochberg")   
-  bump_out <- bump_out[which(bump_out$adj_pvalue < pvalue_cutoff), , drop = FALSE]
+  bump_out <- bump_out[which(bump_out$adj_pvalue < pvalue_cutoff), , 
+                       drop = FALSE]
   return(bump_out)
 }

@@ -20,8 +20,8 @@ of \link[epimutacions]{epi_mlm} function.}
 \item{case}{a character string specifying the case sample name.}
 }
 \value{
-The function returns a data frame containing the following information
-for each DMR:
+The function returns a data frame containing the following
+information for each DMR:
 \itemize{
 \item genomic ranges
 \item DMR base pairs

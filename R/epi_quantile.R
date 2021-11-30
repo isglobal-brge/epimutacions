@@ -27,7 +27,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
                         offset_abs = 0.15) {
   # Check that there is a single proband
   if(ncol(case) != 1) {
-    stop("Epimutation detection with 'quantile' approach can only works with a singe proband")
+    stop("Epimutation detection with 'quantile'
+         approach can only works with a singe proband")
   }
   
   # Identify outlier at the proband side using reference statistics
@@ -63,7 +64,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
     stringsAsFactors = FALSE
   )
   
-  flag_result <- flag_result[!is.na(flag_result$flag_qm_sup) & !is.na(flag_result$flag_qm_inf), ]
+  flag_result <- flag_result[!is.na(flag_result$flag_qm_sup) & 
+                             !is.na(flag_result$flag_qm_inf), ]
  
   # flag_result$flag_q_sup[is.na(flag_result$flag_q_sup)] <- FALSE
   # flag_result$flag_m_sup[is.na(flag_result$flag_m_sup)] <- FALSE
@@ -92,8 +94,10 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
       # Get the position of the previous and next probe for each probe in the
       # data.frame. The first and last position get its own position minus/plus
       # the window size to be sure to include them in the resulting data.frame.
-      red_df$pos_next <- c(red_df$pos[seq(2, nrow(red_df))], red_df$pos[nrow(red_df)] + window_sz + 1)
-      red_df$pos_prev <- c(red_df$pos[1] - window_sz - 1, red_df$pos[seq(1, nrow(red_df) - 1)])
+      red_df$pos_next <- c(red_df$pos[seq(2, nrow(red_df))], 
+                           red_df$pos[nrow(red_df)] + window_sz + 1)
+      red_df$pos_prev <- c(red_df$pos[1] - window_sz - 1, 
+                           red_df$pos[seq(1, nrow(red_df) - 1)])
       
       # We add two columns indicating if a probe is within the window size
       # range with its previous and with its next probe
@@ -115,7 +119,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
       # Correct the base position of the change in the region
       red_df$cum2 <- red_df$cum
       for(ii in seq(2, nrow(red_df))) {
-        if(red_df$cum[ii] != red_df$cum[ii - 1] & red_df$in_prev[ii] & !red_df$in_next[ii]) {
+        if(red_df$cum[ii] != red_df$cum[ii - 1] & 
+           red_df$in_prev[ii] & !red_df$in_next[ii]) {
           red_df$cum2[ii] <- red_df$cum[ii] - 1
         }
       }
@@ -127,7 +132,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
       fr <- data.frame(table(red_df$cum2), stringsAsFactors = FALSE)
       fr <- as.numeric(as.character(fr$Var1[fr$Freq >= N]))
       if(length(fr) > 0) {
-        fr <- data.frame(current = fr, new = paste0(pref, "_", chr, "_", seq_len(length(fr))))
+        fr <- data.frame(current = fr, 
+                         new = paste0(pref, "_", chr, "_", seq_len(length(fr))))
         red_df <- red_df[red_df$cum2 %in% fr$current, ]
         rownames(fr) <- paste0("O", fr$current)
         red_df$region <- fr[paste0("O", red_df$cum2), "new"]

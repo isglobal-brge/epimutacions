@@ -175,14 +175,14 @@ mlm <- function(formula, data, transform = "none", type = "II",
 print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ # #nocov start
   
   ## Print Call and type of SS
-  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
-      "\n\n", sep = "")
-  cat("Type", x$type, "Sum of Squares\n\n")
+  #cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
+      #"\n\n", sep = "")
+  #cat("Type", x$type, "Sum of Squares\n\n")
   
   ## Print ANOVA table
   cmat <- x$aov.tab
   if (!is.null(heading <- attr(cmat, "heading"))) 
-    cat(heading, sep = "\n")
+    #cat(heading, sep = "\n")
   nc <- dim(cmat)[2L]
   if (is.null(cn <- colnames(cmat))) 
     stop("'aov.tab' object must have colnames")
@@ -199,11 +199,12 @@ print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ # #n
     zap.i <- zap.i[!(zap.i %in% i)]
   printCoefmat.mp(cmat, digits = digits, has.Pvalue = TRUE, 
                   P.values = TRUE, cs.ind = NULL, zap.ind = zap.i, 
-                  tst.ind = tst.i, na.print = "", eps.Pvalue = x$precision + 1e-30, ...)
+                  tst.ind = tst.i, na.print = "", 
+                  eps.Pvalue = x$precision + 1e-30, ...)
   na <- x$na.omit
   if(!is.null(na)){
-    cat(sprintf("%s observation%s deleted due to missingness\n", 
-                length(na), ifelse(length(na) > 1, "s", "")))
+    #cat(sprintf("%s observation%s deleted due to missingness\n", 
+                #length(na), ifelse(length(na) > 1, "s", "")))
   }
   invisible(x)
 } # #nocov end
@@ -317,8 +318,8 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
     if ((w <- getOption("width")) < nchar(sleg <- attr(Signif, 
                                                        "legend"))) 
       sleg <- strwrap(sleg, width = w - 2, prefix = "  ")
-    cat("---\nSignif. codes:  ", sleg, sep = "", fill = w + 
-          4 + max(nchar(sleg, "bytes") - nchar(sleg)))
+    #cat("---\nSignif. codes:  ", sleg, sep = "", fill = w + 
+          #4 + max(nchar(sleg, "bytes") - nchar(sleg)))
   }
   invisible(x)
 } # #nocov end

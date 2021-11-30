@@ -32,7 +32,10 @@
 #' #anno_results[1:2, c(1, 12:14)]
 #' 
 #' @export
-annotate_epimutations <- function(epi_results, db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", build = "37", ...){
+annotate_epimutations <- 
+  function(epi_results, 
+           db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", 
+           build = "37", ...){
 	
 	## Add gene mapping and CpG island information
 	epi_results <- annotate_cpg(epi_results, db = db,  ...)

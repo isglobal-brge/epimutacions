@@ -44,7 +44,13 @@
 #' #plot_epimutations(as.data.frame(results[1,]), GRset)
 #' 
 #' @export
-plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, regulation = FALSE, from = NULL, to = NULL){
+plot_epimutations <- function(dmr, 
+                              methy, 
+                              genome = "hg19", 
+                              genes_annot = FALSE, 
+                              regulation = FALSE, 
+                              from = NULL, 
+                              to = NULL){
   
   # Identify type of input and extract required data:
   #	* Input parameters: class, not null (if requered), nrow/ncols... 
@@ -63,7 +69,8 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
   }
   ##Unique DMR  
   if(nrow(dmr) > 1){
-    warning("more than one DMR introduced (nrow > 1) only the first element will be used")
+    warning("more than one DMR introduced (nrow > 1) 
+            only the first element will be used")
     dmr <- dmr[1,]
   }
   ##Genome assembly
@@ -102,38 +109,80 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
   # * color: 'red' for case sample and 'black' for control sample
   # * lines: 'longdash' for controls and 'solid' for case and population mean
   
-  betas_sd_mean$beta_values$status <- ifelse(betas_sd_mean$beta_values$variable == dmr$sample, dmr$sample, "control")
-  betas_sd_mean$beta_values$lines <- ifelse(betas_sd_mean$beta_values$status == "control","longdash","solid")
+  status <- ifelse(betas_sd_mean$beta_values$variable == dmr$sample, 
+                   dmr$sample, 
+                   "control")
+  betas_sd_mean$beta_values$status <- status
+  rm(status)
+  lines <- ifelse(betas_sd_mean$beta_values$status == "control",
+                  "longdash","solid")
+  betas_sd_mean$beta_values$lines <- lines
+  rm(lines)
   colors <- c("control" = "black", "mean" = "darkblue", "red")
   names(colors)[3] <- dmr$sample
   
   #Generate a variable with the CpGs names
-  names <- betas_sd_mean$beta_values[betas_sd_mean$beta_values$variable == dmr$sample,]
+  variable <- betas_sd_mean$beta_values$variable
+  names <- betas_sd_mean$beta_values[variable == dmr$sample,]
+  rm(variable)
   names$id <- names(gr)
   
   #Plot epimutations
   
   plot_betas <- ggplot2::ggplot() + 
-    ggplot2::geom_line(data = betas_sd_mean$beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status), linetype = betas_sd_mean$beta_values$lines) +
-    ggplot2::geom_point(data = betas_sd_mean$beta_values, ggplot2::aes(x = start, y = value, group = variable, color = status))
+    ggplot2::geom_line(data = betas_sd_mean$beta_values, 
+                       ggplot2::aes(x = start, 
+                                    y = value, 
+                                    group = variable, 
+                                    color = status), 
+                       linetype = betas_sd_mean$beta_values$lines) +
+    ggplot2::geom_point(data = betas_sd_mean$beta_values, 
+                        ggplot2::aes(x = start, 
+                                     y = value, 
+                                     group = variable, 
+                                     color = status))
   plot_sd <- plot_betas +
-    ggplot2::geom_ribbon(data = betas_sd_mean$sd, ggplot2::aes(x = start, ymin = sd_2_lower, ymax = sd_2_upper), fill = "gray39", alpha = 0.4) +
-    ggplot2::geom_ribbon(data = betas_sd_mean$sd, ggplot2::aes(x = start, ymin = sd_1.5_lower, ymax = sd_1.5_upper), fill = "gray40", alpha = 0.4) +
-    ggplot2::geom_ribbon(data = betas_sd_mean$sd, ggplot2::aes(x = start, ymin = sd_1_lower, ymax = sd_1_upper), fill = "gray98", alpha = 0.4)
+    ggplot2::geom_ribbon(data = betas_sd_mean$sd, 
+                         ggplot2::aes(x = start,
+                                      ymin = sd_2_lower, 
+                                      ymax = sd_2_upper), 
+                         fill = "gray39", alpha = 0.4) +
+    ggplot2::geom_ribbon(data = betas_sd_mean$sd, 
+                         ggplot2::aes(x = start,
+                                      ymin = sd_1.5_lower, 
+                                      ymax = sd_1.5_upper), 
+                         fill = "gray40", alpha = 0.4) +
+    ggplot2::geom_ribbon(data = betas_sd_mean$sd,
+                         ggplot2::aes(x = start,
+                                      ymin = sd_1_lower,
+                                      ymax = sd_1_upper), 
+                         fill = "gray98", alpha = 0.4)
   
   plot_mean <-  plot_sd +
-    ggplot2::geom_line(data = betas_sd_mean$mean, ggplot2::aes(x = start, y = mean, color = "mean")) +
-    ggplot2::geom_point(data = betas_sd_mean$mean, ggplot2::aes(x = start, y = mean), show.legend = TRUE)
+    ggplot2::geom_line(data = betas_sd_mean$mean, 
+                       ggplot2::aes(x = start, 
+                                    y = mean, 
+                                    color = "mean")) +
+    ggplot2::geom_point(data = betas_sd_mean$mean, 
+                        ggplot2::aes(x = start, y = mean), 
+                        show.legend = TRUE)
   
   plot_cpg_names <- plot_mean +
     ggrepel::geom_text_repel() + 
-    ggplot2::annotate(geom = "text", x = names$start, y = names$value + 0.05, label = names$id, color = "black")
+    ggplot2::annotate(geom = "text", 
+                      x = names$start, 
+                      y = names$value + 0.05, 
+                      label = names$id, 
+                      color = "black")
   
   plot <- plot_cpg_names + 
     ggplot2::lims(y = c(0,1)) +  
     ggplot2::scale_colour_manual(name = "Status", values = colors) +
     ggplot2::theme_bw() + 
-    ggplot2::ggtitle(paste0(dmr$sample,": ", dmr$seqnames, ":", dmr$start, " - ", dmr$end)) +
+    ggplot2::ggtitle(paste0(dmr$sample,": ", 
+                            dmr$seqnames, ":", 
+                            dmr$start, 
+                            " - ", dmr$end)) +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
     ggplot2::labs(x = "Coordinates") + 
     ggplot2::labs(y = "DNA methylation level")
@@ -152,10 +201,13 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
                                       rotation.title = 0)
   }
   if(genes_annot == TRUE){
-  tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track),
-                                           start = dmr$start, end = dmr$end,
+  tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track,
+                                                            gene_track),
+                                           start = dmr$start, 
+                                           end = dmr$end,
                                            chromosome = dmr$seqnames,
-                                           col = "#7EA577", fill = "#C6D7C3",
+                                           col = "#7EA577", 
+                                           fill = "#C6D7C3",
                                            alpha = 0.4,
                                            inBackground = FALSE)
   }
@@ -163,31 +215,38 @@ plot_epimutations <- function(dmr, methy, genome = "hg19", genes_annot = FALSE, 
     
       sz <- to - from
       if(sz > 200000){
-        stop("The region is too large (> 200kb) to download the annotations from 'UCSC'")
+        stop("The region is too large (> 200kb) 
+             to download the annotations from 'UCSC'")
       }
       annotation <- UCSC_regulation(genome, dmr$seqnames, from, to)
 
     if(genome ==  "hg19"){
-      tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track, 
-                                                                annotation$cpgIslands,
-                                                                annotation$H3K4Me3,
-                                                                annotation$H3K27Ac, 
-                                                                annotation$H3K27Me3),
-                                                                start = dmr$start, end = dmr$end,
-                                                                chromosome = dmr$seqnames,
-                                                                col = "#7EA577", 
-                                                                fill = "#C6D7C3",
-                                                                alpha = 0.4,
-                                                                inBackground = FALSE)
+      tracks_Highlight <- Gviz::HighlightTrack(trackList = 
+                                                 list(genome_track, 
+                                                      gene_track, 
+                                                      annotation$cpgIslands,
+                                                      annotation$H3K4Me3,
+                                                      annotation$H3K27Ac, 
+                                                      annotation$H3K27Me3),
+                                                start = dmr$start, 
+                                                end = dmr$end,
+                                                chromosome = dmr$seqnames,
+                                                col = "#7EA577", 
+                                                fill = "#C6D7C3",
+                                                alpha = 0.4,
+                                                inBackground = FALSE)
       
     }else{
-      tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track, gene_track, 
-                                                                annotation$cpgIslands,
-                                                                annotation$H3K4Me3,
-                                                                annotation$H3K27Ac),
+      tracks_Highlight <- Gviz::HighlightTrack(trackList = 
+                                                 list(genome_track, 
+                                                      gene_track, 
+                                                      annotation$cpgIslands,
+                                                      annotation$H3K4Me3,
+                                                      annotation$H3K27Ac),
                                                start = dmr$start, end = dmr$end,
                                                chromosome = dmr$seqnames,
-                                               col = "#7EA577", fill = "#C6D7C3",
+                                               col = "#7EA577", 
+                                               fill = "#C6D7C3",
                                                alpha = 0.4,
                                                inBackground = FALSE)
     }
