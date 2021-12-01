@@ -138,6 +138,9 @@ cols_names <- function(x, cpg_ids_col = FALSE){
 
 betas_sd_mean <- function(gr){
   
+  if(!is(gr, "GRanges")){
+    stop("The argument 'gr' must be ")
+  }
   df <- as.data.frame(gr)
   colnames(df) <- c("seqnames", "start", 
                     "end", "width", "strand",

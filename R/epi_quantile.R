@@ -30,7 +30,10 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
     stop("Epimutation detection with 'quantile'
          approach can only works with a singe proband")
   }
-  
+  # Check that "N" is not smaller than 3
+  if(N < 3){
+    stop("The minimum number of CpGs allowed is 3")
+  }
   # Identify outlier at the proband side using reference statistics
   # @param bctr_min Lower threshold for epimutation. A beta value has to be lower
   # that this value (- offset_abs) to be considered an epimutation candidate. The

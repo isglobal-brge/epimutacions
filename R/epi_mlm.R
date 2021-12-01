@@ -38,23 +38,14 @@ epi_mlm <- function(mixture, model) {
 #' For more information about the output see \link[epimutacions]{epimutations}.
 #' 
 
-res_mlm <- function(bump, beta_bump, sts, case) {
+res_mlm <- function(bump, sts) {
 	bump$outlier_score <- paste0(sts[1], "/", sts[2])
 	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", 
 	                                 "hypermethylation")
 	bump$pvalue <- sts[3]
 	bump$adj_pvalue <- NA
-	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
-	bump$sample <- case
 	bump[ , c("chromosome", "start", "end", "sz", "cpg_n", 
 	          "cpg_ids", "outlier_score",
 	          "outlier_direction", "pvalue", 
 	          "adj_pvalue",  "sample")]
-}
-
-filter_mlm <- function(bump_out, pvalue_cutoff){
-  bump_out$adj_pvalue <- stats::p.adjust(bump_out$pvalue, method = "hochberg")   
-  bump_out <- bump_out[which(bump_out$adj_pvalue < pvalue_cutoff), , 
-                       drop = FALSE]
-  return(bump_out)
 }

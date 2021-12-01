@@ -10,7 +10,7 @@ printCoefmat.mp(
   signif.stars = getOption("show.signif.stars"),
   signif.legend = signif.stars,
   dig.tst = max(1L, min(5L, digits - 1L)),
-  cs.ind = 1:k,
+  cs.ind = seq_len(k),
   tst.ind = k + 1,
   zap.ind = integer(),
   P.values = NULL,

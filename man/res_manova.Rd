@@ -5,17 +5,17 @@
 \title{Creates a data frame containing the results
 obtained from MANOVA}
 \usage{
-res_manova(bump, beta_bump, sts, case)
+res_manova(bump, sts)
 }
 \arguments{
 \item{bump}{a DMR obtained from \link[bumphunter]{bumphunter}
 (i.e. a row from \link[bumphunter]{bumphunter} method result).}
 
-\item{beta_bump}{a beta values matrix for the CpGs in the selected
-DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
-
 \item{sts}{F statistic, Pillai and P value from
 \link[epimutacions]{epi_manova} function results.}
+
+\item{beta_bump}{a beta values matrix for the CpGs in the selected
+DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
 
 \item{case}{a character string specifying the case sample name.}
 }

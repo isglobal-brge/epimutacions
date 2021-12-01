@@ -55,7 +55,7 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
                           collapse = ", ")))
     }
   } else {
-    iterms <- 1:n.terms
+    iterms <- seq_len(n.terms)
   }
   asgn <- fit$assign
   
@@ -108,7 +108,7 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
         term <- terms[i]
         subs.term <- which(asgn == i)
         if(n.terms > 1) { # Obtain relatives
-          relatives <- (1:n.terms)[-i][vapply(terms[-i], 
+          relatives <- (seq_len(n.terms))[-i][vapply(terms[-i], 
                                               function(term2) 
                                                 is.relative(term, term2, fac),
                                                             logical = TRUE)]

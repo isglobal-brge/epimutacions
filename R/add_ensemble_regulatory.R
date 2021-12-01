@@ -105,7 +105,10 @@ process_ENSEMBL_results <- function(ensembl_res){
 #' @param tab Results from `biomaRt::getBM` for the same regulatory element
 #' @return `data.frame` of one row after collapsing the 
 merge_records <- function(tab){
-	
+
+    if(!is(tab,"data.frame")){
+    stop("'tab' argument must be a 'data.frame'")
+    }
 	vec <- tab[1, , drop = FALSE]
 	out <- data.frame(ensembl_reg_id = tab$regulatory_stable_id[1], 
 					  ensembl_reg_coordinates = paste0(vec$chromosome_name, ":",

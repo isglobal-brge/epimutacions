@@ -49,15 +49,13 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 #' 
 #' For more information about the output see \link[epimutacions]{epimutations}.
 
-res_isoforest <- function(bump, beta_bump, sts, case, outlier_score_cutoff){
+res_isoforest <- function(bump, sts, outlier_score_cutoff){
   if(sts > outlier_score_cutoff){
 	bump$outlier_score <- sts
 	bump$pvalue <- NA
 	bump$adj_pvalue <- NA
 	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", 
 	                                 "hypermethylation")
-	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
-	bump$sample <- case
 	bump[ , c("chromosome", 
 	          "start", "end",
 	          "sz", "cpg_n", 

@@ -65,9 +65,11 @@ genomic region.
 
 data(GRset)
 
-case_sample <- GRset[,"GSM2562701"]
-control_panel <- GRset[,-11]
-#results <- epimutations(case_sample, control_panel, method = "manova")
-#plot_epimutations(as.data.frame(results[1,]), GRset)
+#Find epimutations in GSM2562701 sample of GRset dataset
+
+case_samples <- GRset[,11]
+control_panel <- GRset[,1:10]
+results <- epimutations(case_samples, control_panel, method = "manova")
+plot_epimutations(as.data.frame(results[1,]), GRset)
 
 }

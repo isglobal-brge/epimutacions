@@ -79,24 +79,26 @@ knitr::include_graphics(file.path(getwd(),"fig/implementation.png"))
 
 # Setup
 
-## Installing the package
+## Installing the packages
 
 ```{r, eval=FALSE}
-devtools::install_github("isglobal-brge/epimutacions")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("epimutacions")
 ```
 
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("epimutacionsData")
+```
 
 ## Loading libraries
 
-```{r, message=FALSE}
+```{r, message = FALSE}
 library(epimutacions)
-```
-
-## Remote repositories
-The package uses a remote repository available at GitHub: 
-
-```{r eval = FALSE}
-devtools::install_github("dgarrimar/mlm")
 ```
 
 ## Quick start
@@ -136,9 +138,6 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("ExperimentHub")
 ```
 
-```{r eval = FALSE}
-devtools::install_github("LeireAbarrategui/epimutacionsData")
-```
 
 Then, we need to load the package and create an `ExperimentHub` object: 
 
@@ -157,21 +156,12 @@ IDAT files directory in `epimutacionsData` package:
 baseDir <- system.file("extdata", package = "epimutacionsData")
 ```
 
-The reference panel can be found in `EH6691` record of the  `eh` object: 
+The reference panel and  `methy` dataset can be found in `EH6691` and `EH6690`  record of the  `eh` object: 
 
-```{r message = FALSE, eval = FALSE}
+```{r message = FALSE, FALSE}
 reference_panel <- eh[["EH6691"]]
-```
-
-## Methy {#methy}
-
-The `methy` is stored in `EH6690` record: 
-
-
-```{r message = FALSE}
 methy <- eh[["EH6690"]]
 ```
-
 
 
 ## Candidate regions {#candreg}
@@ -320,19 +310,12 @@ We can specify the chromosome or region to analyze which helps to reduce the exe
 epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
 ```
 
-```{r, epi_method_examples, eval = FALSE}
-epi_ml <- epimutations(case_samples, control_samples, method = "mlm")
-epi_iso <- epimutations(case_samples, control_samples, method = "isoforest", chr = "chr10", start = 100, end  = 10000)
-epi_mcd <- epimutations(case_samples, control_samples, method = "mahdistmcd", chr = "chr12")
-epi_qtl <- epimutations(case_samples, control_samples, method = "quantile", chr = "chr22")
-epi_beta <- epimutations(case_samples, control_samples, method = "beta", chr = "chr17")
-```
 
 
 The function `epimutations_one_leave_out()` compared individual methylation profiles of a single
 sample (regardless if they are cases or controls) against all other samples from the same cohort. To use this function we do not need to split the dataset: 
 
-```{r eval = FALSE}
+```{r}
 #manova (default method)
 epi_mva_one_leave_out<- epimutations_one_leave_out(methy)
 ```

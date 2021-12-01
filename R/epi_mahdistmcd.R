@@ -71,14 +71,12 @@ epi_mahdistmcd <- function(mixture,
 #' 
 #' For more information about the output see \link[epimutacions]{epimutations}.
 
-res_mahdistmcd <- function(case, bump, beta_bump, outliers) {
+res_mahdistmcd <- function(case, bump, outliers) {
 	bump$outlier <- case %in% outliers
 	bump$outlier_score <- NA
 	bump$pvalue <- NA 
 	bump$adj_pvalue <- NA
 	bump$outlier_direction <- NA
-	bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
-	bump$sample <- case
 	bump <- bump[bump$outlier, ]
 	bump <- bump[ , c("chromosome", 
 	                  "start", 

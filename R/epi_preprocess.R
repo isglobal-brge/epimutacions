@@ -31,13 +31,14 @@
 #' @examples 
 #'
 #' # The reference panel for this example is available in epimutacionsData (ExperimentHub) package
-#' #library(ExperimentHub)
-#' #eh <- ExperimentHub()
-#' #query(eh, c("epimutacionsData"))
-#' #reference_panel <- eh[["EH6691"]]
-#' #cases_dir <- system.file("extdata", package = "minfiData")
+#' library(ExperimentHub)
+#' eh <- ExperimentHub()
+#' query(eh, c("epimutacionsData"))
+#' reference_panel <- eh[["EH6691"]]
+#' cases_dir <- system.file("extdata", package = "minfiData")
 #' #Preprocessing
 #' #epi_preprocess(cases_dir, reference_panel)
+#' 
 #' 
 #' 
 #' @importFrom methods is
@@ -62,10 +63,10 @@ epi_preprocess <-function(cases_dir,
     stop("Invalid normalisation ('normalize') method was selected'")
   
   #Reading case samples idat files
-  targets <- minfi::read.metharray.sheet(cases_dir, pattern = pattern)
+  targets <- minfi::read.metharray.sheet(base = cases_dir, pattern = pattern)
   if(is.null(targets)){
     warning("There is not any sample sheet in the base directory")
-    RGset_cases <- minfi::read.metharray.exp(cases_dir)
+    RGset_cases <- minfi::read.metharray.exp(base = cases_dir)
   }else{
     RGset_cases <- minfi::read.metharray.exp(targets = targets)
   }

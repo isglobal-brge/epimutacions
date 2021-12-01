@@ -5,21 +5,21 @@
 \title{Creates a data frame containing the results
 obtained from Isolation Forest}
 \usage{
-res_isoforest(bump, beta_bump, sts, case, outlier_score_cutoff)
+res_isoforest(bump, sts, outlier_score_cutoff)
 }
 \arguments{
 \item{bump}{a DMR obtained from \link[bumphunter]{bumphunter}
 (i.e. a row from \link[bumphunter]{bumphunter} method result).}
 
-\item{beta_bump}{a beta values matrix for the CpGs in the selected
-DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
-
 \item{sts}{the outlier score from
 \link[epimutacions]{epi_isoforest} function results.}
 
-\item{case}{a character string specifying the case sample name.}
-
 \item{outlier_score_cutoff}{numeric specifying the outlier score cut off}
+
+\item{beta_bump}{a beta values matrix for the CpGs in the selected
+DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
+
+\item{case}{a character string specifying the case sample name.}
 }
 \value{
 The function returns a data frame containing the following information

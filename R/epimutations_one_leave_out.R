@@ -45,7 +45,7 @@
 #'    * For \code{barbosa} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
 #' @examples 
 #' data(GRset)
-#' #epimutations_one_leave_out(GRset, method = "manova")
+#' epimutations_one_leave_out(GRset, method = "manova")
 #' @importFrom methods is
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 

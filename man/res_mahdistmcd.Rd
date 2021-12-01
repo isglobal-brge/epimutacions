@@ -5,7 +5,7 @@
 \title{Creates a data frame containing the results
 obtained from Robust Mahalanobis distance}
 \usage{
-res_mahdistmcd(case, bump, beta_bump, outliers)
+res_mahdistmcd(case, bump, outliers)
 }
 \arguments{
 \item{case}{a character string specifying the case sample name.}
@@ -13,11 +13,11 @@ res_mahdistmcd(case, bump, beta_bump, outliers)
 \item{bump}{a DMR obtained from \link[bumphunter]{bumphunter}
 (i.e. a row from \link[bumphunter]{bumphunter} method result).}
 
-\item{beta_bump}{a beta values matrix for the CpGs in the selected
-DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
-
 \item{outliers}{the robust distance computed by
 \link[epimutacions]{epi_mahdistmcd} function results.}
+
+\item{beta_bump}{a beta values matrix for the CpGs in the selected
+DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
 }
 \value{
 The function returns a data frame containing

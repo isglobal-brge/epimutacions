@@ -65,9 +65,9 @@
 #' 
 #' #Find epimutations in GSM2562701 sample of GRset dataset
 #' 
-#' case_samples <- GRset[,"GSM2562701"]
-#' control_panel <- GRset[,-11]
-#' #epimutations(case_samples, control_panel, method = "manova")
+#' case_samples <- GRset[,11]
+#' control_panel <- GRset[,1:10]
+#' epimutations(case_samples, control_panel, method = "manova")
 
 #' @importFrom methods is
 #' @export
@@ -189,12 +189,13 @@ epimutations <- function(case_samples, control_panel,
       model <- stats::model.matrix(~status, status)
       
       # Run bumphunter for region partitioning
-      bumps <- bumphunter::bumphunter(object = betas, design = model,
-                                      pos = fd$start, chr = fd$seqnames, 
-                                      maxGap = maxGap,
-                                      cutoff = bump_cutoff)$table
       suppressWarnings(
-        if(!is.na(bumps)){
+        bumps <- bumphunter::bumphunter(object = betas, design = model,
+                                        pos = fd$start, chr = fd$seqnames, 
+                                        maxGap = maxGap,
+                                        cutoff = bump_cutoff)$table)
+      
+        if(all(!is.na(bumps))){
           
           ## Homogeneize output of bumphunter to epimutacions naming
           bumps$chromosome <- bumps$chr
@@ -211,6 +212,9 @@ epimutations <- function(case_samples, control_panel,
           bumps  <- do.call(rbind, lapply(seq_len(nrow(bumps)), function(ii){
             bump <- bumps[ii, ]
             beta_bump <- betas_from_bump(bump, fd, betas)
+            # Add sample name and cpg_ids
+            bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
+            bump$sample <- case
             if(method == "mahdistmcd") {
               dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp),
                          silent = TRUE)
@@ -219,35 +223,33 @@ epimutations <- function(case_samples, control_panel,
                                                 df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
-                x <- res_mahdistmcd(case, bump, beta_bump, outliers)
+                x <- res_mahdistmcd(case, bump, outliers)
               }
             } else if(method == "mlm") {
               sts <- try(epi_mlm(beta_bump, model), silent = TRUE)
-              x <- res_mlm(bump, beta_bump, sts, case)
+              x <- res_mlm(bump, sts)
             } else if(method == "manova") {
               sts <- epi_manova(beta_bump, model, case)
-              x <- res_manova(bump, beta_bump, sts, case)
+              x <- res_manova(bump, sts)
             } else if(method == "isoforest") {
               sts <- epi_isoforest(beta_bump, case, 
                                    epi_params$isoforest$ntrees)
               x <- res_isoforest(bump,
-                                 beta_bump, 
                                  sts,
-                                 case, 
                                  epi_params$isoforest$outlier_score_cutoff)
             } 
           }))
           ## Filter using the adjusted p-value calculated from regions 
           ##identified in each sample ("manova and "mlm")
           if(method == "manova" & !is.null(bumps)){
-            bumps <- filter_manova(bumps, epi_params$manova$pvalue_cutoff)
+            bumps <- filter(bumps, epi_params$manova$pvalue_cutoff)
           }
           if(method == "mlm" & !is.null(bumps)){
-            bumps <- filter_mlm(bumps, epi_params$mlm$pvalue_cutoff)
+            bumps <- filter(bumps, epi_params$mlm$pvalue_cutoff)
           }
        
           }
-        })
+        }
       #Add a row filled by NAs for the samples with any epimutations
       if(is.null(nrow(bumps)) || nrow(bumps) == 0){
         bumps <- data.frame(chromosome = 0,

@@ -1,9 +1,11 @@
 # epimutacions
 
-`epimutacions` is a R package to detect epimutations (rare alterations in the methylation pattern at specific loci) from DNA methylation data.
+`epimutacions` is an R/Biconductor package.  The package provides 6 statistical methods for outlier detection in DNA methylation data. It also contains function for results visualization and annotation. 
 
 
 # Installation
+
+The `epimutacions` package can be installed using the following code:
 
 ```
 if (!requireNamespace("BiocManager", quietly = TRUE))
@@ -16,8 +18,10 @@ The `epimutacions` package depends on `epimutacionsData`  package which can be i
 
 
 ```
-install.packages("devtools")
-devtools::install_github("LeireAbarrategui/epimutacionsData")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("epimutacionsData")
 
 ```
 

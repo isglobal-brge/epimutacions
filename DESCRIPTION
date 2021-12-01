@@ -40,7 +40,6 @@ Imports:
     CompQuadForm,
     car
 Suggests: 
-  knitr, 
   rmarkdown, 
   BiocStyle,
   reshape2,

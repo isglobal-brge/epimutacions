@@ -226,7 +226,7 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
                              signif.stars = getOption("show.signif.stars"), 
                              signif.legend = signif.stars, 
                              dig.tst = max(1L,min(5L, digits - 1L)), 
-                             cs.ind = 1:k, tst.ind = k + 1, zap.ind = integer(), 
+                             cs.ind = seq_len(k), tst.ind = k + 1, zap.ind = integer(), 
                              P.values = NULL, has.Pvalue = nc >= 4 && 
                                substr(colnames(x)[nc], 1, 3) == "Pr(", 
                              eps.Pvalue = .Machine$double.eps, na.print = "NA", 
