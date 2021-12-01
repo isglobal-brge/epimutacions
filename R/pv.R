@@ -113,6 +113,8 @@ p.asympt <- function(ss,
 ##' 
 ##' @useDynLib epimutacions ruben
 ##' 
+##' @import CompQuadForm
+##' 
 ##' @keywords internal
 ##' 
 AS204 <- function (c, lambda, 

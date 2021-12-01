@@ -47,6 +47,7 @@
 ##' @author Diego Garrido-Martín
 ##' 
 ##' @import stats
+##' @import car
 ##' 
 ##' 
 mlm <- function(formula, data, transform = "none", type = "II", 
