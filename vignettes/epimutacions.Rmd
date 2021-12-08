@@ -313,11 +313,12 @@ epi_mvo <- epimutations(case_samples, control_samples, method = "manova")
 
 
 The function `epimutations_one_leave_out()` compared individual methylation profiles of a single
-sample (regardless if they are cases or controls) against all other samples from the same cohort. To use this function we do not need to split the dataset: 
+sample (regardless if they are cases or controls) against all other samples from the same cohort. To use this function we do not need to split the dataset. To ilustrate this example we are going to use the `GRset` dataset available in `epimutacions` package: 
 
 ```{r}
 #manova (default method)
-epi_mva_one_leave_out<- epimutations_one_leave_out(methy)
+data(GRset)
+epi_mva_one_leave_out<- epimutations_one_leave_out(GRset)
 ```
 
 
