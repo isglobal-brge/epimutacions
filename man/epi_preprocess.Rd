@@ -62,9 +62,9 @@ library(ExperimentHub)
 eh <- ExperimentHub()
 query(eh, c("epimutacionsData"))
 reference_panel <- eh[["EH6691"]]
-cases_dir <- system.file("extdata", package = "minfiData")
+cases_dir <- system.file("extdata", package = "epimutacionsData")
 #Preprocessing
-#epi_preprocess(cases_dir, reference_panel)
+epi_preprocess(cases_dir, reference_panel, pattern = "SampleSheet.csv")
 
 
 

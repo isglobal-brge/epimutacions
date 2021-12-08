@@ -85,7 +85,7 @@ of the used anomaly detection method.
 }
 }
 \description{
-The function identifies  Differentially Methylated Regions
+The function identifies  differentially methylated regions
 in a case sample by comparing it against a control panel.
 }
 \details{

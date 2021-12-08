@@ -30,6 +30,7 @@
 #' results <- epimutations(case_samples, control_panel, method = "beta")
 #' 
 #' #Annotate the epimutations
+#' 
 #' anno_results <- annotate_epimutations(as.data.frame(results))
 #' anno_results[1:2, c(1, 12:14)]
 #' 

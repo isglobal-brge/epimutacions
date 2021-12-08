@@ -13,11 +13,6 @@ res_manova(bump, sts)
 
 \item{sts}{F statistic, Pillai and P value from
 \link[epimutacions]{epi_manova} function results.}
-
-\item{beta_bump}{a beta values matrix for the CpGs in the selected
-DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
-
-\item{case}{a character string specifying the case sample name.}
 }
 \value{
 The function returns a data frame

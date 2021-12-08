@@ -19,11 +19,8 @@ epi_mlm <- function(mixture, model) {
 #' genomic regions, statistics and direction for the DMRs.
 #' @param bump a DMR obtained from \link[bumphunter]{bumphunter}
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
-#' @param beta_bump a beta values matrix for the CpGs in the selected
-#' DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}. 
 #' @param sts the F statistic, R2 test statistic and Pillai obtained as a result
 #' of \link[epimutacions]{epi_mlm} function. 
-#' @param case a character string specifying the case sample name. 
 #' @returns The function returns a data frame containing the following 
 #' information for each DMR: 
 #' * genomic ranges

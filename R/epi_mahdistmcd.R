@@ -53,8 +53,6 @@ epi_mahdistmcd <- function(mixture,
 #' genomic regions, statistics and direction for the DMRs.
 #' @param bump a DMR obtained from \link[bumphunter]{bumphunter}
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
-#' @param beta_bump a beta values matrix for the CpGs in the selected
-#' DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}. 
 #' @param outliers  the robust distance computed by 
 #'  \link[epimutacions]{epi_mahdistmcd} function results. 
 #' @param case a character string specifying the case sample name. 

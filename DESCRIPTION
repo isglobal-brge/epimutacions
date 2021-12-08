@@ -33,10 +33,10 @@ Imports:
     Homo.sapiens, 
     IRanges,
     SummarizedExperiment,
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
     ExperimentHubData,
     methods,
     stats,
-    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
     CompQuadForm,
     car
 Suggests: 
@@ -59,7 +59,10 @@ Suggests:
   biomaRt,
   ensembldb,
   tibble,
-  BiocGenerics
+  BiocGenerics,
+  IlluminaHumanMethylation450kanno.ilmn12.hg19,
+  IlluminaHumanMethylation450kmanifest,
+  IlluminaHumanMethylationEPICmanifest
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.1.0), epimutacionsData

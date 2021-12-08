@@ -1,5 +1,5 @@
 #' @title Epimutations analysis based on outlier detection methods
-#' @description The function identifies  Differentially Methylated Regions
+#' @description The function identifies  differentially methylated regions
 #' in a case sample by comparing it against a control panel. 
 #' @param case_samples a GenomicRatioSet object containing the case samples.
 #' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 

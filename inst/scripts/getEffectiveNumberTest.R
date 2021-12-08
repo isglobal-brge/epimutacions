@@ -16,10 +16,17 @@ library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
 data(Locations)
 
 ### Select CpGs (names starting by cg) in autosomic chromosomes
-locs.450 <- subset(Locations, grepl("^cg", rownames(Locations)) & chr %in% paste0("chr", 1:22))
-locs.450GR <- makeGRangesFromDataFrame(locs.450, start.field = "pos", end.field = "pos", strand = "*")
+locs.450 <- subset(Locations, 
+                   grepl("^cg", rownames(Locations)) & 
+                   chr %in% paste0("chr", 1:22))
+locs.450GR <- makeGRangesFromDataFrame(locs.450, 
+                                       start.field = "pos",
+                                       end.field = "pos", 
+                                       strand = "*")
 locs.450GR <- sort(locs.450GR)
-mat <- matrix(0, nrow = length(locs.450GR), ncol = 2, 
+mat <- matrix(0, 
+              nrow = length(locs.450GR), 
+              ncol = 2, 
               dimnames = list(names(locs.450GR), c("A", "B")))
 
 ## Set sample B to all 1
@@ -42,8 +49,13 @@ library(IlluminaHumanMethylationEPICanno.ilm10b2.hg19)
 data(Locations)
 
 ### Select CpGs (names starting by cg) in autosomic chromosomes
-locs.EPIC <- subset(Locations, grepl("^cg", rownames(Locations)) & chr %in% paste0("chr", 1:22))
-locs.EPICGR <- makeGRangesFromDataFrame(locs.EPIC, start.field = "pos", end.field = "pos", strand = "*")
+locs.EPIC <- subset(Locations, 
+                    grepl("^cg", rownames(Locations)) & 
+                    chr %in% paste0("chr", 1:22))
+locs.EPICGR <- makeGRangesFromDataFrame(locs.EPIC, 
+                                        start.field = "pos", 
+                                        end.field = "pos",
+                                        strand = "*")
 locs.EPICGR <- sort(locs.EPICGR)
 matEpic <- matrix(0, nrow = length(locs.EPICGR), ncol = 2, 
               dimnames = list(names(locs.EPICGR), c("A", "B")))

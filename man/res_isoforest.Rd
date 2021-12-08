@@ -15,11 +15,6 @@ res_isoforest(bump, sts, outlier_score_cutoff)
 \link[epimutacions]{epi_isoforest} function results.}
 
 \item{outlier_score_cutoff}{numeric specifying the outlier score cut off}
-
-\item{beta_bump}{a beta values matrix for the CpGs in the selected
-DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}.}
-
-\item{case}{a character string specifying the case sample name.}
 }
 \value{
 The function returns a data frame containing the following information

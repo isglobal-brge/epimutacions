@@ -1,6 +1,8 @@
 # epimutacions
 
-`epimutacions` is an R/Biconductor package.  The package provides 6 statistical methods for outlier detection in DNA methylation data. It also contains function for results visualization and annotation. 
+`epimutacions` is an R/Biconductor package.  The package provides 
+6 statistical methods for outlier detection in DNA methylation data. 
+It also contains function for results visualization and annotation. 
 
 
 # Installation
@@ -14,7 +16,8 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("epimutacions")
 ```
 
-The `epimutacions` package depends on `epimutacionsData`  package which can be installed  as following: 
+The `epimutacions` package depends on `epimutacionsData`  
+package which can be installed  as following: 
 
 
 ```
@@ -27,11 +30,16 @@ BiocManager::install("epimutacionsData")
 
 # Usage 
 
-* See vignette:  https://github.com/isglobal-brge/epimutacions/blob/master/vignettes/epimutacions.html
+* See vignette: shorturl.at/gwFOQ
 
 # Acknowledgements
 
-The authors would like to thank the team who collaborated in the initial design of the package in the European BioHackathon 2020:  Lordstrong Akano, James Baye, Alejandro Caceres, Pavlo Hrab, Raquel Manzano and Margherita Mutarelli. The authors also want to thank the organization of European BioHackathon 2020 for its support.
+The authors would like to thank the team who collaborated in the initial 
+design of the package in the European BioHackathon 2020:  
+Lordstrong Akano, James Baye, 
+Alejandro Caceres, Pavlo Hrab, Raquel Manzano and Margherita Mutarelli. 
+The authors also want to thank the 
+organization of European BioHackathon 2020 for its support.
 
 
 # Contact

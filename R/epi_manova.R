@@ -30,11 +30,8 @@ epi_manova <-  function(mixture, model, case_id){
 #' genomic regions, statistics and direction for the DMRs.
 #' @param bump a DMR obtained from \link[bumphunter]{bumphunter}
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
-#' @param beta_bump a beta values matrix for the CpGs in the selected
-#' DMR. This matrix is the result of \link[epimutacions]{betas_from_bump}. 
 #' @param sts  F statistic, Pillai and P value from
 #'  \link[epimutacions]{epi_manova} function results. 
-#' @param case a character string specifying the case sample name. 
 #' @returns The function returns a data frame 
 #' containing the following information for each DMR: 
 #' * genomic ranges
