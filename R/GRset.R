@@ -1,7 +1,7 @@
 #' GRset
 #'
-#' A small GenomicRatioSet object to use in the functions examples containing 10 control samples
-#' and a case sample. 
+#' A small GenomicRatioSet object to use in the functions examples 
+#' containing 10 control samples and a case sample. 
 #'
 #' @docType data
 #'

@@ -1,7 +1,8 @@
 ##' Asymptotic P-values
 ##' 
 ##' Computes asymptotic P-values given the numerator of the pseudo-F statistic, 
-##' its degrees of freedom and the eigenvalues of the residual covariance matrix.
+##' its degrees of freedom and the eigenvalues of the 
+##' residual covariance matrix.
 ##' 
 ##' @param ss numerator of the pseudo-F statistic.
 ##' @param lambda eigenvalues of the residual covariance matrix.
@@ -90,7 +91,8 @@ p.asympt <- function(ss,
 ##' \strong{2)} one or more of the constraints \eqn{n > 0}, 
 ##' \eqn{c > 0}, \eqn{maxit > 0} and \eqn{eps > 0} is not satisfied.
 ##' \strong{3)} the current estimate of the probability is < -1.
-##' \strong{4)} the required accuracy could not be obtained in \eqn{maxit} iterations.
+##' \strong{4)} the required accuracy could not be obtained in 
+##' \eqn{maxit} iterations.
 ##' \strong{5)} the value returned by the procedure does not satisfy 
 ##' \eqn{0 \le P [X < c] \le 1}.
 ##' \strong{6)} the density of the linear form is negative.
@@ -99,11 +101,14 @@ p.asympt <- function(ss,
 ##' \strong{0)} otherwise.
 ##' 
 ##' @references 
-##' P. Duchesne, P. Lafaye de Micheaux, Computing the distribution of quadratic forms: 
-##' Further comparisons between the Liu-Tang-Zhang approximation and exact methods, 
+##' P. Duchesne, P. Lafaye de Micheaux, Computing the 
+##' distribution of quadratic forms: 
+##' Further comparisons between the Liu-Tang-Zhang 
+##' approximation and exact methods, 
 ##' Computational Statistics and Data Analysis, Vol. 54, (2010), 858-862 
 ##' 
-##' Farebrother R.W., Algorithm AS 204: The distribution of a Positive Linear Combination 
+##' Farebrother R.W., Algorithm AS 204: The distribution of a 
+##' Positive Linear Combination 
 ##' of chi-squared random variables, Journal of the Royal Statistical Society, 
 ##' Series C (applied Statistics), Vol. 33, No. 3 (1984), 332-339
 ##' 

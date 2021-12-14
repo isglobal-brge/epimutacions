@@ -23,8 +23,8 @@
 #' epimutations.
 #' @importFrom methods is
 #' @importFrom IRanges pos
-epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3,
-                        offset_abs = 0.15) {
+epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, 
+                         N = 3, offset_abs = 0.15) {
   # Check that there is a single proband
   if(ncol(case) != 1) {
     stop("Epimutation detection with 'quantile'
@@ -35,14 +35,16 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
     stop("The minimum number of CpGs allowed is 3")
   }
   # Identify outlier at the proband side using reference statistics
-  # @param bctr_min Lower threshold for epimutation. A beta value has to be lower
-  # that this value (- offset_abs) to be considered an epimutation candidate. The
-  # value corresponds to the minimum beta value observed in controls.
+  # @param bctr_min Lower threshold for epimutation. A beta value has to be 
+  # lower that this value (- offset_abs) to be considered an epimutation 
+  # candidate. The value corresponds to the minimum
+  # beta value observed in controls.
   # @param bctr_max Higher threshold for epimuation. A beta value has to be 
   # higher that this value (+ offset_abs) to be considered an epimutation. The
   # value corresponds to the maximum beta value observed in controls.
   # candidate.
-  # @param bctr_mean Mean beta value observed in controls. A beta value has to be
+  # @param bctr_mean Mean beta value observed in controls. 
+  # A beta value has to be
   # lower that this value (- offset_mean) or higher than this value 
   # (+ offset_mean) to be considered an epimutation. 
   # @param offset_mean Extra enforcement defining an epimuation based on 

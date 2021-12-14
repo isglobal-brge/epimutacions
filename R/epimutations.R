@@ -2,27 +2,41 @@
 #' @description The function identifies  differentially methylated regions
 #' in a case sample by comparing it against a control panel. 
 #' @param case_samples a GenomicRatioSet object containing the case samples.
-#' See the constructor function \link[minfi]{GenomicRatioSet}, \link[minfi]{makeGenomicRatioSetFromMatrix}. 
-#' @param control_panel a GenomicRatioSet object containing the control panel (control panel).
-#' @param method a character string naming the outlier detection method to be used. 
-#' This can be set as: \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
+#' See the constructor function \link[minfi]{GenomicRatioSet}, 
+#' \link[minfi]{makeGenomicRatioSetFromMatrix}. 
+#' @param control_panel a GenomicRatioSet object containing the 
+#' control panel (control panel).
+#' @param method a character string naming the 
+#' outlier detection method to be used. 
+#' This can be set as: \code{"manova"}, 
+#' \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
 #' \code{"quantile"} and \code{"beta"}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
-#' @param chr a character string containing the sequence names to be analysed. The default value is \code{NULL}. 
-#' @param start an integer specifying the start position. The default value is \code{NULL}.
-#' @param end an integer specifying the end position. The default value is \code{NULL}.
-#' @param epi_params the parameters for each method. See the function \link[epimutacions]{epi_parameters}.  
-#' @param maxGap the maximum location gap used in \link[bumphunter]{bumphunter} method. 
-#' @param bump_cutoff a numeric value of the estimate of the genomic profile above the 
+#' @param chr a character string containing the sequence 
+#' names to be analysed. The default value is \code{NULL}. 
+#' @param start an integer specifying the start position. 
+#' The default value is \code{NULL}.
+#' @param end an integer specifying the end position. 
+#' The default value is \code{NULL}.
+#' @param epi_params the parameters for each method. 
+#' See the function \link[epimutacions]{epi_parameters}.  
+#' @param maxGap the maximum location gap used in 
+#' \link[bumphunter]{bumphunter} method. 
+#' @param bump_cutoff a numeric value of the 
+#' estimate of the genomic profile above the 
 #' cutoff or below the negative of the cutoff will be used as candidate regions. 
 #' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
-#' @param verbose logical. If TRUE additional details about the procedure will provide to the user. 
+#' @param verbose logical. If TRUE additional details about 
+#' the procedure will provide to the user. 
 #' The default is TRUE. 
-#' @details The function compares a case sample against a control panel to identify epimutations in the given 
-#' sample. First, the DMRs are identified using the \link[bumphunter]{bumphunter} approach. 
+#' @details The function compares a case sample against 
+#' a control panel to identify epimutations in the given sample. 
+#' First, the DMRs are identified using the 
+#' \link[bumphunter]{bumphunter} approach. 
 #' After that, CpGs in those DMRs are tested in order to detect regions
-#' with CpGs being outliers.  For that, different outlier detection methods can be selected:  
+#' with CpGs being outliers.  
+#' For that, different outlier detection methods can be selected:  
 #'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
 #'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
@@ -30,36 +44,55 @@
 #'  * Quantile distribution (\code{"quantile"})
 #'  * Beta (\code{"beta"})
 #'  
-#' We defined candidate epimutation regions (found in candRegsGR) based on the 450K 
-#' array design. As CpGs are not equally distributed along the genome, only CpGs closer
-#' to other CpGs can form an epimutation. More information can be found in candRegsGR documentation.
+#' We defined candidate epimutation regions 
+#' (found in candRegsGR) based on the 450K 
+#' array design. As CpGs are not equally distributed along the genome, 
+#' only CpGs closer to other CpGs can form an epimutation. 
+#' More information can be found in candRegsGR documentation.
 #' 
-#' @return The function returns an object of class tibble containing the outliers regions.  
+#' @return The function returns an object of class tibble
+#'  containing the outliers regions.  
 #' The results are composed by the following columns: 
-#' * \code{epi_id}: systematic name for each epimutation identified. It provides the name 
-#' of the used anomaly detection method. 
+#' * \code{epi_id}: systematic name for each epimutation identified. 
+#' It provides the name of the used anomaly detection method. 
 #' * \code{sample}: the name of the sample containing the epimutation. 
-#' * \code{chromosome}, \code{start} and \code{end}: indicate the location of the epimutation.
+#' * \code{chromosome}, \code{start} and \code{end}: indicate the 
+#' location of the epimutation.
 #' * \code{sz}: the window's size of the event.
 #' * \code{cpg_n}: the number of CpGs in the epimutation.
 #' * \code{cpg_ids}: the names of CpGs in the epimutation.
 #' * \code{outlier_score}: 
-#'    * For method \code{manova} it provides the approximation to F-test and the Pillai score, separated by \code{/}.
-#'    * For method \code{mlm} it provides the approximation to F-test and the R2 of the model, separated by \code{/}.
-#'    * For method \code{isoforest} it provides the magnitude of the outlier score.
+#'    * For method \code{manova} it provides the approximation 
+#'    to F-test and the Pillai score, separated by \code{/}.
+#'    * For method \code{mlm} it provides the approximation to 
+#'    F-test and the R2 of the model, separated by \code{/}.
+#'    * For method \code{isoforest} it provides 
+#'    the magnitude of the outlier score.
 #'    * For method \code{beta} it provides the mean outlier p-value.
-#'    * For methods \code{quantile} and \code{mahdistmcd} it is filled with NA.
-#' * \code{outlier_direction}: indicates the direction of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
-#'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} it is computed from the values obtained from bumphunter.
-#'    * For \code{quantile} it is computed from the location of the sample in the reference distribution (left vs. right outlier).
+#'    * For methods \code{quantile} and 
+#'    \code{mahdistmcd} it is filled with NA.
+#' * \code{outlier_direction}: indicates the direction 
+#' of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
+#'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} 
+#'    it is computed from the values obtained from bumphunter.
+#'    * For \code{quantile} it is computed from the location 
+#'    of the sample in the reference distribution (left vs. right outlier).
 #'    * For method \code{beta} it return a NA.
 #' * \code{pvalue}: 
-#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} it provides the p-value obtained from the model.
-#'    * For method \code{quantile}, \code{mahdistmcd} and \code{beta} is filled with NA.    
-#' * \code{adj_pvalue}: for methods with p-value (\code{manova} and \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total number of regions detected by Bumphunter.
-#' * \code{epi_region_id}: Name of the epimutation region as defined in \code{candRegsGR}.
-#' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by ENCODE overlapping the epimutation region. Different cREs are separated by ;.
-#' * \code{CRE_type}: Type of cREs (cis-Regulatory Elements) as defined by ENCODE. Different type are separeted by , and different cREs are separated by ;.
+#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} 
+#'    it provides the p-value obtained from the model.
+#'    * For method \code{quantile}, \code{mahdistmcd} 
+#'    and \code{beta} is filled with NA.    
+#' * \code{adj_pvalue}: for methods with p-value (\code{manova} 
+#' and \code{mlm} adjusted p-value with Benjamini-Hochberg based
+#' on the total number of regions detected by Bumphunter.
+#' * \code{epi_region_id}: Name of the epimutation region as 
+#' defined in \code{candRegsGR}.
+#' * \code{CRE}: cREs (cis-Regulatory Elements) as defined by 
+#' ENCODE overlapping the epimutation region. Different cREs are separated by ;.
+#' * \code{CRE_type}: Type of cREs (cis-Regulatory Elements) 
+#' as defined by ENCODE. Different type are separeted by , 
+#' and different cREs are separated by ;.
 #' @examples
 #' data(GRset)
 #' 
@@ -189,11 +222,10 @@ epimutations <- function(case_samples, control_panel,
       model <- stats::model.matrix(~status, status)
       
       # Run bumphunter for region partitioning
-      suppressWarnings(
         bumps <- bumphunter::bumphunter(object = betas, design = model,
                                         pos = fd$start, chr = fd$seqnames, 
                                         maxGap = maxGap,
-                                        cutoff = bump_cutoff)$table)
+                                        cutoff = bump_cutoff)$table
       
         if(all(!is.na(bumps))){
           
@@ -359,7 +391,7 @@ epimutations <- function(case_samples, control_panel,
                            function(ii) paste0("epi_", method, "_", ii), 
                            character(1))
       rownames(rst) <- seq_len(nrow(rst))
-      rst <- rst[ , c(12, 11, 1:10)]
+      rst <- rst[ , c(12, 11, seq_len(10))]
       
       ## Add CREs and epi_region_id
       rst$CRE_type <- rst$CRE <- rst$epi_region_id <- NA

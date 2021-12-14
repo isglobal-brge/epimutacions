@@ -1,17 +1,21 @@
 #' @title  Plot a given epimutation and locate it along the genome
 #' @description This function plots a given epimutation
 #' and UCSC annotations for the specified genomic region.  
-#' @param dmr epimutation obtained as a result of \link[epimutacions]{epimutations}
+#' @param dmr epimutation obtained as a result of 
+#' \link[epimutacions]{epimutations}
 #' function. 
 #' @param methy a GenomicRatioSet object containing the information
-#' of control and case samples used for the analysis in the \link[epimutacions]{epimutations}
+#' of control and case samples used for the analysis in the 
+#' \link[epimutacions]{epimutations}
 #' function. See the constructor function \link[minfi]{GenomicRatioSet},
 #' \link[minfi]{makeGenomicRatioSetFromMatrix}.
 #' @param genome a character string specifying the genome of reference. 
 #' It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}. 
 #' The default is \code{"hg19"}.
-#' @param genes_annot a boolean. If TRUE gene annotations are plotted. Default is FALSE.  
-#' @param regulation a boolean. If TRUE UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3
+#' @param genes_annot a boolean. If TRUE gene annotations are plotted. 
+#' Default is FALSE.  
+#' @param regulation a boolean. If TRUE UCSC annotations 
+#' for CpG Islands, H3K27Ac,  H3K4Me3
 #' and H3K27Me3 are plotted. The default is FALSE.
 #' The running process when \code{regulation} is TRUE can take several minutes.
 #' @param from,to scalar, specifying the range of genomic coordinates 
@@ -19,11 +23,14 @@
 #' If \code{NULL} the plotting ranges are derived from the individual track. 
 #' Note that \code{from} cannot be larger than \code{to}. 
 #' @details 
-#' The tracks are plotted vertically. Each track is separated by different background
-#' colour and a section title. The colours and titles are preset and cannot be set by 
+#' The tracks are plotted vertically. Each track 
+#' is separated by different background
+#' colour and a section title. The colours and 
+#' titles are preset and cannot be set by 
 #' the user. 
 #' 
-#' Note that if you want to see the UCSC annotations maybe you need to take a bigger
+#' Note that if you want to see the UCSC 
+#' annotations maybe you need to take a bigger
 #' genomic region. 
 #' 
 #' @return The function returns a plot divided in two parts: 
@@ -31,8 +38,10 @@
 #' the epimutation in red, the control samples in dashed black lines and
 #' population mean in blue. Grey shaded regions indicate 1, 1.5 and 2 standard
 #' deviations from the mean of the distribution. 
-#' * UCSC gene annotations for the specified genomic region (if \code{genes == TRUE})
-#' * UCSC annotations for CpG Islands, H3K27Ac,  H3K4Me3 and H3K27Me3  (if \code{regulation == TRUE})
+#' * UCSC gene annotations for the specified genomic 
+#' region (if \code{genes == TRUE})
+#' * UCSC annotations for CpG Islands, H3K27Ac,  
+#' H3K4Me3 and H3K27Me3  (if \code{regulation == TRUE})
 #' 
 #' @examples 
 #' 
