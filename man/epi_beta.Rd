@@ -16,8 +16,8 @@ epi_beta(
 )
 }
 \arguments{
-\item{beta_params}{matrix with the parameters of the reference beta distributions for
-each CpG in the dataset.}
+\item{beta_params}{matrix with the parameters
+of the reference beta distributions for each CpG in the dataset.}
 
 \item{beta_mean}{beta values mean.}
 
@@ -27,23 +27,30 @@ each CpG in the dataset.}
 
 \item{pvalue_threshold}{minimum p-value to consider a CpG an outlier.}
 
-\item{diff_threshold}{minimum methylation difference between the CpG and the mean methylation to
+\item{diff_threshold}{minimum methylation difference between
+the CpG and the mean methylation to
 consider a position an outlier.}
 
 \item{min_cpgs}{minimum number of CpGs to consider an epimutation.}
 
-\item{maxGap}{maximum distance between two contiguous CpGs to combine them into an epimutation.}
+\item{maxGap}{maximum distance between two contiguous CpGs
+to combine them into an epimutation.}
 }
 \value{
 The function returns a data frame with the candidate regions to be
 epimutations.
 }
 \description{
-\code{epi_beta} method models the DNA methylation data using a beta distribution. First,
-the beta distribution parameters of the reference population are precomputed and passed
-to the method. Then, we compute the probability of observing the methylation values
-of the case from the reference beta distribution. CpGs with p-values smaller than a threshold
-\code{pvalue_threshold} and with a methylation difference with the mean reference methylation
+\code{epi_beta} method models the DNA methylation
+data using a beta distribution. First,
+the beta distribution parameters of the reference population
+are precomputed and passed
+to the method. Then, we compute the probability
+of observing the methylation values
+of the case from the reference beta distribution.
+CpGs with p-values smaller than a threshold
+\code{pvalue_threshold} and with a methylation
+difference with the mean reference methylation
 higher than \code{diff_threshold} are defined as outlier CpGs. Finally,
 epimutations are defined as a group of contiguous outlier CpGs.
 }

@@ -13,11 +13,11 @@ norm_parameters(
 )
 }
 \arguments{
-\item{illumina, quantile, noob, funnorm}{preprocess method selected in the function
-\link[epimutacions]{epi_preprocess}.}
+\item{illumina, quantile, noob, funnorm}{preprocess method
+selected in the function \link[epimutacions]{epi_preprocess}.}
 
-\item{bg.correct}{logical. If TRUE background correction will be performed in
-\code{"illumina"} method. Default is TRUE.}
+\item{bg.correct}{logical. If TRUE background
+correction will be performed in \code{"illumina"} method. Default is TRUE.}
 
 \item{normalize}{logical. If TRUE control normalization will be performed in
 \code{"illumina"} method.}
@@ -25,7 +25,8 @@ norm_parameters(
 \item{reference}{numeric. The reference array for control normalization in
 \code{"illumina"} method.}
 
-\item{fixOutliers}{logical. If TRUE low outlier Meth and Unmeth signals will be fixed
+\item{fixOutliers}{logical. If TRUE low outlier
+Meth and Unmeth signals will be fixed
 in \code{"quantile"} method. Default is TRUE.}
 
 \item{removeBadSamples}{logical. If TRUE bad samples will be removed.}
@@ -33,20 +34,24 @@ in \code{"quantile"} method. Default is TRUE.}
 \item{badSampleCutoff}{a numeric specifying the cutoff to label samples
 as 'bad' in \code{"quantile"} method. Default is 10.5.}
 
-\item{quantileNormalize}{logical. If TRUE quantile normalization will be performed in
+\item{quantileNormalize}{logical. If TRUE quantile
+normalization will be performed in
 \code{"quantile"} method. Default is TRUE.}
 
 \item{stratified}{logical. If TRUE quantile normalization will be performed
 within region strata in \code{"quantile"} method. Default is TRUE.}
 
-\item{mergeManifest}{logical. If TRUE the information in the associated manifest
+\item{mergeManifest}{logical. If TRUE the
+information in the associated manifest
 package will be merged into the output object in \code{"quantile"} method.
 Default is FALSE.}
 
-\item{offset}{a numeric specifying an offset for the normexp background correction
+\item{offset}{a numeric specifying an offset for
+the normexp background correction
 in \code{"noob"} method. Default is 15.}
 
-\item{dyeCorr}{logial. Dye correction will be done in \code{"noob"} and \code{"funnorm"} methods.
+\item{dyeCorr}{logial. Dye correction will
+be done in \code{"noob"} and \code{"funnorm"} methods.
 Default is TRUE.}
 
 \item{dyeMethod}{specify the dye bias correction to be done, single sample
@@ -62,19 +67,23 @@ from the control probes PCA in \code{"funnorm"} method. Default is 2.}
 to functional normalization.
 in \code{"funnorm"} method. Default is TRUE.}
 
-\item{keepCN}{logical. If TRUE copy number estimates will be kept in \code{"funnorm"} method.
+\item{keepCN}{logical. If TRUE copy number estimates
+will be kept in \code{"funnorm"} method.
 Default is FALSE.}
 }
 \value{
-the function returns a list of all set parameters for each normalization method used in
+the function returns a list of all
+set parameters for each normalization method used in
 \code{epi_peprocess}.
 }
 \description{
-\code{norm_parameters} function allows the user to set the values of the parameters to compute the functions
+\code{norm_parameters} function allows the user
+to set the values of the parameters to compute the functions
 \code{epi_preprocess}.
 }
 \details{
-Invoking \code{epi_parameters()} with no arguments returns a list with the
+Invoking \code{epi_parameters()} with no
+arguments returns a list with the
 default values for each normalization parameter.
 }
 \examples{

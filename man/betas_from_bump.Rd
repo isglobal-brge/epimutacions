@@ -18,5 +18,6 @@ The function returns a data frame containing the beta values
 for each sample and CpG into DMR.
 }
 \description{
-The function obtains beta values corresponding to the CpGs into DMRs.
+The function obtains beta values
+corresponding to the CpGs into DMRs.
 }

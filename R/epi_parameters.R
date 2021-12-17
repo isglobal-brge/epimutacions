@@ -35,8 +35,6 @@
 #' @param qsup,qinf,offset_abs The upper and lower quantiles (threshold) 
 #' to consider a CpG an outlier when using \code{quantile} method, 
 #' as well as the offset to consider (defaults: 0.005, 0.995, 0.15).
-#' @param offset_mean,offset_abs the upper and lower threshold 
-#' to consider a CpG an outlier when using \code{quantile} method. 
 #' @param diff_threshold Minimum methylation difference between 
 #' the CpG and the mean methylation to consider a position an outlier. 
 #' @details Invoking \code{epi_parameters()} with 

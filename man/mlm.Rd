@@ -33,20 +33,24 @@ Default is "\code{II}".}
 \item{contrasts}{an optional list. See \code{contrasts.arg} in
 \code{\link{model.matrix.default}}. Default is "\code{\link{contr.sum}}"
 for ordered factors and "\code{\link{contr.poly}}" for unordered factors.
-Note that this is different from the default setting in \code{\link{options}("contrasts")}.}
+Note that this is different from the default setting in
+\code{\link{options}("contrasts")}.}
 
 \item{subset}{subset of predictors for which summary statistics will be
-reported. Note that this is different from the "\code{subset}" argument in \code{\link{lm}}.}
+reported. Note that this is different from the "\code{subset}"
+argument in \code{\link{lm}}.}
 
 \item{fit}{logical. If \code{TRUE} the multivariate fit on transformed and
 centered responses is returned.}
 }
 \value{
-\code{mlm} returns an object of \code{\link{class}} "MLM", a list containing:
+\code{mlm} returns an object of \code{\link{class}} \code{"MLM"},
+a list containing:
 \item{call}{the matched call.}
 \item{aov.tab}{ANOVA table with Df, Sum Sq, Mean Sq, F values,
 partial R-squared and P-values.}
-\item{type}{the type of sum of squares (\code{"I"}, \code{"II"} or \code{"III"}).}
+\item{type}{the type of sum of squares (\code{"I"},
+\code{"II"} or \code{"III"}).}
 \item{precision}{the precision in P-value computation.}
 \item{transform}{the transformation applied to the response variables.}
 \item{na.omit}{incomplete cases removed (see \code{\link{na.omit}}).}
@@ -61,8 +65,9 @@ P-values for predictors in a non-parametric manner.
 A \code{Y} matrix is obtained after transforming (optionally) and centering
 the original response variables. Then, the multivariate fit obtained by
 \code{\link{lm}} can be used to compute sums of squares (type-I, type-II or
-type-III), pseudo-F statistics and asymptotic P-values for the terms specified
-by the \code{formula} in a non-parametric manner. The designations "type-II"
+type-III), pseudo-F statistics and asymptotic
+P-values for the terms specified by the \code{formula}
+in a non-parametric manner. The designations "type-II"
 and "type-III" correspond exactly to those used in \code{\link[car]{Anova}}.
 "type-I" refers to sequential sums of squares.
 }

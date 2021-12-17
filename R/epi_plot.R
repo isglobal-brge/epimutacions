@@ -262,7 +262,7 @@ UCSC_regulation <- function(genome, chr, from, to){
                                 fill = "#FA9114", 
                                 name = "CpG",
                                 background.title = "#9D5D10", 
-                                rotation.title = 0))
+                                rotation.title = 0)
   
   #H3K27Ac, H3K4Me3 and H3K27Me3
   mySession <-  rtracklayer::browserSession("UCSC")
@@ -274,7 +274,7 @@ UCSC_regulation <- function(genome, chr, from, to){
   H3K27Ac <- rtracklayer::getTable(
                                     rtracklayer::ucscTableQuery(mySession, 
                                             track = "Layered H3K27Ac",
-                                            range = granges)))
+                                            range = granges))
   H3K27Ac$seqnames <- chr
   value <- H3K27Ac$value
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
@@ -291,7 +291,7 @@ UCSC_regulation <- function(genome, chr, from, to){
   H3K4Me3 <- rtracklayer::getTable(
                   rtracklayer::ucscTableQuery(mySession, 
                                               track = "Layered H3K4Me3",
-                                              range = granges)))
+                                              range = granges))
   H3K4Me3$seqnames <- chr
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)

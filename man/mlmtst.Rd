@@ -11,13 +11,16 @@ mlmtst(fit, X, type = "II", subset = NULL, tol = 0.001)
 
 \item{X}{design matrix obtained by \code{\link{model.matrix}}.}
 
-\item{type}{type of sum of squares ("\code{I}", "\code{II}" or "\code{III}").
+\item{type}{type of sum of squares
+("\code{I}", "\code{II}" or "\code{III}").
 Default is "\code{II}".}
 
-\item{subset}{subset of predictors for which summary statistics will be reported.
-Note that this is different from the "\code{subset}" argument in \code{\link{lm}}.}
+\item{subset}{subset of predictors for which summary
+statistics will be reported. Note that this is different from the
+"\code{subset}" argument in \code{\link{lm}}.}
 
-\item{tol}{\code{e[e/sum(e) > tol]}, where \code{e} is the vector of eigenvalues
+\item{tol}{\code{e[e/sum(e) > tol]}, where \code{e}
+is the vector of eigenvalues
 of the residual covariance matrix. Required to prevent long running times of
 algorithm AS 204. Default is 0.001 to ensure minimal loss of accuracy.}
 }

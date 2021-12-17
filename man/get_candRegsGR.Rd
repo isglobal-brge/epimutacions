@@ -7,9 +7,10 @@
 get_candRegsGR()
 }
 \value{
-The function returns a GRanges object containing the candidate regions.
+The function returns a GRanges object containing
+the candidate regions.
 }
 \description{
-Load candidate regions to be epimutations from  \code{epimutacionsData} package
-in ExperimentHub.
+Load candidate regions to be epimutations
+from \code{epimutacionsData} package in \code{ExperimentHub}.
 }
