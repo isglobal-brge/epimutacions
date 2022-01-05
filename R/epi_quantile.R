@@ -15,6 +15,8 @@
 #' epimutation.
 #' @param window_sz Maximum distance between a pair of CpGs to defined an
 #' region of CpGs as epimutation (default: 1000).
+#' @param betas a matrix containing the beta values for all samples.
+#' @param controls control samples names.
 #' @param N Minimum number of CpGs, separated in a maximum of window_sz bass,
 #' to defined an epimutation (default: 3).
 #' @param offset_abs Extra enforcement defining an epimutation based on 
@@ -23,8 +25,9 @@
 #' epimutations.
 #' @importFrom methods is
 #' @importFrom IRanges pos
-epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3,
-                        offset_abs = 0.15) {
+epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
+                         window_sz = 1000, 
+                         N = 3, offset_abs = 0.15) {
   # Check that there is a single proband
   if(ncol(case) != 1) {
     stop("Epimutation detection with 'quantile'
@@ -35,14 +38,16 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
     stop("The minimum number of CpGs allowed is 3")
   }
   # Identify outlier at the proband side using reference statistics
-  # @param bctr_min Lower threshold for epimutation. A beta value has to be lower
-  # that this value (- offset_abs) to be considered an epimutation candidate. The
-  # value corresponds to the minimum beta value observed in controls.
+  # @param bctr_min Lower threshold for epimutation. A beta value has to 
+  # be lower that this value (- offset_abs) to be considered an 
+  # epimutation candidate. The value corresponds to the minimum beta 
+  # value observed in controls.
   # @param bctr_max Higher threshold for epimuation. A beta value has to be 
   # higher that this value (+ offset_abs) to be considered an epimutation. The
   # value corresponds to the maximum beta value observed in controls.
   # candidate.
-  # @param bctr_mean Mean beta value observed in controls. A beta value has to be
+  # @param bctr_mean Mean beta value observed in controls. 
+  # A beta value has to be
   # lower that this value (- offset_mean) or higher than this value 
   # (+ offset_mean) to be considered an epimutation. 
   # @param offset_mean Extra enforcement defining an epimuation based on 
@@ -180,7 +185,7 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
   }
 
 
-  collapse_regions <- function(flag_df) {
+  collapse_regions <- function(flag_df, case_name, controls, betas) {
     empty <- data.frame(
       chromosome = character(),
       start = numeric(),
@@ -191,7 +196,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
       outlier_score = numeric(),
       outlier_direction = character(),
       pvalue = numeric(),
-      adj_pvalue = numeric()
+      adj_pvalue = numeric(),
+      delta_beta = numeric()
     )
     if(nrow(flag_df) == 0) {
       return(empty)
@@ -209,7 +215,9 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
           outlier_score = NA,
           outlier_direction = x$outlier_direction[1],
           pvalue = NA,
-          adj_pvalue = NA
+          adj_pvalue = NA,
+          delta_beta = abs(mean(betas[x$CpG_ids, controls]) -
+                           mean(betas[x$CpG_ids, colnames(case)]))
         )
       } else {
         empty
@@ -218,8 +226,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, window_sz = 1000, N = 3
   }
   
   # We collapse the CpGs in regions and format the output
-  clean_sup <- collapse_regions(reg_sup)
-  clean_inf <- collapse_regions(reg_inf)
+  clean_sup <- collapse_regions(reg_sup, colnames(case), controls, betas)
+  clean_inf <- collapse_regions(reg_inf, colnames(case), controls, betas)
   
   rst <- rbind(clean_inf, clean_sup)
   rst <- rst[!is.na(rst$chromosome), ]

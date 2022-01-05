@@ -44,5 +44,5 @@ res_mlm <- function(bump, sts) {
 	bump[ , c("chromosome", "start", "end", "sz", "cpg_n", 
 	          "cpg_ids", "outlier_score",
 	          "outlier_direction", "pvalue", 
-	          "adj_pvalue",  "sample")]
+	          "adj_pvalue", "delta_beta", "sample")]
 }

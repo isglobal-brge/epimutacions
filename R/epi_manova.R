@@ -53,7 +53,7 @@ res_manova <- function(bump, sts) {
 	                                 "hypermethylation")
 	bump[ , c("chromosome", "start", "end", "sz", 
 	          "cpg_n", "cpg_ids", "outlier_score",
-	          "outlier_direction", "pvalue", "adj_pvalue",  "sample")]
+	          "outlier_direction", "pvalue", "adj_pvalue", "delta_beta", "sample")]
 	}
 
 filter <- function(bump_out, pvalue_cutoff){

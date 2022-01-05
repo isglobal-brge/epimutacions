@@ -9,6 +9,8 @@ epi_quantile(
   fd,
   bctr_pmin,
   bctr_pmax,
+  controls,
+  betas,
   window_sz = 1000,
   N = 3,
   offset_abs = 0.15
@@ -28,6 +30,10 @@ epimutation.}
 \item{bctr_pmax}{Beta value observed at 0.99 quantile in controls. A beta
 values has to be higher or equal to this value to be considered an
 epimutation.}
+
+\item{controls}{control samples names.}
+
+\item{betas}{a matrix containing the beta values for all samples.}
 
 \item{window_sz}{Maximum distance between a pair of CpGs to defined an
 region of CpGs as epimutation (default: 1000).}

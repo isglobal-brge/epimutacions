@@ -79,7 +79,7 @@ res_mahdistmcd <- function(case, bump, outliers) {
 	bump <- bump[ , c("chromosome", 
 	                  "start", 
 	                  "end", "sz", "cpg_n", "cpg_ids", "outlier_score",
-	                  "outlier_direction", "pvalue", "adj_pvalue",  "sample")]	
+	                  "outlier_direction", "pvalue", "adj_pvalue", "delta_beta", "sample")]	
 	return(bump)
 }
 

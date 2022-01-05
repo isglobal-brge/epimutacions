@@ -58,7 +58,7 @@ res_isoforest <- function(bump, sts, outlier_score_cutoff){
 	          "sz", "cpg_n", 
 	          "cpg_ids", "outlier_score",
 	          "outlier_direction", "pvalue", 
-	          "adj_pvalue",  "sample")]
+	          "adj_pvalue", "delta_beta", "sample")]
 	}else{
     data.frame(chromosome = character(), start = numeric(), 
                end = numeric(),
@@ -69,6 +69,7 @@ res_isoforest <- function(bump, sts, outlier_score_cutoff){
                outlier_direction = character(),
                pvalue = numeric(),
                adj_pvalue = numeric(),
+               delta_beta = numeric(),
                sample = character())
   }
 	 }

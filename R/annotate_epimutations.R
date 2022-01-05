@@ -27,7 +27,7 @@
 #' case_samples <- GRset[,11]
 #' control_panel <- GRset[,1:10]
 #' 
-#' results <- epimutations(case_samples, control_panel, method = "beta")
+#' results <- epimutations(case_samples, control_panel, method = "manova")
 #' 
 #' #Annotate the epimutations
 #' 
