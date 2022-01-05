@@ -1,5 +1,6 @@
 #' @title Obtains bumps beta values 
-#' @description The function obtains beta values corresponding to the CpGs into DMRs.
+#' @description The function obtains beta values 
+#' corresponding to the CpGs into DMRs.
 #' @param bump the result from \link[bumphunter]{bumphunter}.
 #' @param fd a data frame containing the genomic ranges for each CpGs.
 #' @param betas a matrix containing the beta values for all CpGs in each sample.

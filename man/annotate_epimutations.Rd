@@ -13,13 +13,15 @@ annotate_epimutations(
 )
 }
 \arguments{
-\item{epi_results}{a data frame object containing the output from \code{epimutations} or
+\item{epi_results}{a data frame object containing the output
+from \code{epimutations} or
 \code{epimutations_one_leave_out} functions.}
 
 \item{db}{a character string containing  the Illumina annotation package
 used to annotate the CpGs.}
 
-\item{build}{a character string containing the genomic build where the epimutations are mapped.
+\item{build}{a character string containing the genomic
+build where the epimutations are mapped.
 The default is GRCh37 (\code{build = "37"}). To use GRCh38
 set \code{built} to \code{NULL}.}
 
@@ -30,11 +32,13 @@ The function returns the input object \code{epi_results}
 with additional columns containing the  information about
 the genes or overlapping regulatory features.
 
-See \link[epimutacions]{annotate_cpg} and \link[epimutacions]{add_ensemble_regulatory}
+See \link[epimutacions]{annotate_cpg} and
+\link[epimutacions]{add_ensemble_regulatory}
 for an in-depth description of these variables.
 }
 \description{
-Information about close genes and regulatory elements for epimutations.
+Information about close genes and regulatory
+elements for epimutations.
 }
 \examples{
 data(GRset)

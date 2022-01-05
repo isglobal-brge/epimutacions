@@ -6,8 +6,9 @@
 ##' A \code{Y} matrix is obtained after transforming (optionally) and centering 
 ##' the original response variables. Then, the multivariate fit obtained by 
 ##' \code{\link{lm}} can be used to compute sums of squares (type-I, type-II or 
-##' type-III), pseudo-F statistics and asymptotic P-values for the terms specified
-##' by the \code{formula} in a non-parametric manner. The designations "type-II" 
+##' type-III), pseudo-F statistics and asymptotic 
+##' P-values for the terms specified by the \code{formula} 
+##' in a non-parametric manner. The designations "type-II" 
 ##' and "type-III" correspond exactly to those used in \code{\link[car]{Anova}}. 
 ##' "type-I" refers to sequential sums of squares.
 ##' 
@@ -25,17 +26,21 @@
 ##' @param contrasts an optional list. See \code{contrasts.arg} in 
 ##' \code{\link{model.matrix.default}}. Default is "\code{\link{contr.sum}}" 
 ##' for ordered factors and "\code{\link{contr.poly}}" for unordered factors. 
-##' Note that this is different from the default setting in \code{\link{options}("contrasts")}.
+##' Note that this is different from the default setting in 
+##' \code{\link{options}("contrasts")}.
 ##' @param subset subset of predictors for which summary statistics will be 
-##' reported. Note that this is different from the "\code{subset}" argument in \code{\link{lm}}.
+##' reported. Note that this is different from the "\code{subset}" 
+##' argument in \code{\link{lm}}.
 ##' @param fit logical. If \code{TRUE} the multivariate fit on transformed and 
 ##' centered responses is returned.
 ##' 
-##' @return \code{mlm} returns an object of \code{\link{class}} "MLM", a list containing:
+##' @return \code{mlm} returns an object of \code{\link{class}} \code{"MLM"}, 
+##' a list containing:
 ##' \item{call}{the matched call.}
 ##' \item{aov.tab}{ANOVA table with Df, Sum Sq, Mean Sq, F values, 
 ##' partial R-squared and P-values.}
-##' \item{type}{the type of sum of squares (\code{"I"}, \code{"II"} or \code{"III"}).}
+##' \item{type}{the type of sum of squares (\code{"I"}, 
+##' \code{"II"} or \code{"III"}).}
 ##' \item{precision}{the precision in P-value computation.}
 ##' \item{transform}{the transformation applied to the response variables.}
 ##' \item{na.omit}{incomplete cases removed (see \code{\link{na.omit}}).}
@@ -76,7 +81,8 @@ mlm <- function(formula, data, transform = "none", type = "II",
     stop("The number of response variables should be >= 2")
   }
   if (length(attr(mt, "term.labels")) < 1) {
-    stop("The model should contain at least one predictor (excluding the intercept)")
+    stop("The model should contain at least one predictor 
+         (excluding the intercept)")
   }
   
   ## Transform and center responses, update model frame
@@ -173,7 +179,7 @@ mlm <- function(formula, data, transform = "none", type = "II",
 ##'
 ##' @export
 ##' 
-print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ # #nocov start
+print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ 
   
   ## Print Call and type of SS
   #cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
@@ -227,7 +233,8 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
                              signif.stars = getOption("show.signif.stars"), 
                              signif.legend = signif.stars, 
                              dig.tst = max(1L,min(5L, digits - 1L)), 
-                             cs.ind = seq_len(k), tst.ind = k + 1, zap.ind = integer(), 
+                             cs.ind = seq_len(k), tst.ind = k + 1, 
+                             zap.ind = integer(), 
                              P.values = NULL, has.Pvalue = nc >= 4 && 
                                substr(colnames(x)[nc], 1, 3) == "Pr(", 
                              eps.Pvalue = .Machine$double.eps, na.print = "NA", 
@@ -285,7 +292,7 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
   x0 <- (xm[okP] == 0) != (as.numeric(x1) == 0)
   if (length(not.both.0 <- which(x0 & !is.na(x0)))) {
     Cf[okP][not.both.0] <- format(xm[okP][not.both.0], digits = max(1L, 
-                                                                    digits - 1L))
+                                                                  digits - 1L))
   }
   if (any(ina)) 
     Cf[ina] <- na.print

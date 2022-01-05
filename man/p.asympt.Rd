@@ -26,7 +26,8 @@ A vector containing the P-value and the level of accuracy.
 }
 \description{
 Computes asymptotic P-values given the numerator of the pseudo-F statistic,
-its degrees of freedom and the eigenvalues of the residual covariance matrix.
+its degrees of freedom and the eigenvalues of the
+residual covariance matrix.
 }
 \seealso{
 \code{\link{AS204}}

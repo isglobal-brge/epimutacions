@@ -19,5 +19,6 @@ The function returns a GRanges object containing the
 beta values and the genomic ranges of the CpGs of interest.
 }
 \description{
-This function makes a GRanges object from a \code{GenomicRatioSet}.
+This function makes a GRanges object
+from a \code{GenomicRatioSet}.
 }

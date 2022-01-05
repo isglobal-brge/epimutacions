@@ -16,7 +16,8 @@ epi_preprocess(
 \arguments{
 \item{cases_dir}{the base directory from which the search is started.}
 
-\item{reference_panel}{an \link[minfi]{RGChannelSet} object containing the reference
+\item{reference_panel}{an \link[minfi]{RGChannelSet}
+object containing the reference
 panel (controls) samples.}
 
 \item{pattern}{What pattern is used to identify a sample sheet file.}
@@ -24,28 +25,35 @@ panel (controls) samples.}
 \item{normalize}{a character string specifying the selected preprocess method.
 For more information see \strong{Details} or
 \href{https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html}{minfi package user's Guide}.
-It can be set as: \code{"raw"}, \code{"illumina"}, \code{"swan"}, \code{"quantile"},
+It can be set as: \code{"raw"}, \code{"illumina"},
+\code{"swan"}, \code{"quantile"},
 \code{"noob"} or \code{"funnorm"}.)}
 
 \item{norm_param}{the parameters for each preprocessing method.
 See the function \link[epimutacions]{norm_parameters}.}
 
-\item{verbose}{logical. If TRUE additional details about the procedure will provide to the user.
+\item{verbose}{logical. If TRUE additional
+details about the procedure will provide to the user.
 The default is FALSE.}
 }
 \value{
-\code{epi_preprocess} function returns a \link[minfi]{GenomicRatioSet} object
+\code{epi_preprocess} function returns a
+\link[minfi]{GenomicRatioSet} object
 containing case and control (reference panel) samples.
 }
 \description{
-The \code{epi_preprocess} function reads Illumina methylation sample
-sheet for case samples and it merges them with \link[minfi]{RGChannelSet} reference panel.
+The \code{epi_preprocess} function reads
+Illumina methylation sample
+sheet for case samples and it merges them with
+\link[minfi]{RGChannelSet} reference panel.
 The final dataset is normalized using minfi package preprocess methods.
 }
 \details{
 The \code{epi_preprocess} function reads Illumina methylation sample
-sheet for case samples and it merges them with \link[minfi]{RGChannelSet} reference panel.
-The final dataset is normalized using different minfi package preprocess methods:
+sheet for case samples and it merges them with
+\link[minfi]{RGChannelSet} reference panel.
+The final dataset is normalized using
+different minfi package preprocess methods:
 \itemize{
 \item \code{"raw"}: \link[minfi]{preprocessRaw}
 \item \code{"illumina"}: \link[minfi]{preprocessIllumina}
@@ -57,14 +65,15 @@ The final dataset is normalized using different minfi package preprocess methods
 }
 \examples{
 
-# The reference panel for this example is available in epimutacionsData (ExperimentHub) package
+# The reference panel for this example is available in 
+#epimutacionsData (ExperimentHub) package
 library(ExperimentHub)
 eh <- ExperimentHub()
 query(eh, c("epimutacionsData"))
 reference_panel <- eh[["EH6691"]]
-cases_dir <- system.file("extdata", package = "epimutacionsData")
+#cases_dir <- system.file("extdata", package = "epimutacionsData")
 #Preprocessing
-epi_preprocess(cases_dir, reference_panel, pattern = "SampleSheet.csv")
+#epi_preprocess(cases_dir, reference_panel, pattern = "SampleSheet.csv")
 
 
 

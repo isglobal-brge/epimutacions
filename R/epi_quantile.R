@@ -24,7 +24,6 @@
 #' @return The function returns a data frame with the regions candidates to be
 #' epimutations.
 #' @importFrom methods is
-#' @importFrom IRanges pos
 epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
                          window_sz = 1000, 
                          N = 3, offset_abs = 0.15) {

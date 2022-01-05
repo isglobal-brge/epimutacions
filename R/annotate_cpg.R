@@ -4,18 +4,26 @@
 #' @param data DataFrame-like object.
 #' @param db a character string specifying the Database to use for annotation. 
 #' E.g: \code{'IlluminaHumanMethylationEPICanno.ilm10b2.hg19'}.
-#' @param split a character string containing the separator for CpG ids. Default \code{','}.
+#' @param split a character string containing the separator for CpG ids. 
+#' Default \code{','}.
 #' @param epi_col CpG ids, should be row names in the data base. 
-#' @param gene_col column name from where to extract gene names. Default: \code{'GencodeBasicV12_NAME'}.
-#' @param feat_col column name from where to extract CpG feature groups. Default: \code{'Regulatory_Feature_Group'}.
-#' @param relat_col column name from where to extract relation to island info. Default: \code{'Relation_to_Island'}.
+#' @param gene_col column name from where to extract gene names. 
+#' Default: \code{'GencodeBasicV12_NAME'}.
+#' @param feat_col column name from where to extract CpG feature groups. 
+#' Default: \code{'Regulatory_Feature_Group'}.
+#' @param relat_col column name from where to extract relation to island info. 
+#' Default: \code{'Relation_to_Island'}.
 #' @param build The build for bioMart. Default \code{'37'}.
-#' @param omim a boolean, if TRUE will annotate OMIMs as well. Takes a bit longer. Default TRUE.
+#' @param omim a boolean, if TRUE will annotate OMIMs as well. 
+#' Takes a bit longer. Default TRUE.
 #' @return The function returns a DataFrame-like object annotated.
 
 annotate_cpg <- function(data, db, split = ',', 
 		# illumina annotation parameters
-		epi_col = 'cpg_ids', gene_col = 'GencodeBasicV12_NAME', feat_col = 'Regulatory_Feature_Group', relat_col = 'Relation_to_Island',
+		epi_col = 'cpg_ids', 
+		gene_col = 'GencodeBasicV12_NAME', 
+		feat_col = 'Regulatory_Feature_Group', 
+		relat_col = 'Relation_to_Island',
 		# biomart parameters
 		build = "37", omim = TRUE)
 {

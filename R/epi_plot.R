@@ -1,5 +1,6 @@
 #' @title Generates a GRanges object 
-#' @description  This function makes a GRanges object from a \code{GenomicRatioSet}.
+#' @description  This function makes a GRanges object 
+#' from a \code{GenomicRatioSet}.
 #' @param methy a \code{GenomicRatioSet} object containing the control and
 #' case samples used in \link[epimutacions]{epimutations} or 
 #' \link[epimutacions]{epimutations_one_leave_out} function.  
@@ -221,7 +222,7 @@ UCSC_annotation <- function(genome = "hg19"){
   }
   
   if(!is.null(txdb)){
-    all_genes <- suppressMessages(GenomicFeatures::genes(txdb))
+    all_genes <- GenomicFeatures::genes(txdb)
     all_genes$symbol <- AnnotationDbi::mapIds(Homo.sapiens::Homo.sapiens, 
                                               keys = all_genes$gene_id,
                                               keytype = "ENTREZID",
@@ -248,20 +249,20 @@ UCSC_annotation <- function(genome = "hg19"){
 UCSC_regulation <- function(genome, chr, from, to){
   
   #cpgIslands
-  cpgIslands <- suppressWarnings(Gviz::UcscTrack(genome = genome, 
-                                                 chromosome = chr,
-                                                 track = "CpG Island", 
-                                                 from = from,
-                                                 to = to, 
-                                                 trackType = "AnnotationTrack",
-                                                 start = "chromStart", 
-                                                 end = "chromEnd",
-                                                 id = "name", 
-                                                 shape = "box",
-                                                 fill = "#FA9114", 
-                                                 name = "CpG",
-                                                 background.title = "#9D5D10", 
-                                                 rotation.title = 0))
+  cpgIslands <- Gviz::UcscTrack(genome = genome, 
+                                chromosome = chr,
+                                track = "CpG Island", 
+                                from = from,
+                                to = to, 
+                                trackType = "AnnotationTrack",
+                                start = "chromStart", 
+                                end = "chromEnd",
+                                id = "name", 
+                                shape = "box",
+                                fill = "#FA9114", 
+                                name = "CpG",
+                                background.title = "#9D5D10", 
+                                rotation.title = 0)
   
   #H3K27Ac, H3K4Me3 and H3K27Me3
   mySession <-  rtracklayer::browserSession("UCSC")
@@ -270,11 +271,10 @@ UCSC_regulation <- function(genome, chr, from, to){
                                     IRanges::IRanges(from, to))
   
   #H3K27Ac
-  H3K27Ac <- suppressWarnings(
-              rtracklayer::getTable(
-                rtracklayer::ucscTableQuery(mySession, 
+  H3K27Ac <- rtracklayer::getTable(
+                                    rtracklayer::ucscTableQuery(mySession, 
                                             track = "Layered H3K27Ac",
-                                            range = granges)))
+                                            range = granges))
   H3K27Ac$seqnames <- chr
   value <- H3K27Ac$value
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
@@ -288,11 +288,10 @@ UCSC_regulation <- function(genome, chr, from, to){
   
   
   #H3K4Me3
-  H3K4Me3 <- suppressWarnings(
-                rtracklayer::getTable(
+  H3K4Me3 <- rtracklayer::getTable(
                   rtracklayer::ucscTableQuery(mySession, 
                                               track = "Layered H3K4Me3",
-                                              range = granges)))
+                                              range = granges))
   H3K4Me3$seqnames <- chr
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
