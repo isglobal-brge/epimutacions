@@ -10,7 +10,8 @@ UCSC_regulation(genome, chr, from, to)
 \item{genome}{genome asambly. Can be set as:
 \code{'hg38'}, \code{'hg19'} and \code{'hg18'}.}
 
-\item{chr}{a character string containing the sequence names to be analysed.}
+\item{chr}{a character string containing
+the sequence names to be analysed.}
 
 \item{from, to}{scalar, specifying the range of genomic coordinates.
 Note that \code{from} cannot be larger than \code{to}.}

@@ -11,10 +11,12 @@ betas_from_bump(bump, fd, betas)
 
 \item{fd}{a data frame containing the genomic ranges for each CpGs.}
 
-\item{betas}{a matrix containing the beta values for all CpGs in each sample.}
+\item{betas}{a matrix containing the beta
+values for all CpGs in each sample.}
 }
 \value{
-The function returns a data frame containing the beta values
+The function returns a data
+frame containing the beta values
 for each sample and CpG into DMR.
 }
 \description{

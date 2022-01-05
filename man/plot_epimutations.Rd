@@ -2,7 +2,8 @@
 % Please edit documentation in R/plot_epimutations.R
 \name{plot_epimutations}
 \alias{plot_epimutations}
-\title{Plot a given epimutation and locate it along the genome}
+\title{Plot a given epimutation and
+locate it along the genome}
 \usage{
 plot_epimutations(
   dmr,
@@ -19,35 +20,46 @@ plot_epimutations(
 \link[epimutacions]{epimutations}
 function.}
 
-\item{methy}{a GenomicRatioSet object containing the information
+\item{methy}{a GenomicRatioSet object
+containing the information
 of control and case samples used for the analysis in the
 \link[epimutacions]{epimutations}
-function. See the constructor function \link[minfi]{GenomicRatioSet},
+function. See the constructor function
+\link[minfi]{GenomicRatioSet},
 \link[minfi]{makeGenomicRatioSetFromMatrix}.}
 
-\item{genome}{a character string specifying the genome of reference.
-It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}.
+\item{genome}{a character string
+specifying the genome of reference.
+It can be set as \code{"hg38"},
+\code{"hg19"} and \code{"hg18"}.
 The default is \code{"hg19"}.}
 
-\item{genes_annot}{a boolean. If TRUE gene annotations are plotted.
+\item{genes_annot}{a boolean.
+If TRUE gene annotations are plotted.
 Default is FALSE.}
 
-\item{regulation}{a boolean. If TRUE UCSC annotations
+\item{regulation}{a boolean.
+If TRUE UCSC annotations
 for CpG Islands, H3K27Ac,  H3K4Me3
 and H3K27Me3 are plotted. The default is FALSE.
-The running process when \code{regulation} is TRUE can take several minutes.}
+The running process when \code{regulation}
+is TRUE can take several minutes.}
 
-\item{from, to}{scalar, specifying the range of genomic coordinates
+\item{from, to}{scalar, specifying the
+range of genomic coordinates
 for the plot of gene annotation region.
-If \code{NULL} the plotting ranges are derived from the individual track.
+If \code{NULL} the plotting ranges are
+derived from the individual track.
 Note that \code{from} cannot be larger than \code{to}.}
 }
 \value{
 The function returns a plot divided in two parts:
 \itemize{
 \item ggplot graph including the individual with
-the epimutation in red, the control samples in dashed black lines and
-population mean in blue. Grey shaded regions indicate 1, 1.5 and 2 standard
+the epimutation in red,
+the control samples in dashed black lines and
+population mean in blue.
+Grey shaded regions indicate 1, 1.5 and 2 standard
 deviations from the mean of the distribution.
 \item UCSC gene annotations for the specified genomic
 region (if \code{genes == TRUE})
@@ -56,7 +68,8 @@ H3K4Me3 and H3K27Me3  (if \code{regulation == TRUE})
 }
 }
 \description{
-This function plots a given epimutation
+This function plots
+a given epimutation
 and UCSC annotations for the specified genomic region.
 }
 \details{
@@ -78,7 +91,9 @@ data(GRset)
 
 case_samples <- GRset[,11]
 control_panel <- GRset[,1:10]
-results <- epimutations(case_samples, control_panel, method = "manova")
+results <- epimutations(case_samples, 
+                        control_panel,
+                        method = "manova")
 plot_epimutations(as.data.frame(results[1,]), GRset)
 
 }

@@ -16,13 +16,16 @@ mlmtst(fit, X, type = "II", subset = NULL, tol = 0.001)
 Default is "\code{II}".}
 
 \item{subset}{subset of predictors for which summary
-statistics will be reported. Note that this is different from the
+statistics will be reported.
+Note that this is different from the
 "\code{subset}" argument in \code{\link{lm}}.}
 
 \item{tol}{\code{e[e/sum(e) > tol]}, where \code{e}
 is the vector of eigenvalues
-of the residual covariance matrix. Required to prevent long running times of
-algorithm AS 204. Default is 0.001 to ensure minimal loss of accuracy.}
+of the residual covariance matrix.
+Required to prevent long running times of
+algorithm AS 204. Default is 0.001 to
+ensure minimal loss of accuracy.}
 }
 \value{
 A list containing:
@@ -33,12 +36,16 @@ A list containing:
 \item{e}{eigenvalues of the residual covariance matrix.}
 }
 \description{
-Computes the sum of squares, degrees of freedom, pseudo-F statistics and
-partial R-squared for each predictor from a multivariate \code{fit}.
-It also returns the eigenvalues of the residual covariance matrix.
+Computes the sum of squares,
+degrees of freedom, pseudo-F statistics and
+partial R-squared for
+each predictor from a multivariate \code{fit}.
+It also returns the eigenvalues of
+the residual covariance matrix.
 }
 \details{
-Different types of sums of squares (i.e. "\code{I}", "\code{II}" and
+Different types of sums of squares
+(i.e. "\code{I}", "\code{II}" and
 "\code{III}") are available.
 }
 \seealso{

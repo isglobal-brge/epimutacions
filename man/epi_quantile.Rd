@@ -17,40 +17,54 @@ epi_quantile(
 )
 }
 \arguments{
-\item{case}{beta values for a single case (data.frame). The samples as
+\item{case}{beta values for a
+single case (data.frame). The samples as
 single column and CpGs in rows (named).}
 
-\item{fd}{feature description as data.frame having at least chromosome and
+\item{fd}{feature description as
+data.frame having at least chromosome and
 position as columns and and CpGs in rows (named).}
 
-\item{bctr_pmin}{Beta value observed at 0.01 quantile in controls. A beta
-values has to be lower or equal to this value to be considered an
+\item{bctr_pmin}{Beta value observed
+at 0.01 quantile in controls. A beta
+values has to be lower or equal
+to this value to be considered an
 epimutation.}
 
-\item{bctr_pmax}{Beta value observed at 0.99 quantile in controls. A beta
-values has to be higher or equal to this value to be considered an
+\item{bctr_pmax}{Beta value observed
+at 0.99 quantile in controls. A beta
+values has to be higher or equal
+to this value to be considered an
 epimutation.}
 
 \item{controls}{control samples names.}
 
-\item{betas}{a matrix containing the beta values for all samples.}
+\item{betas}{a matrix containing the
+beta values for all samples.}
 
-\item{window_sz}{Maximum distance between a pair of CpGs to defined an
+\item{window_sz}{Maximum distance
+between a pair of CpGs to defined an
 region of CpGs as epimutation (default: 1000).}
 
-\item{N}{Minimum number of CpGs, separated in a maximum of window_sz bass,
+\item{N}{Minimum number of CpGs,
+separated in a maximum of window_sz bass,
 to defined an epimutation (default: 3).}
 
-\item{offset_abs}{Extra enforcement defining an epimutation based on
+\item{offset_abs}{Extra enforcement
+defining an epimutation based on
 beta values at 0.005 and 0.995 quantiles (default: 0.15).}
 }
 \value{
-The function returns a data frame with the regions candidates to be
+The function returns a data
+frame with the regions candidates to be
 epimutations.
 }
 \description{
-Identifies CpGs with outlier methylation values
+Identifies CpGs with
+outlier methylation values
 using a sliding window
-approach to compare individual methylation profiles of a single
-case sample against all other samples from reference panel (controls)
+approach to compare individual
+methylation profiles of a single
+case sample against all other
+samples from reference panel (controls)
 }

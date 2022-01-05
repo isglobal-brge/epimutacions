@@ -14,13 +14,17 @@ epimutations_one_leave_out(
 )
 }
 \arguments{
-\item{methy}{a GenomicRatioSet object containing the samples for the
-analysis. See the constructor function \link[minfi]{GenomicRatioSet},
+\item{methy}{a GenomicRatioSet object
+containing the samples for the
+analysis. See the constructor function
+\link[minfi]{GenomicRatioSet},
 \link[minfi]{makeGenomicRatioSetFromMatrix}.}
 
 \item{method}{a character string naming the
-outlier detection method to be used. This can be set as:
-\code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
+outlier detection method to be used.
+This can be set as:
+\code{"manova"}, \code{"mlm"},
+\code{"isoforest"}, \code{"mahdistmcd"},
 \code{"barbosa"} and \code{beta}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
@@ -79,22 +83,29 @@ the sample in the reference distribution (left vs. right outlier).
 }
 }
 \description{
-This function is similar to \link[epimutacions]{epimutations}
-with the particularity that when is more than one case sample,
+This function is similar to
+\link[epimutacions]{epimutations}
+with the particularity that when
+is more than one case sample,
 the remaining case samples are included as controls.
 }
 \details{
-The function compares a case sample against a control panel
+The function compares a case
+sample against a control panel
 to identify epimutations in the given
 sample. First, the DMRs are identified using the
 \link[bumphunter]{bumphunter} approach.
-After that, CpGs in those DMRs are tested in order to detect regions
+After that, CpGs in those DMRs are
+tested in order to detect regions
 with CpGs being outliers.
-For that,  different anomaly detection methods can be selected:
+For that,  different anomaly
+detection methods can be selected:
 \itemize{
-\item Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
+\item Multivariate Analysis of Variance
+(\code{"manova"}). \link[stats]{manova}
 \item Multivariate Linear Model (\code{"mlm"})
-\item Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
+\item Isolation Forest (\code{"isoforest"})
+\link[isotree]{isolation.forest}
 \item Robust Mahalanobis Distance (\code{"mahdistmcd"})
 \link[robustbase]{covMcd}
 \item Barbosa (\code{"barbosa"})

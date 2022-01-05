@@ -20,6 +20,7 @@ col_names <- c("epi_id", "sample",
                "end", "sz","cpg_n", 
                "cpg_ids", "outlier_score", 
                "outlier_direction",
-               "pvalue", "adj_pvalue", 
+               "pvalue", "adj_pvalue",
+               "delta_beta",
                "epi_region_id", 
                "CRE", "CRE_type") 

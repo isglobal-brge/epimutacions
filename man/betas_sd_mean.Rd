@@ -8,11 +8,12 @@ to plot the epimutation}
 betas_sd_mean(gr)
 }
 \arguments{
-\item{gr}{a GRanges object obtained from \link[epimutacions]{create_GRanges_class}
-function.}
+\item{gr}{a GRanges object obtained from
+\link[epimutacions]{create_GRanges_class} function.}
 }
 \value{
-The function returns a list containing the melted beta values,
+The function returns a list
+containing the melted beta values,
 the population mean and 1, 1.5, and 2 standard deviations
 from the mean of the distribution.
 }

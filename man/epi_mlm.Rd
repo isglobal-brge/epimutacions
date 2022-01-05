@@ -13,7 +13,8 @@ CpGs in rows.}
 \item{model}{design (or model) matrix.}
 }
 \value{
-The function returns the F statistic, R2 test statistic and Pillai.
+The function returns the F statistic,
+R2 test statistic and Pillai.
 }
 \description{
 Identifies CpGs with outlier methylation values

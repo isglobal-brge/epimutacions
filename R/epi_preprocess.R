@@ -10,9 +10,10 @@
 #' object containing the reference 
 #' panel (controls) samples.
 #' @param pattern What pattern is used to identify a sample sheet file. 
-#' @param normalize a character string specifying the selected preprocess method. 
+#' @param normalize a character string 
+#' specifying the selected preprocess method. 
 #' For more information see \strong{Details} or 
-#' [minfi package user's Guide](https://bioconductor.org/packages/release/bioc/vignettes/minfi/inst/doc/minfi.html). 
+#' [minfi package user's Guide](shorturl.at/nwIN2). 
 #' It can be set as: \code{"raw"}, \code{"illumina"}, 
 #' \code{"swan"}, \code{"quantile"},
 #' \code{"noob"} or \code{"funnorm"}.)
@@ -46,7 +47,9 @@
 #' reference_panel <- eh[["EH6691"]]
 #' #cases_dir <- system.file("extdata", package = "epimutacionsData")
 #' #Preprocessing
-#' #epi_preprocess(cases_dir, reference_panel, pattern = "SampleSheet.csv")
+#' #epi_preprocess(cases_dir, 
+#' #               reference_panel, 
+#' #               pattern = "SampleSheet.csv")
 #' 
 #' 
 #' 
@@ -65,14 +68,17 @@ epi_preprocess <-function(cases_dir,
     
   }
   
-  avail <- c("raw","illumina", "swan", "quantile", "noob", "funnorm")
+  avail <- c("raw", "illumina", 
+             "swan", "quantile", 
+             "noob", "funnorm")
   normalize <- charmatch(normalize, avail)
   normalize <- avail[normalize]
   if(is.na(normalize)) 
     stop("Invalid normalisation ('normalize') method was selected'")
   
   #Reading case samples idat files
-  targets <- minfi::read.metharray.sheet(base = cases_dir, pattern = pattern)
+  targets <- minfi::read.metharray.sheet(base = cases_dir, 
+                                         pattern = pattern)
   if(is.null(targets)){
     warning("There is not any sample sheet in the base directory")
     RGset_cases <- minfi::read.metharray.exp(base = cases_dir)
@@ -99,30 +105,43 @@ epi_preprocess <-function(cases_dir,
    Mset <- minfi::preprocessRaw(RGset)
  }else if(normalize == "illumina"){
    Mset <-minfi::preprocessIllumina(RGset, 
-                                    bg.correct = norm_param$illumina$bg.correct,
-                                    normalize = norm_param$illumina$normalize,
-                                    reference = norm_param$illumina$reference)
+                                    bg.correct = 
+                                      norm_param$illumina$bg.correct,
+                                    normalize = 
+                                      norm_param$illumina$normalize,
+                                    reference = 
+                                      norm_param$illumina$reference)
  }else if(normalize == "swan"){
-   Mset <- minfi::preprocessSWAN(RGset, verbose = verbose)
+   Mset <- minfi::preprocessSWAN(RGset, 
+                                 verbose = verbose)
  }else if(normalize == "quantile"){
    GRset <- minfi::preprocessQuantile(
               RGset, 
-              fixOutliers = norm_param$quantile$fixOutliers,
-              removeBadSamples = norm_param$quantile$removeBadSamples,
-              badSampleCutoff = norm_param$quantile$badSampleCutoff,
-              quantileNormalize = norm_param$quantile$quantileNormalize,
-              stratified = norm_param$quantile$stratified,
-              mergeManifest = norm_param$quantile$mergeManifest, 
-              sex = norm_param$quantile$sex,
+              fixOutliers = 
+                norm_param$quantile$fixOutliers,
+              removeBadSamples = 
+                norm_param$quantile$removeBadSamples,
+              badSampleCutoff = 
+                norm_param$quantile$badSampleCutoff,
+              quantileNormalize = 
+                norm_param$quantile$quantileNormalize,
+              stratified = 
+                norm_param$quantile$stratified,
+              mergeManifest = 
+                norm_param$quantile$mergeManifest, 
+              sex = 
+                norm_param$quantile$sex,
               verbose = verbose)
    
  }else if(normalize == "noob"){
-   Mset <- minfi::preprocessNoob(RGset, offset = norm_param$noob$offset,
+   Mset <- minfi::preprocessNoob(RGset, 
+                                 offset = norm_param$noob$offset,
                                  dyeCorr = norm_param$noob$dyeCorr, 
                                  verbose = verbose,
                                  dyeMethod = norm_param$noob$dyeMethod)
  }else if(normalize == "funnorm"){
-   GRset <- minfi::preprocessFunnorm(RGset, nPCs = norm_param$funnorm$nPCs,
+   GRset <- minfi::preprocessFunnorm(RGset, 
+                                     nPCs = norm_param$funnorm$nPCs,
                                      sex = norm_param$funnorm$sex, 
                                      bgCorr = norm_param$funnorm$bgCorr,
                                      dyeCorr = norm_param$funnorm$dyeCorr,
@@ -132,9 +151,15 @@ epi_preprocess <-function(cases_dir,
  }
  
  #Create GenomicRatioSet object
- if(normalize %in% c("raw","illumina", "swan", "noob")){
-   GMset <- minfi::mapToGenome(Mset, mergeManifest = FALSE)
-   GRset <- minfi::ratioConvert(GMset, what = "beta", keepCN = FALSE)
+ if(normalize %in% c("raw",
+                     "illumina", 
+                     "swan", 
+                     "noob")){
+   GMset <- minfi::mapToGenome(Mset, 
+                               mergeManifest = FALSE)
+   GRset <- minfi::ratioConvert(GMset, 
+                                what = "beta", 
+                                keepCN = FALSE)
    
  }
  return(GRset)

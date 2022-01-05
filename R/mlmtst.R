@@ -1,10 +1,14 @@
 ##' Sums of Squares and Pseudo-F Statistics from a Multivariate Fit
 ##' 
-##' Computes the sum of squares, degrees of freedom, pseudo-F statistics and
-##' partial R-squared for each predictor from a multivariate \code{fit}. 
-##' It also returns the eigenvalues of the residual covariance matrix.
+##' Computes the sum of squares, 
+##' degrees of freedom, pseudo-F statistics and
+##' partial R-squared for 
+##' each predictor from a multivariate \code{fit}. 
+##' It also returns the eigenvalues of 
+##' the residual covariance matrix.
 ##' 
-##' Different types of sums of squares (i.e. "\code{I}", "\code{II}" and 
+##' Different types of sums of squares 
+##' (i.e. "\code{I}", "\code{II}" and 
 ##' "\code{III}") are available.
 ##' 
 ##' @param fit multivariate fit obtained by \code{\link{lm}}.
@@ -13,12 +17,15 @@
 ##' ("\code{I}", "\code{II}" or "\code{III}"). 
 ##' Default is "\code{II}".
 ##' @param subset subset of predictors for which summary 
-##' statistics will be reported. Note that this is different from the 
+##' statistics will be reported. 
+##' Note that this is different from the 
 ##' "\code{subset}" argument in \code{\link{lm}}.
 ##' @param tol \code{e[e/sum(e) > tol]}, where \code{e} 
 ##' is the vector of eigenvalues
-##' of the residual covariance matrix. Required to prevent long running times of 
-##' algorithm AS 204. Default is 0.001 to ensure minimal loss of accuracy.
+##' of the residual covariance matrix. 
+##' Required to prevent long running times of 
+##' algorithm AS 204. Default is 0.001 to 
+##' ensure minimal loss of accuracy.
 ##' 
 ##' @return A list containing:
 ##' \item{SS}{sums of squares for all predictors (and residuals).}
@@ -33,7 +40,10 @@
 ##'
 ##' @keywords internal
 ##' 
-mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
+mlmtst <- function(fit, X, 
+                   type = "II", 
+                   subset = NULL, 
+                   tol = 1e-3){
   
   ## Residual sum-of-squares and cross-products (SSCP) matrix
   SSCP.e <- crossprod(fit$residuals) 
@@ -54,7 +64,9 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
       iterms <- which(terms %in% subset)
     }else {
       stop(sprintf("Unknown terms in subset: %s",
-                   paste0("'", subset[which(! subset %in% terms)], "'", 
+                   paste0("'", 
+                          subset[which(! subset %in% terms)], 
+                          "'", 
                           collapse = ", ")))
     }
   } else {
@@ -67,11 +79,13 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
   
   if (type == "I"){
     
-    effects <- as.matrix(fit$effects)[seq_along(asgn), , drop = FALSE]
+    effects <- as.matrix(fit$effects)[seq_along(asgn),
+                                      , drop = FALSE]
     
     for (i in iterms) {
       subs <- which(asgn == i) 
-      SS[i] <- sum(diag(crossprod(effects[subs, , drop = FALSE])))
+      SS[i] <- sum(diag(crossprod(effects[subs, 
+                                          , drop = FALSE])))
       df[i] <- length(subs)
     }
     
@@ -113,16 +127,19 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
         if(n.terms > 1) { # Obtain relatives
           relatives <- (seq_len(n.terms))[-i][vapply(terms[-i], 
                                               function(term2) 
-                                                is.relative(term, term2, fac),
+                                                is.relative(term, 
+                                                            term2, 
+                                                            fac),
                                                             logical = TRUE)]
         } else { 
           relatives <- NULL
         }
         subs.relatives <- NULL
         for (relative in relatives){
-          subs.relatives <- c(subs.relatives, which(asgn == relative))
+          subs.relatives <- c(subs.relatives, 
+                              which(asgn == relative))
         }
-        L1 <- I.p[subs.relatives, , drop = FALSE] # Hyp. matrix (relatives) 
+        L1 <- I.p[subs.relatives, , drop = FALSE]
         if (length(subs.relatives) == 0) {
           SSCP1 <- 0
         } else {
@@ -153,7 +170,9 @@ mlmtst <- function(fit, X, type = "II", subset = NULL, tol = 1e-3){
   # r2adj <- 1-( (1-r2)*(n-1) / df.e )
   
   # Get eigenvalues from cov(R)*(n-1)/df.e
-  e <- eigen(SSCP.e/df.e, symmetric = TRUE, only.values = TRUE)$values
+  e <- eigen(SSCP.e/df.e, 
+             symmetric = TRUE, 
+             only.values = TRUE)$values
   e <- e[e/sum(e) > tol]
   
   return(list("SS" = c(SS, "Residuals" = SS.e),

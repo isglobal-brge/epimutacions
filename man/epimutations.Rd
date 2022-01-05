@@ -51,7 +51,8 @@ See the function \link[epimutacions]{epi_parameters}.}
 
 \item{bump_cutoff}{a numeric value of the
 estimate of the genomic profile above the
-cutoff or below the negative of the cutoff will be used as candidate regions.}
+cutoff or below the negative of the
+cutoff will be used as candidate regions.}
 
 \item{min_cpg}{an integer specifying the minimum CpGs number in a DMR.}
 

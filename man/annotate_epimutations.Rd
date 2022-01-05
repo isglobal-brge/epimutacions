@@ -17,7 +17,8 @@ annotate_epimutations(
 from \code{epimutations} or
 \code{epimutations_one_leave_out} functions.}
 
-\item{db}{a character string containing  the Illumina annotation package
+\item{db}{a character string containing
+the Illumina annotation package
 used to annotate the CpGs.}
 
 \item{build}{a character string containing the genomic
@@ -28,7 +29,8 @@ set \code{built} to \code{NULL}.}
 \item{...}{Further arguments passed to \code{annotate_cpg}.}
 }
 \value{
-The function returns the input object \code{epi_results}
+The function returns the
+input object \code{epi_results}
 with additional columns containing the  information about
 the genes or overlapping regulatory features.
 
@@ -48,7 +50,9 @@ data(GRset)
 case_samples <- GRset[,11]
 control_panel <- GRset[,1:10]
 
-results <- epimutations(case_samples, control_panel, method = "manova")
+results <- epimutations(case_samples, 
+                        control_panel, 
+                        method = "manova")
 
 #Annotate the epimutations
 

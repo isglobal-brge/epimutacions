@@ -11,11 +11,13 @@ res_mlm(bump, sts)
 \item{bump}{a DMR obtained from \link[bumphunter]{bumphunter}
 (i.e. a row from \link[bumphunter]{bumphunter} method result).}
 
-\item{sts}{the F statistic, R2 test statistic and Pillai obtained as a result
+\item{sts}{the F statistic, R2 test statistic
+and Pillai obtained as a result
 of \link[epimutacions]{epi_mlm} function.}
 }
 \value{
-The function returns a data frame containing the following
+The function returns a data
+frame containing the following
 information for each DMR:
 \itemize{
 \item genomic ranges
@@ -30,7 +32,8 @@ information for each DMR:
 \item Sample name
 }
 
-For more information about the output see \link[epimutacions]{epimutations}.
+For more information about the output see
+\link[epimutacions]{epimutations}.
 }
 \description{
 Creates a data frame containing the

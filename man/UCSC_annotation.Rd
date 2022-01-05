@@ -11,7 +11,8 @@ UCSC_annotation(genome = "hg19")
 \code{'hg38'}, \code{'hg19'} and \code{'hg18'}.}
 }
 \value{
-The function returns gene annotations for the specified genome assembly.
+The function returns gene
+annotations for the specified genome assembly.
 }
 \description{
 UCSC gene annotations for a given genome assembly.

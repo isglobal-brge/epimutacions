@@ -7,7 +7,8 @@
 #' @param epi_results a data frame object containing the output 
 #' from \code{epimutations} or
 #' \code{epimutations_one_leave_out} functions. 
-#' @param db a character string containing  the Illumina annotation package 
+#' @param db a character string containing  
+#' the Illumina annotation package 
 #' used to annotate the CpGs.
 #' @param build a character string containing the genomic 
 #' build where the epimutations are mapped. 
@@ -15,7 +16,8 @@
 #' set \code{built} to \code{NULL}. 
 #' @param ... Further arguments passed to \code{annotate_cpg}.
 #' 
-#' @return The function returns the input object \code{epi_results}
+#' @return The function returns the 
+#' input object \code{epi_results}
 #' with additional columns containing the  information about
 #' the genes or overlapping regulatory features. 
 #' 
@@ -31,7 +33,9 @@
 #' case_samples <- GRset[,11]
 #' control_panel <- GRset[,1:10]
 #' 
-#' results <- epimutations(case_samples, control_panel, method = "manova")
+#' results <- epimutations(case_samples, 
+#'                         control_panel, 
+#'                         method = "manova")
 #' 
 #' #Annotate the epimutations
 #' 
@@ -39,10 +43,9 @@
 #' anno_results[1:2, c(1, 12:14)]
 #' 
 #' @export
-annotate_epimutations <- 
-  function(epi_results, 
-           db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", 
-           build = "37", ...){
+annotate_epimutations <- function(epi_results, 
+                        db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", 
+                        build = "37", ...){
 	
 	## Add gene mapping and CpG island information
 	epi_results <- annotate_cpg(epi_results, db = db,  ...)

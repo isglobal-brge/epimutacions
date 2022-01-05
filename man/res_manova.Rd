@@ -30,7 +30,8 @@ containing the following information for each DMR:
 \item Sample name
 }
 
-For more information about the output see \link[epimutacions]{epimutations}.
+For more information about the output see
+\link[epimutacions]{epimutations}.
 }
 \description{
 Creates a data frame containing the

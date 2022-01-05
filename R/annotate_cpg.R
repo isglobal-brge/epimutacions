@@ -1,8 +1,10 @@
 #' @title Annotate the DMR resulting from epimutacions package
 #' 
-#' @description This function annotates a differentially methylated region
+#' @description This function annotates a differentially 
+#' methylated region
 #' @param data DataFrame-like object.
-#' @param db a character string specifying the Database to use for annotation. 
+#' @param db a character string specifying the 
+#' Database to use for annotation. 
 #' E.g: \code{'IlluminaHumanMethylationEPICanno.ilm10b2.hg19'}.
 #' @param split a character string containing the separator for CpG ids. 
 #' Default \code{','}.
@@ -11,12 +13,14 @@
 #' Default: \code{'GencodeBasicV12_NAME'}.
 #' @param feat_col column name from where to extract CpG feature groups. 
 #' Default: \code{'Regulatory_Feature_Group'}.
-#' @param relat_col column name from where to extract relation to island info. 
+#' @param relat_col column name from where 
+#' to extract relation to island info. 
 #' Default: \code{'Relation_to_Island'}.
 #' @param build The build for bioMart. Default \code{'37'}.
 #' @param omim a boolean, if TRUE will annotate OMIMs as well. 
 #' Takes a bit longer. Default TRUE.
-#' @return The function returns a DataFrame-like object annotated.
+#' @return The function returns a 
+#' DataFrame-like object annotated.
 
 annotate_cpg <- function(data, db, split = ',', 
 		# illumina annotation parameters
@@ -67,7 +71,8 @@ annotate_cpg <- function(data, db, split = ',',
 	data[[gene_col]] <- annotated_genes
 	data[[feat_col]] <- annotated_regions
 	data[[relat_col]] <- annotated_relation
-	data <- data[- which(vapply(data[[gene_col]], is.null, logical(1))),]
+	data <- data[- which(vapply(data[[gene_col]], 
+	                            is.null, logical(1))),]
 	
 	
 

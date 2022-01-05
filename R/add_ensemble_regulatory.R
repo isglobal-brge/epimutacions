@@ -27,22 +27,21 @@
 #' }
 #'
 add_ensemble_regulatory <- function(epimutations, build = "37"){
-  
   ## Remove chr from chromosome
   epimutations$chromosome <- gsub("chr", "", epimutations$chromosome)
-	
-	## Create connection to ENSEMBL 
-	mart <- biomaRt::useEnsembl(biomart = "regulation", GRCh = build)
-	ensembl <- biomaRt::useDataset(dataset = "hsapiens_regulatory_feature", 
-								   mart = mart)
-
-	reg_res <- lapply(seq_len(nrow(epimutations)), function(i) {
-		get_ENSEMBL_data(epimutations[i, "chromosome"], 
-						 epimutations[i, "start"],
-						 epimutations[i, "end"], mart = ensembl)
-	})
-	reg_res_df <- Reduce(rbind, reg_res)
-	cbind(epimutations, reg_res_df)
+  ## Create connection to ENSEMBL 
+  
+  mart <- biomaRt::useEnsembl(biomart = "regulation", GRCh = build)
+  ensembl <- biomaRt::useDataset(dataset = "hsapiens_regulatory_feature", 
+                                 mart = mart)
+  
+  reg_res <- lapply(seq_len(nrow(epimutations)), function(i) {
+   get_ENSEMBL_data(epimutations[i, "chromosome"], 
+                    epimutations[i, "start"],
+                    epimutations[i, "end"], 
+                    mart = ensembl)})
+  reg_res_df <- Reduce(rbind, reg_res)
+  cbind(epimutations, reg_res_df)
 
 }
 
@@ -59,10 +58,13 @@ add_ensemble_regulatory <- function(epimutations, build = "37"){
 #' @return `data.frame` of one row with the ENSEMBL regulatory 
 #' regions overlapping the genomic coordinate.
 get_ENSEMBL_data <- function(chromosome, start, end, mart){
-	bm <- biomaRt::getBM(attributes = c("activity", "regulatory_stable_id", 
-								  "chromosome_name", "chromosome_start",
-								  "chromosome_end", "feature_type_name",
-								  "epigenome_name"), 
+	bm <- biomaRt::getBM(attributes = c("activity", 
+	                                    "regulatory_stable_id", 
+	                                    "chromosome_name", 
+	                                    "chromosome_start",
+	                                    "chromosome_end", 
+	                                    "feature_type_name",
+	                                    "epigenome_name"), 
 				   filters = c('chromosome_name','start','end'),
 				   values = list(chromosome, start, end),
 				   mart = mart)
@@ -86,8 +88,9 @@ process_ENSEMBL_results <- function(ensembl_res){
 	reg_vals_df <- Reduce(rbind, reg_vals)
 	out <- data.frame(ensembl_reg_id = paste(reg_vals_df$ensembl_reg_id,
 	                                         collapse = "///"),
-					  ensembl_reg_coordinates = paste(reg_vals_df$ensembl_reg_coordinates, 
-					                                  collapse = "///"),
+					  ensembl_reg_coordinates = 
+					    paste(reg_vals_df$ensembl_reg_coordinates, 
+					          collapse = "///"),
 					  ensembl_reg_type = paste(reg_vals_df$ensembl_reg_type, 
 					                           collapse = "///"),
 					  ensembl_reg_tissues = paste(reg_vals_df$ensembl_reg_tissues, 
@@ -102,7 +105,8 @@ process_ENSEMBL_results <- function(ensembl_res){
 #' element in different tissues. Notice that tissues
 #' identified as inactive will not be reported.
 #' 
-#' @param tab Results from `biomaRt::getBM` for the same regulatory element
+#' @param tab Results from `biomaRt::getBM` for the 
+#' same regulatory element
 #' @return `data.frame` of one row after collapsing the 
 merge_records <- function(tab){
 
@@ -132,6 +136,7 @@ merge_records <- function(tab){
 		paste(x, ":", paste(mini$epigenome_name, collapse = ";"))
 	})
 	
-	out$ensembl_reg_tissues <- paste(unlist(state_vec), collapse = "/")
+	out$ensembl_reg_tissues <- paste(unlist(state_vec), 
+	                                 collapse = "/")
 	out
 }

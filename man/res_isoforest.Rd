@@ -14,11 +14,12 @@ res_isoforest(bump, sts, outlier_score_cutoff)
 \item{sts}{the outlier score from
 \link[epimutacions]{epi_isoforest} function results.}
 
-\item{outlier_score_cutoff}{numeric specifying the outlier score cut off}
+\item{outlier_score_cutoff}{numeric specifying
+the outlier score cut off}
 }
 \value{
-The function returns a data frame containing the following information
-for each DMR:
+The function returns a data frame
+containing the following information for each DMR:
 \itemize{
 \item genomic ranges
 \item DMR base pairs
@@ -32,7 +33,8 @@ for each DMR:
 \item Sample name
 }
 
-For more information about the output see \link[epimutacions]{epimutations}.
+For more information about the output see
+\link[epimutacions]{epimutations}.
 }
 \description{
 Creates a data frame containing the

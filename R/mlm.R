@@ -1,40 +1,61 @@
 ##' Non-parametric, Asymptotic P-values for Multivariate Linear Models
 ##' 
-##' Fits a multivariate linear model and computes test statistics and asymptotic 
+##' Fits a multivariate linear model and computes 
+##' test statistics and asymptotic 
 ##' P-values for predictors in a non-parametric manner. 
 ##' 
-##' A \code{Y} matrix is obtained after transforming (optionally) and centering 
-##' the original response variables. Then, the multivariate fit obtained by 
-##' \code{\link{lm}} can be used to compute sums of squares (type-I, type-II or 
+##' A \code{Y} matrix is obtained after transforming 
+##' (optionally) and centering 
+##' the original response variables.
+##'  Then, the multivariate fit obtained by 
+##' \code{\link{lm}} can be used to 
+##' compute sums of squares (type-I, type-II or 
 ##' type-III), pseudo-F statistics and asymptotic 
 ##' P-values for the terms specified by the \code{formula} 
 ##' in a non-parametric manner. The designations "type-II" 
-##' and "type-III" correspond exactly to those used in \code{\link[car]{Anova}}. 
+##' and "type-III" correspond exactly 
+##' to those used in \code{\link[car]{Anova}}. 
 ##' "type-I" refers to sequential sums of squares.
 ##' 
-##' @param formula object of class "\code{\link{formula}}" (or one that can be 
-##' coerced to that class): a symbolic description of the model to be fitted. 
-##' @param data an optional data frame, list or environment (or object coercible 
-##' by \code{\link{as.data.frame}} to a data frame) containing the variables in 
-##' the model. If not found in data, the variables are taken from 
-##' \code{environment(formula)}, typically the environment from which \code{mlm} 
+##' @param formula object of class "\code{\link{formula}}" 
+##' (or one that can be 
+##' coerced to that class): a symbolic description 
+##' of the model to be fitted. 
+##' @param data an optional data frame, 
+##' list or environment (or object coercible 
+##' by \code{\link{as.data.frame}} to a data frame) 
+##' containing the variables in 
+##' the model. If not found in data, 
+##' the variables are taken from 
+##' \code{environment(formula)}, 
+##' typically the environment from which \code{mlm} 
 ##' is called.
-##' @param transform transformation of the response variables: "\code{none}", 
-##' "\code{sqrt}" or "\code{log}". Default is "\code{none}".
-##' @param type type of sum of squares: "\code{I}", "\code{II}" or "\code{III}". 
+##' @param transform transformation 
+##' of the response variables: "\code{none}", 
+##' "\code{sqrt}" or "\code{log}". 
+##' Default is "\code{none}".
+##' @param type type of sum of squares: 
+##' "\code{I}", "\code{II}" or "\code{III}". 
 ##' Default is "\code{II}".
-##' @param contrasts an optional list. See \code{contrasts.arg} in 
-##' \code{\link{model.matrix.default}}. Default is "\code{\link{contr.sum}}" 
-##' for ordered factors and "\code{\link{contr.poly}}" for unordered factors. 
+##' @param contrasts an optional list.
+##'  See \code{contrasts.arg} in 
+##' \code{\link{model.matrix.default}}. 
+##' Default is "\code{\link{contr.sum}}" 
+##' for ordered factors and "\code{\link{contr.poly}}" 
+##' for unordered factors. 
 ##' Note that this is different from the default setting in 
 ##' \code{\link{options}("contrasts")}.
-##' @param subset subset of predictors for which summary statistics will be 
-##' reported. Note that this is different from the "\code{subset}" 
+##' @param subset subset of predictors for which 
+##' summary statistics will be 
+##' reported. Note that this is different 
+##' from the "\code{subset}" 
 ##' argument in \code{\link{lm}}.
-##' @param fit logical. If \code{TRUE} the multivariate fit on transformed and 
+##' @param fit logical. If \code{TRUE} 
+##' the multivariate fit on transformed and 
 ##' centered responses is returned.
 ##' 
-##' @return \code{mlm} returns an object of \code{\link{class}} \code{"MLM"}, 
+##' @return \code{mlm} returns an object 
+##' of \code{\link{class}} \code{"MLM"}, 
 ##' a list containing:
 ##' \item{call}{the matched call.}
 ##' \item{aov.tab}{ANOVA table with Df, Sum Sq, Mean Sq, F values, 
@@ -42,9 +63,12 @@
 ##' \item{type}{the type of sum of squares (\code{"I"}, 
 ##' \code{"II"} or \code{"III"}).}
 ##' \item{precision}{the precision in P-value computation.}
-##' \item{transform}{the transformation applied to the response variables.}
-##' \item{na.omit}{incomplete cases removed (see \code{\link{na.omit}}).}
-##' \item{fit}{if \code{fit = TRUE} the multivariate fit done on the transformed 
+##' \item{transform}{the transformation 
+##' applied to the response variables.}
+##' \item{na.omit}{incomplete cases removed 
+##' (see \code{\link{na.omit}}).}
+##' \item{fit}{if \code{fit = TRUE} the multivariate 
+##' fit done on the transformed 
 ##' and centered response variables is also returned.}
 ##' 
 ##' @seealso \code{\link{lm}}, \code{\link[car]{Anova}}
@@ -134,7 +158,8 @@ mlm <- function(formula, data, transform = "none", type = "II",
   lmfit$terms <- mt
   lmfit$model <- mf
 
-  ## Compute sums of squares, df's, pseudo-F statistics, partial R2s and eigenvalues 
+  ## Compute sums of squares, df's, pseudo-F 
+  ## statistics, partial R2s and eigenvalues 
   stats <- mlmtst(fit = lmfit, X = X, type = type, subset = subset)
   SS <- stats$SS
   df <- stats$df
@@ -144,10 +169,18 @@ mlm <- function(formula, data, transform = "none", type = "II",
 
   ## Compute P-values
   l <- length(df) # SS[l], df[l] correspond to Residuals 
-  pv.acc <- mapply(p.asympt, ss = SS[-l], df = df[-l], MoreArgs = list(lambda = e))  
+  pv.acc <- mapply(p.asympt, 
+                   ss = SS[-l], 
+                   df = df[-l], 
+                   MoreArgs = list(lambda = e))  
   
   ## ANOVA table
-  stats.l <- list(df, SS, SS/df, f.tilde, r2, pv.acc[1, ])
+  stats.l <- list(df, 
+                  SS, 
+                  SS/df, 
+                  f.tilde, 
+                  r2, 
+                  pv.acc[1, ])
   cmat <- data.frame()
   for(i in seq(along = stats.l)) {
     for(j in names(stats.l[[i]])){
@@ -155,7 +188,12 @@ mlm <- function(formula, data, transform = "none", type = "II",
     }
   }
   cmat <- as.matrix(cmat)
-  colnames(cmat) <- c("Df", "Sum Sq", "Mean Sq", "F value", "R2", "Pr(>F)")
+  colnames(cmat) <- c("Df", 
+                      "Sum Sq", 
+                      "Mean Sq", 
+                      "F value", 
+                      "R2", 
+                      "Pr(>F)")
 
   ## Output
   out <- list("call" = cl,
@@ -179,7 +217,9 @@ mlm <- function(formula, data, transform = "none", type = "II",
 ##'
 ##' @export
 ##' 
-print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){ 
+print.MLM <- function (x, 
+                       digits = max(getOption("digits") - 2L, 3L), 
+                       ...){ 
   
   ## Print Call and type of SS
   #cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
@@ -229,15 +269,18 @@ print.MLM <- function (x, digits = max(getOption("digits") - 2L, 3L), ...){
 ##' 
 ##' @keywords internal
 ##'  
-printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
+printCoefmat.mp <- function (x, 
+                             digits = max(3L, getOption("digits") - 2L),
                              signif.stars = getOption("show.signif.stars"), 
                              signif.legend = signif.stars, 
                              dig.tst = max(1L,min(5L, digits - 1L)), 
                              cs.ind = seq_len(k), tst.ind = k + 1, 
                              zap.ind = integer(), 
-                             P.values = NULL, has.Pvalue = nc >= 4 && 
+                             P.values = NULL, 
+                             has.Pvalue = nc >= 4 && 
                                substr(colnames(x)[nc], 1, 3) == "Pr(", 
-                             eps.Pvalue = .Machine$double.eps, na.print = "NA", 
+                             eps.Pvalue = .Machine$double.eps, 
+                             na.print = "NA", 
                              ...) { # #nocov start
   if (is.null(d <- dim(x)) || length(d) != 2L) 
     stop("'x' must be coefficient matrix/data frame")
@@ -272,15 +315,21 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
       digmin <- 1 + if (length(acs <- acs[ia & acs != 0])) 
         floor(log10(range(acs[acs != 0], finite = TRUE)))
       else 0
-      Cf[, cs.ind] <- format(round(coef.se, max(1L, digits - 
-                                                  digmin)), digits = digits)
+      Cf[, cs.ind] <- format(round(coef.se, 
+                                   max(1L, digits - 
+                                                  digmin)), 
+                             digits = digits)
     }
   }
   if (length(tst.ind)) 
-    Cf[, tst.ind] <- format(round(xm[, tst.ind], digits = dig.tst), 
+    Cf[, tst.ind] <- format(round(xm[, tst.ind], 
+                                  digits = dig.tst), 
                             digits = digits)
-  if (any(r.ind <- !((1L:nc) %in% c(cs.ind, tst.ind, if (has.Pvalue) nc)))) 
-    for (i in which(r.ind)) Cf[, i] <- format(xm[, i], digits = digits)
+  if (any(r.ind <- !((1L:nc) %in% c(cs.ind, 
+                                    tst.ind, 
+                                    if (has.Pvalue) nc)))) 
+    for (i in which(r.ind)) Cf[, i] <- format(xm[, i], 
+                                              digits = digits)
   ok[, tst.ind] <- FALSE
   okP <- if (has.Pvalue) 
     ok[, -nc]
@@ -290,44 +339,51 @@ printCoefmat.mp <- function (x, digits = max(3L, getOption("digits") - 2L),
   if (dec != ".") 
     x1 <- chartr(dec, ".", x1)
   x0 <- (xm[okP] == 0) != (as.numeric(x1) == 0)
-  if (length(not.both.0 <- which(x0 & !is.na(x0)))) {
-    Cf[okP][not.both.0] <- format(xm[okP][not.both.0], digits = max(1L, 
-                                                                  digits - 1L))
+  if (length(not.both.0 <- which(x0 & 
+                                 !is.na(x0)))) {
+    Cf[okP][not.both.0] <- format(xm[okP][not.both.0], 
+                                  digits = max(1L, 
+                                               digits - 1L))
   }
   if (any(ina)) 
     Cf[ina] <- na.print
   if (P.values) {
-    if (!is.logical(signif.stars) || is.na(signif.stars)) {
+    if (!is.logical(signif.stars) || 
+        is.na(signif.stars)) {
       warning("option \"show.signif.stars\" is invalid: assuming TRUE")
       signif.stars <- TRUE
     }
     if (any(okP <- ok[, nc])) {
       pv <- as.vector(xm[, nc])
-      # Added ================================================================ #
       Cf[okP, nc] <- mapply(format.pval, pv = pv[okP], eps = eps.Pvalue, 
                             MoreArgs = list(digits = dig.tst))
-      # Removed
-      # Cf[okP, nc] <- format.pval(pv[okP], digits = dig.tst, eps = eps.Pvalue)
-      # ====================================================================== #
+
       signif.stars <- signif.stars && any(pv[okP] < 0.1)
       if (signif.stars) {
-        Signif <- symnum(pv, corr = FALSE, na = FALSE, 
-                         cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-                         symbols = c("***", "**", "*", ".", " "))
+        Signif <- symnum(pv, 
+                         corr = FALSE, 
+                         na = FALSE, 
+                         cutpoints = c(0, 0.001, 
+                                       0.01, 0.05, 
+                                       0.1, 1), 
+                         symbols = c("***", "**", 
+                                     "*", ".", " "))
         Cf <- cbind(Cf, format(Signif))
       }
     }
     else signif.stars <- FALSE
   }
   else signif.stars <- FALSE
-  print.default(Cf, quote = FALSE, right = TRUE, na.print = na.print, 
+  print.default(Cf, quote = FALSE, 
+                right = TRUE, 
+                na.print = na.print, 
                 ...)
   if (signif.stars && signif.legend) {
     if ((w <- getOption("width")) < nchar(sleg <- attr(Signif, 
                                                        "legend"))) 
-      sleg <- strwrap(sleg, width = w - 2, prefix = "  ")
-    #cat("---\nSignif. codes:  ", sleg, sep = "", fill = w + 
-          #4 + max(nchar(sleg, "bytes") - nchar(sleg)))
+      sleg <- strwrap(sleg, 
+                      width = w - 2, 
+                      prefix = "  ")
   }
   invisible(x)
 } # #nocov end

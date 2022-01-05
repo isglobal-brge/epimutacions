@@ -1,13 +1,19 @@
 #' @title Epimutations analysis based on outlier detection methods
-#' @description This function is similar to \link[epimutacions]{epimutations} 
-#' with the particularity that when is more than one case sample,  
+#' @description This function is similar to 
+#' \link[epimutacions]{epimutations} 
+#' with the particularity that when 
+#' is more than one case sample,  
 #' the remaining case samples are included as controls. 
-#' @param methy a GenomicRatioSet object containing the samples for the 
-#' analysis. See the constructor function \link[minfi]{GenomicRatioSet}, 
+#' @param methy a GenomicRatioSet object
+#'  containing the samples for the 
+#' analysis. See the constructor function 
+#' \link[minfi]{GenomicRatioSet}, 
 #' \link[minfi]{makeGenomicRatioSetFromMatrix}. 
 #' @param method a character string naming the 
-#' outlier detection method to be used. This can be set as: 
-#' \code{"manova"}, \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
+#' outlier detection method to be used. 
+#' This can be set as: 
+#' \code{"manova"}, \code{"mlm"}, 
+#' \code{"isoforest"}, \code{"mahdistmcd"}, 
 #' \code{"barbosa"} and \code{beta}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
@@ -21,16 +27,21 @@
 #' details about the procedure will provide to the user. 
 #' The default is TRUE.
 #' @param ... Further parameters passed to `epimutations`
-#' @details The function compares a case sample against a control panel 
+#' @details The function compares a case 
+#' sample against a control panel 
 #' to identify epimutations in the given 
 #' sample. First, the DMRs are identified using the 
 #' \link[bumphunter]{bumphunter} approach. 
-#' After that, CpGs in those DMRs are tested in order to detect regions
+#' After that, CpGs in those DMRs are 
+#' tested in order to detect regions
 #' with CpGs being outliers.  
-#' For that,  different anomaly detection methods can be selected:  
-#'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
+#' For that,  different anomaly 
+#' detection methods can be selected:  
+#'  * Multivariate Analysis of Variance 
+#'  (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
-#'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
+#'  * Isolation Forest (\code{"isoforest"}) 
+#'  \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) 
 #'  \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
@@ -80,10 +91,14 @@ epimutations_one_leave_out <- function(methy, method = "manova",
          can be useful to create a 'GenomicRatioSet' class object")
   }
   
-  rst <- do.call(rbind, BiocParallel::bplapply(colnames(methy), function(case){
+  rst <- do.call(rbind, 
+                 BiocParallel::bplapply(colnames(methy), 
+                                        function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]
-    epimutacions::epimutations(case_samples, control_panel, method, 
+    epimutacions::epimutations(case_samples, 
+                               control_panel, 
+                               method, 
                                epi_params = epi_params,
                                verbose = verbose, ...)
   }, BPPARAM = BPPARAM))

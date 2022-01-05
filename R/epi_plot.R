@@ -113,7 +113,8 @@ cols_names <- function(x, cpg_ids_col = FALSE){
       strand_pos <- which(colnames(x) %in% strand_field)
       strand <- x[,strand_pos]
     }else{
-      stop("In feature dataset strand column name  must be specified as: 'strand'")
+      stop("In feature dataset strand column name  
+           must be specified as: 'strand'")
     }
     df <- data.frame("seqnames" = seqnames, 
                      "start" = start, 
@@ -130,9 +131,10 @@ cols_names <- function(x, cpg_ids_col = FALSE){
 #' @description  Computes the beta values, population mean and 
 #'  1, 1.5, and 2 standard deviations from the mean of the distribution
 #'  necessary to plot the epimutations.
-#' @param gr  a GRanges object obtained from \link[epimutacions]{create_GRanges_class}
-#' function. 
-#' @return The function returns a list containing the melted beta values, 
+#' @param gr  a GRanges object obtained from 
+#' \link[epimutacions]{create_GRanges_class} function. 
+#' @return The function returns a list 
+#' containing the melted beta values, 
 #' the population mean and 1, 1.5, and 2 standard deviations 
 #' from the mean of the distribution.
 #' 
@@ -202,19 +204,24 @@ betas_sd_mean <- function(gr){
 #' @description  UCSC gene annotations for a given genome assembly. 
 #' @param genome  genome asambly. Can be set as: 
 #' \code{'hg38'}, \code{'hg19'} and \code{'hg18'}. 
-#' @return The function returns gene annotations for the specified genome assembly.
+#' @return The function returns gene 
+#' annotations for the specified genome assembly.
 #' 
 
 
 UCSC_annotation <- function(genome = "hg19"){
-  if(genome == "hg19" & requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
-    txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+  if(genome == "hg19" & 
+     requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
+    txdb <- 
+      TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
   } else if (genome == "hg38" & 
              requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
-    txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+    txdb <- 
+      TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
   } else if(genome == "hg18" & 
             requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
-    txdb <- TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
+    txdb <- 
+      TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
   } else{
     warning("Genes are not shown since TxDb database 
             is not installed in you computer")
@@ -240,7 +247,8 @@ UCSC_annotation <- function(genome = "hg19"){
 #' @param genome  genome asambly. Can be set as: 
 #' \code{'hg38'}, \code{'hg19'} and \code{'hg18'}. 
 #' @param chr 
-#' @param chr a character string containing the sequence names to be analysed.
+#' @param chr a character string containing 
+#' the sequence names to be analysed.
 #' @param from,to scalar, specifying the range of genomic coordinates.
 #' Note that \code{from} cannot be larger than \code{to}. 
 #' @return \code{UCSC_regulation} returns

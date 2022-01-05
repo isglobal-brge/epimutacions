@@ -19,7 +19,8 @@ annotate_cpg(
 \arguments{
 \item{data}{DataFrame-like object.}
 
-\item{db}{a character string specifying the Database to use for annotation.
+\item{db}{a character string specifying the
+Database to use for annotation.
 E.g: \code{'IlluminaHumanMethylationEPICanno.ilm10b2.hg19'}.}
 
 \item{split}{a character string containing the separator for CpG ids.
@@ -33,7 +34,8 @@ Default: \code{'GencodeBasicV12_NAME'}.}
 \item{feat_col}{column name from where to extract CpG feature groups.
 Default: \code{'Regulatory_Feature_Group'}.}
 
-\item{relat_col}{column name from where to extract relation to island info.
+\item{relat_col}{column name from where
+to extract relation to island info.
 Default: \code{'Relation_to_Island'}.}
 
 \item{build}{The build for bioMart. Default \code{'37'}.}
@@ -42,8 +44,10 @@ Default: \code{'Relation_to_Island'}.}
 Takes a bit longer. Default TRUE.}
 }
 \value{
-The function returns a DataFrame-like object annotated.
+The function returns a
+DataFrame-like object annotated.
 }
 \description{
-This function annotates a differentially methylated region
+This function annotates a differentially
+methylated region
 }

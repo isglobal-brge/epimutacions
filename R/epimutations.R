@@ -25,7 +25,8 @@
 #' \link[bumphunter]{bumphunter} method. 
 #' @param bump_cutoff a numeric value of the 
 #' estimate of the genomic profile above the 
-#' cutoff or below the negative of the cutoff will be used as candidate regions. 
+#' cutoff or below the negative of the 
+#' cutoff will be used as candidate regions. 
 #' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
 #' @param verbose logical. If TRUE additional details about 
 #' the procedure will provide to the user. 
@@ -131,14 +132,18 @@ epimutations <- function(case_samples, control_panel,
          To create a 'GenomicRatioSet' object use 
          'makeGenomicRatioSetFromMatrix' function from minfi package")
   }
-  if(minfi::annotation(case_samples)[1] != minfi::annotation(control_panel)[1] &
-     minfi::annotation(case_samples)[2] != minfi::annotation(control_panel)[2]){
-    stop("'case_samples' and 'control_panel' annotations must be the same")
+  if(minfi::annotation(case_samples)[1] !=
+     minfi::annotation(control_panel)[1] &
+     minfi::annotation(case_samples)[2] != 
+     minfi::annotation(control_panel)[2]){
+    stop("'case_samples' and 'control_panel'
+         annotations must be the same")
   }
   
   if(!is.null(start) & !is.null(end)){
     if(is.null(chr)){
-      stop("Argument 'chr' must be inroduced with 'start' and 'end' parameters")
+      stop("Argument 'chr' must be inroduced with 
+           'start' and 'end' parameters")
     }
     if(length(start) != length(end) & length(chr) != length(start)){
       stop("'start' and 'end' length must be same")
@@ -209,7 +214,8 @@ epimutations <- function(case_samples, control_panel,
   
   
   # 2. Epimutations definition (using different methods)
-  ##Methods that need bumphunter ("manova", "mlm", "mahdistmcd" and "isoforest")
+  ##Methods that need bumphunter 
+  ##("manova", "mlm", "mahdistmcd" and "isoforest")
   if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
     if(verbose) message("Selected method '", 
                         method, 
@@ -223,10 +229,11 @@ epimutations <- function(case_samples, control_panel,
       model <- stats::model.matrix(~status, status)
       
       # Run bumphunter for region partitioning
+      suppressMessages(
         bumps <- bumphunter::bumphunter(object = betas, design = model,
                                         pos = fd$start, chr = fd$seqnames, 
                                         maxGap = maxGap,
-                                        cutoff = bump_cutoff)$table
+                                        cutoff = bump_cutoff)$table)
       
         if(all(!is.na(bumps))){
           
@@ -236,7 +243,6 @@ epimutations <- function(case_samples, control_panel,
           bumps$sz <- bumps$end - bumps$start
           
           bumps <- bumps[bumps$L >= min_cpg, ]
-          # bumps <- bumps[bumps$sz < length(ctr_sam), ] # <--------------- TODO
           if(verbose) message(nrow(bumps), 
                               "candidate regions were found for case sample '",
                               case, "'")
@@ -246,12 +252,15 @@ epimutations <- function(case_samples, control_panel,
             bump <- bumps[ii, ]
             beta_bump <- betas_from_bump(bump, fd, betas)
             # Add sample name and cpg_ids
-            bump$cpg_ids <- paste(rownames(beta_bump), collapse = ",", sep = "")
+            bump$cpg_ids <- paste(rownames(beta_bump), 
+                                  collapse = ",", 
+                                  sep = "")
             bump$sample <- case
             bump$delta_beta <- abs(mean(beta_bump[,ctr_sam]) -
                                      mean(beta_bump[,case]))
             if(method == "mahdistmcd") {
-              dst <- try(epi_mahdistmcd(beta_bump, epi_params$mahdistmcd$nsamp),
+              dst <- try(epi_mahdistmcd(beta_bump, 
+                                        epi_params$mahdistmcd$nsamp),
                          silent = TRUE)
               if(!is(dst, "try-error")){
                 threshold <- sqrt(stats::qchisq(p = 0.999975, 
@@ -306,11 +315,6 @@ epimutations <- function(case_samples, control_panel,
   }else if(method == "quantile") {
       # Compute reference statistics
     if(verbose) message("Calculating statistics from 'quantile' method")
-    #bctr_min <- suppressWarnings(apply(betas_control, 1, min, na.rm = TRUE))
-    #bctr_max <- suppressWarnings(apply(betas_control, 1, max, na.rm = TRUE))
-    #bctr_mean <- suppressWarnings(apply(betas_control, 1, mean, na.rm = TRUE))
-    #bctr_prc <- suppressWarnings(apply(betas_control, 1, quantile, 
-                                 #probs = c(0.999975, 0.000025), na.rm = TRUE))
     if(verbose) message("Using quantiles ", 
                         epi_params$quantile$qinf, 
                         " and ", 
@@ -327,6 +331,7 @@ epimutations <- function(case_samples, control_panel,
     #case <- betas[ , cas_sam[1], drop=FALSE]
       # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      betas <- cbind(betas_control, betas_case[,case,drop=FALSE])
       x <- epi_quantile(betas_case[ , case, drop = FALSE],
                         fd,
                         bctr_pmin,
@@ -363,6 +368,7 @@ epimutations <- function(case_samples, control_panel,
     
     message("Defining Regions")
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
+      betas <- cbind(betas_control, betas_case[,case,drop=FALSE])
       fd_sub <- fd[rownames(betas_control),]
       x <- epi_beta(beta_params, beta_mean, 
                     betas_case[ , case, drop = FALSE], case, 

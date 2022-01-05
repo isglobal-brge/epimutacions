@@ -23,12 +23,12 @@ test_that("epimutation output class", {
 
 test_that("epimutation column names", {
   #length
-  expect_length(colnames(result_manova), 15)
-  expect_length(colnames(result_mlm), 15)
-  expect_length(colnames(result_isoforest), 15)
-  expect_length(colnames(result_mahadistmcd), 15)
-  expect_length(colnames(result_quantile), 15)
-  expect_length(colnames(result_beta), 15)
+  expect_length(colnames(result_manova), 16)
+  expect_length(colnames(result_mlm), 16)
+  expect_length(colnames(result_isoforest), 16)
+  expect_length(colnames(result_mahadistmcd), 16)
+  expect_length(colnames(result_quantile), 16)
+  expect_length(colnames(result_beta), 16)
   #names
   expect_true(all(colnames(result_manova) %in% col_names))
   expect_true(all(colnames(result_mlm) %in% col_names))

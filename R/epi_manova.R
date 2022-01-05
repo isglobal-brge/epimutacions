@@ -1,10 +1,12 @@
 #' @title Identifies epimutations using MANOVA
-#' @description  This function identifies regions with CpGs being outliers
+#' @description  This function identifies 
+#' regions with CpGs being outliers
 #' using \link[stats]{manova} approach. 
-#' @param mixture beta values matrix. Samples in columns and
-#' CpGs in rows.
+#' @param mixture beta values matrix. 
+#' Samples in columns and CpGs in rows.
 #' @param  model design (or model) matrix.
-#' @param case_id a character string specifying the name of the case sample.
+#' @param case_id a character string specifying 
+#' the name of the case sample.
 #' @return The function returns the F statistic, Pillai and P value.
 #' 
 epi_manova <-  function(mixture, model, case_id){
@@ -43,7 +45,8 @@ epi_manova <-  function(mixture, model, case_id){
 #'     * Outlier direction
 #'  * Sample name
 #' 
-#' For more information about the output see \link[epimutacions]{epimutations}.
+#' For more information about the output see 
+#' \link[epimutacions]{epimutations}.
 
 res_manova <- function(bump, sts) {
 	bump$outlier_score <- paste0(sts[[1]][1], "/", sts[[1]][2])
@@ -53,11 +56,13 @@ res_manova <- function(bump, sts) {
 	                                 "hypermethylation")
 	bump[ , c("chromosome", "start", "end", "sz", 
 	          "cpg_n", "cpg_ids", "outlier_score",
-	          "outlier_direction", "pvalue", "adj_pvalue", "delta_beta", "sample")]
+	          "outlier_direction", "pvalue", 
+	          "adj_pvalue", "delta_beta", "sample")]
 	}
 
 filter <- function(bump_out, pvalue_cutoff){
-  bump_out$adj_pvalue <- stats::p.adjust(bump_out$pvalue, method = "hochberg")   
+  bump_out$adj_pvalue <- stats::p.adjust(bump_out$pvalue, 
+                                         method = "hochberg")   
   bump_out <- bump_out[which(bump_out$adj_pvalue < pvalue_cutoff), , 
                        drop = FALSE]
   return(bump_out)

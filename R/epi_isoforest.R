@@ -32,9 +32,10 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
 #' @param sts the outlier score from
 #'  \link[epimutacions]{epi_isoforest} function results. 
-#' @param outlier_score_cutoff numeric specifying the outlier score cut off
-#' @returns The function returns a data frame containing the following information
-#' for each DMR: 
+#' @param outlier_score_cutoff numeric specifying 
+#' the outlier score cut off
+#' @returns The function returns a data frame 
+#' containing the following information for each DMR: 
 #' * genomic ranges
 #' * DMR base pairs
 #' * number and name of CpGs in DMR
@@ -44,7 +45,8 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 #'     * Outlier direction
 #'  * Sample name
 #' 
-#' For more information about the output see \link[epimutacions]{epimutations}.
+#' For more information about the output see 
+#' \link[epimutacions]{epimutations}.
 
 res_isoforest <- function(bump, sts, outlier_score_cutoff){
   if(sts > outlier_score_cutoff){

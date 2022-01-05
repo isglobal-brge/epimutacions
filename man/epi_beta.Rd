@@ -46,17 +46,22 @@ consider a position an outlier.}
 combine them into an epimutation.}
 }
 \value{
-The function returns a data frame with the candidate regions to be
-epimutations.
+The function returns a data frame with
+the candidate regions to be epimutations.
 }
 \description{
 \code{epi_beta} method models the DNA methylation data
-using a beta distribution. First, the beta distribution parameters of the
+using a beta distribution.
+First, the beta distribution parameters of the
 reference population are precomputed and passed to the method.
 Then, we compute the probability of observing the methylation values
 of the case from the reference beta distribution.
-CpGs with p-values smaller than a threshold \code{pvalue_threshold} and with
-a methylation difference with the mean reference methylation
-higher than \code{diff_threshold} are defined as outlier CpGs. Finally,
-epimutations are defined as a group of contiguous outlier CpGs.
+CpGs with p-values smaller than a threshold
+\code{pvalue_threshold} and with
+a methylation difference with the
+mean reference methylation
+higher than \code{diff_threshold}
+are defined as outlier CpGs. Finally,
+epimutations are defined as a
+group of contiguous outlier CpGs.
 }

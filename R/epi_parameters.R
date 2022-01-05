@@ -2,7 +2,8 @@
 #' @title Settings for parameters of \code{epimutations} 
 #' and \code{epimutations_one_leave_out} functions
 #' @description  Allow the user to set the values 
-#' of the parameters to compute the functions \link[epimutacions]{epimutations} 
+#' of the parameters to compute the functions 
+#' \link[epimutacions]{epimutations} 
 #' and \link[epimutacions]{epimutations_one_leave_out}.
 #' @param manova,mlm,isoforest,mahdistmcd,quantile,beta method selected 
 #' in the function \link[epimutacions]{epimutations}. 
@@ -17,7 +18,8 @@
 #' Default is \code{100}. 
 #' @param nsamp the number of subsets used for initial 
 #' estimates in the Minimum Covariance Determinant 
-#' which is used to compute the Robust Mahalanobis distance (\code{mahdistmcd}). 
+#' which is used to compute the Robust Mahalanobis 
+#' distance (\code{mahdistmcd}). 
 #' It can be set as:
 #' \code{"best"}, \code{"exact"}, or \code{"deterministic"}. 
 #' For \code{nsamp = "best"} exhaustive enumeration is done, 

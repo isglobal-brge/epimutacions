@@ -7,7 +7,8 @@
 merge_records(tab)
 }
 \arguments{
-\item{tab}{Results from \code{biomaRt::getBM} for the same regulatory element}
+\item{tab}{Results from \code{biomaRt::getBM} for the
+same regulatory element}
 }
 \value{
 \code{data.frame} of one row after collapsing the

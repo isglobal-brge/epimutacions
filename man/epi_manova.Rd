@@ -7,17 +7,19 @@
 epi_manova(mixture, model, case_id)
 }
 \arguments{
-\item{mixture}{beta values matrix. Samples in columns and
-CpGs in rows.}
+\item{mixture}{beta values matrix.
+Samples in columns and CpGs in rows.}
 
 \item{model}{design (or model) matrix.}
 
-\item{case_id}{a character string specifying the name of the case sample.}
+\item{case_id}{a character string specifying
+the name of the case sample.}
 }
 \value{
 The function returns the F statistic, Pillai and P value.
 }
 \description{
-This function identifies regions with CpGs being outliers
+This function identifies
+regions with CpGs being outliers
 using \link[stats]{manova} approach.
 }

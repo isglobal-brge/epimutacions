@@ -19,31 +19,38 @@ selected in the function \link[epimutacions]{epi_preprocess}.}
 \item{bg.correct}{logical. If TRUE background
 correction will be performed in \code{"illumina"} method. Default is TRUE.}
 
-\item{normalize}{logical. If TRUE control normalization will be performed in
+\item{normalize}{logical. If TRUE control
+normalization will be performed in
 \code{"illumina"} method.}
 
-\item{reference}{numeric. The reference array for control normalization in
+\item{reference}{numeric.
+The reference array for control normalization in
 \code{"illumina"} method.}
 
 \item{fixOutliers}{logical. If TRUE low outlier
 Meth and Unmeth signals will be fixed
 in \code{"quantile"} method. Default is TRUE.}
 
-\item{removeBadSamples}{logical. If TRUE bad samples will be removed.}
+\item{removeBadSamples}{logical.
+If TRUE bad samples will be removed.}
 
-\item{badSampleCutoff}{a numeric specifying the cutoff to label samples
+\item{badSampleCutoff}{a numeric specifying
+the cutoff to label samples
 as 'bad' in \code{"quantile"} method. Default is 10.5.}
 
 \item{quantileNormalize}{logical. If TRUE quantile
 normalization will be performed in
 \code{"quantile"} method. Default is TRUE.}
 
-\item{stratified}{logical. If TRUE quantile normalization will be performed
-within region strata in \code{"quantile"} method. Default is TRUE.}
+\item{stratified}{logical.
+If TRUE quantile normalization will be performed
+within region strata in \code{"quantile"} method.
+Default is TRUE.}
 
 \item{mergeManifest}{logical. If TRUE the
 information in the associated manifest
-package will be merged into the output object in \code{"quantile"} method.
+package will be merged into the output
+object in \code{"quantile"} method.
 Default is FALSE.}
 
 \item{offset}{a numeric specifying an offset for
@@ -54,16 +61,21 @@ in \code{"noob"} method. Default is 15.}
 be done in \code{"noob"} and \code{"funnorm"} methods.
 Default is TRUE.}
 
-\item{dyeMethod}{specify the dye bias correction to be done, single sample
+\item{dyeMethod}{specify the dye
+bias correction to be done, single sample
 approach or a reference array in \code{"noob"} method.}
 
-\item{nPCs}{numeric specifying the number of principal components
-from the control probes PCA in \code{"funnorm"} method. Default is 2.}
+\item{nPCs}{numeric specifying
+the number of principal components
+from the control probes PCA in
+\code{"funnorm"} method. Default is 2.}
 
-\item{sex}{an optional numeric vector containing the sex of the samples in
+\item{sex}{an optional numeric vector
+containing the sex of the samples in
 \code{"quantile"} and \code{"funnorm"} methods.}
 
-\item{bgCorr}{logical. If TRUE NOOB background correction will be done prior
+\item{bgCorr}{logical.
+If TRUE NOOB background correction will be done prior
 to functional normalization.
 in \code{"funnorm"} method. Default is TRUE.}
 

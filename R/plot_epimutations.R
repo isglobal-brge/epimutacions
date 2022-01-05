@@ -1,26 +1,37 @@
-#' @title  Plot a given epimutation and locate it along the genome
-#' @description This function plots a given epimutation
+#' @title  Plot a given epimutation and 
+#' locate it along the genome
+#' @description This function plots 
+#' a given epimutation
 #' and UCSC annotations for the specified genomic region.  
 #' @param dmr epimutation obtained as a result of 
 #' \link[epimutacions]{epimutations}
 #' function. 
-#' @param methy a GenomicRatioSet object containing the information
+#' @param methy a GenomicRatioSet object 
+#' containing the information
 #' of control and case samples used for the analysis in the 
 #' \link[epimutacions]{epimutations}
-#' function. See the constructor function \link[minfi]{GenomicRatioSet},
+#' function. See the constructor function 
+#' \link[minfi]{GenomicRatioSet},
 #' \link[minfi]{makeGenomicRatioSetFromMatrix}.
-#' @param genome a character string specifying the genome of reference. 
-#' It can be set as \code{"hg38"},\code{"hg19"} and \code{"hg18"}. 
+#' @param genome a character string 
+#' specifying the genome of reference. 
+#' It can be set as \code{"hg38"},
+#' \code{"hg19"} and \code{"hg18"}. 
 #' The default is \code{"hg19"}.
-#' @param genes_annot a boolean. If TRUE gene annotations are plotted. 
+#' @param genes_annot a boolean. 
+#' If TRUE gene annotations are plotted. 
 #' Default is FALSE.  
-#' @param regulation a boolean. If TRUE UCSC annotations 
+#' @param regulation a boolean. 
+#' If TRUE UCSC annotations 
 #' for CpG Islands, H3K27Ac,  H3K4Me3
 #' and H3K27Me3 are plotted. The default is FALSE.
-#' The running process when \code{regulation} is TRUE can take several minutes.
-#' @param from,to scalar, specifying the range of genomic coordinates 
+#' The running process when \code{regulation} 
+#' is TRUE can take several minutes.
+#' @param from,to scalar, specifying the 
+#' range of genomic coordinates 
 #' for the plot of gene annotation region.
-#' If \code{NULL} the plotting ranges are derived from the individual track. 
+#' If \code{NULL} the plotting ranges are 
+#' derived from the individual track. 
 #' Note that \code{from} cannot be larger than \code{to}. 
 #' @details 
 #' The tracks are plotted vertically. Each track 
@@ -35,8 +46,10 @@
 #' 
 #' @return The function returns a plot divided in two parts: 
 #' * ggplot graph including the individual with 
-#' the epimutation in red, the control samples in dashed black lines and
-#' population mean in blue. Grey shaded regions indicate 1, 1.5 and 2 standard
+#' the epimutation in red, 
+#' the control samples in dashed black lines and
+#' population mean in blue. 
+#' Grey shaded regions indicate 1, 1.5 and 2 standard
 #' deviations from the mean of the distribution. 
 #' * UCSC gene annotations for the specified genomic 
 #' region (if \code{genes == TRUE})
@@ -51,7 +64,9 @@
 #' 
 #' case_samples <- GRset[,11]
 #' control_panel <- GRset[,1:10]
-#' results <- epimutations(case_samples, control_panel, method = "manova")
+#' results <- epimutations(case_samples, 
+#'                         control_panel,
+#'                         method = "manova")
 #' plot_epimutations(as.data.frame(results[1,]), GRset)
 #' 
 #' @export
@@ -100,7 +115,8 @@ plot_epimutations <- function(dmr,
     }
   }
   
-  # DMR column names must be always the same (set the common column names)
+  # DMR column names must be always
+  # the same (set the common column names)
   dmr  <- cols_names(dmr, cpg_ids_col = TRUE)  #epi_plot
   
   # Set 'from' and 'to' arguments value
@@ -118,7 +134,8 @@ plot_epimutations <- function(dmr,
   #Generate variables in 'beta_values' data frame containing:
   # * status: case sample name/'control'
   # * color: 'red' for case sample and 'black' for control sample
-  # * lines: 'longdash' for controls and 'solid' for case and population mean
+  # * lines: 'longdash' for controls and 
+  #          'solid' for case and population mean
   
   status <- ifelse(betas_sd_mean$beta_values$variable == dmr$sample, 
                    dmr$sample, 
@@ -129,7 +146,9 @@ plot_epimutations <- function(dmr,
                   "longdash","solid")
   betas_sd_mean$beta_values$lines <- lines
   rm(lines)
-  colors <- c("control" = "black", "mean" = "darkblue", "red")
+  colors <- c("control" = "black", 
+              "mean" = "darkblue",
+              "red")
   names(colors)[3] <- dmr$sample
   
   #Generate a variable with the CpGs names
@@ -201,7 +220,8 @@ plot_epimutations <- function(dmr,
   #Plot gene annotations
   if(genes_annot == TRUE | regulation == TRUE){
   
-  ideo_track <- Gviz::IdeogramTrack(genome = genome, chromosome = dmr$seqnames)
+  ideo_track <- Gviz::IdeogramTrack(genome = genome, 
+                                    chromosome = dmr$seqnames)
   genome_track <- Gviz::GenomeAxisTrack()
   genes <- UCSC_annotation(genome) #epi_plot
   gene_track <- Gviz::GeneRegionTrack(genes, 
@@ -229,7 +249,10 @@ plot_epimutations <- function(dmr,
         stop("The region is too large (> 200kb) 
              to download the annotations from 'UCSC'")
       }
-      annotation <- UCSC_regulation(genome, dmr$seqnames, from, to)
+      annotation <- UCSC_regulation(genome, 
+                                    dmr$seqnames, 
+                                    from, 
+                                    to)
 
     if(genome ==  "hg19"){
       tracks_Highlight <- Gviz::HighlightTrack(trackList = 
@@ -254,7 +277,8 @@ plot_epimutations <- function(dmr,
                                                       annotation$cpgIslands,
                                                       annotation$H3K4Me3,
                                                       annotation$H3K27Ac),
-                                               start = dmr$start, end = dmr$end,
+                                               start = dmr$start, 
+                                               end = dmr$end,
                                                chromosome = dmr$seqnames,
                                                col = "#7EA577", 
                                                fill = "#C6D7C3",
@@ -269,7 +293,8 @@ plot_epimutations <- function(dmr,
   
   #dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
-  p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, tracks_Highlight), 
+  p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, 
+                                                  tracks_Highlight), 
                                                from = from, 
                                                to = to, add = TRUE))
   gridExtra::grid.arrange(grobs = list(p1,p2), row=2)

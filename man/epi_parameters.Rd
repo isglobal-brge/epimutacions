@@ -32,7 +32,8 @@ Default is \code{100}.}
 
 \item{nsamp}{the number of subsets used for initial
 estimates in the Minimum Covariance Determinant
-which is used to compute the Robust Mahalanobis distance (\code{mahdistmcd}).
+which is used to compute the Robust Mahalanobis
+distance (\code{mahdistmcd}).
 It can be set as:
 \code{"best"}, \code{"exact"}, or \code{"deterministic"}.
 For \code{nsamp = "best"} exhaustive enumeration is done,
@@ -64,7 +65,8 @@ set parameters for each method used in
 }
 \description{
 Allow the user to set the values
-of the parameters to compute the functions \link[epimutacions]{epimutations}
+of the parameters to compute the functions
+\link[epimutacions]{epimutations}
 and \link[epimutacions]{epimutations_one_leave_out}.
 }
 \details{
