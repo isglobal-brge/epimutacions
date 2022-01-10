@@ -26,20 +26,12 @@
 #' for an in-depth description of these variables.
 #' @import IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 #' @examples 
-#' data(GRset)
 #' 
-#' #Find epimutations in GSM2562701 sample of GRset dataset
-#' 
-#' case_samples <- GRset[,11]
-#' control_panel <- GRset[,1:10]
-#' 
-#' results <- epimutations(case_samples, 
-#'                         control_panel, 
-#'                         method = "manova")
+#' data(res.epi.manova)
 #' 
 #' #Annotate the epimutations
 #' 
-#' anno_results <- annotate_epimutations(as.data.frame(results))
+#' anno_results <- annotate_epimutations(res.epi.manova)
 #' anno_results[1:2, c(1, 12:14)]
 #' 
 #' @export

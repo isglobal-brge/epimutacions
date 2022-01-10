@@ -41,10 +41,10 @@
 #'
 #' # The reference panel for this example is available in 
 #' #epimutacionsData (ExperimentHub) package
-#' library(ExperimentHub)
-#' eh <- ExperimentHub()
-#' query(eh, c("epimutacionsData"))
-#' reference_panel <- eh[["EH6691"]]
+#' #library(ExperimentHub)
+#' #eh <- ExperimentHub()
+#' #query(eh, c("epimutacionsData"))
+#' #reference_panel <- eh[["EH6691"]]
 #' #cases_dir <- system.file("extdata", package = "epimutacionsData")
 #' #Preprocessing
 #' #epi_preprocess(cases_dir, 

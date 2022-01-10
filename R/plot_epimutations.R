@@ -59,15 +59,9 @@
 #' @examples 
 #' 
 #' data(GRset)
+#' data(res.epi.manova)
 #' 
-#' #Find epimutations in GSM2562701 sample of GRset dataset
-#' 
-#' case_samples <- GRset[,11]
-#' control_panel <- GRset[,1:10]
-#' results <- epimutations(case_samples, 
-#'                         control_panel,
-#'                         method = "manova")
-#' plot_epimutations(as.data.frame(results[1,]), GRset)
+#' plot_epimutations(res.epi.manova, GRset)
 #' 
 #' @export
 plot_epimutations <- function(dmr, 
