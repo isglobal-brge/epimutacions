@@ -26,12 +26,16 @@
 #'  activation states are separated by `/`}
 #' }
 #'
-add_ensemble_regulatory <- function(epimutations, build = "37"){
+add_ensemble_regulatory <- function(epimutations, 
+                                    build = "37"){
   ## Remove chr from chromosome
-  epimutations$chromosome <- gsub("chr", "", epimutations$chromosome)
+  epimutations$chromosome <- gsub("chr", 
+                                  "", 
+                                  epimutations$chromosome)
   ## Create connection to ENSEMBL 
   
-  mart <- biomaRt::useEnsembl(biomart = "regulation", GRCh = build)
+  mart <- biomaRt::useEnsembl(biomart = "regulation",
+                              GRCh = build)
   ensembl <- biomaRt::useDataset(dataset = "hsapiens_regulatory_feature", 
                                  mart = mart)
   
@@ -57,16 +61,24 @@ add_ensemble_regulatory <- function(epimutations, build = "37"){
 #' @param mart \code{Mart} object to perform the ENSEMBL query
 #' @return `data.frame` of one row with the ENSEMBL regulatory 
 #' regions overlapping the genomic coordinate.
-get_ENSEMBL_data <- function(chromosome, start, end, mart){
-	bm <- biomaRt::getBM(attributes = c("activity", 
-	                                    "regulatory_stable_id", 
-	                                    "chromosome_name", 
-	                                    "chromosome_start",
-	                                    "chromosome_end", 
-	                                    "feature_type_name",
-	                                    "epigenome_name"), 
-				   filters = c('chromosome_name','start','end'),
-				   values = list(chromosome, start, end),
+get_ENSEMBL_data <- function(chromosome, 
+                             start, 
+                             end, 
+                             mart){
+	bm <- biomaRt::getBM(
+	  attributes = c("activity", 
+	                 "regulatory_stable_id", 
+	                 "chromosome_name", 
+	                 "chromosome_start",
+	                 "chromosome_end", 
+	                 "feature_type_name",
+	                 "epigenome_name"), 
+				   filters = c('chromosome_name',
+				               'start',
+				               'end'),
+				   values = list(chromosome, 
+				                 start, 
+				                 end),
 				   mart = mart)
 	out_ens <- process_ENSEMBL_results(bm)
 	out_ens
