@@ -113,5 +113,7 @@ detection methods can be selected:
 }
 \examples{
 data(GRset)
+\donttest{
 epimutations_one_leave_out(GRset[,c(1:5,11)], method = "manova")
+}
 }

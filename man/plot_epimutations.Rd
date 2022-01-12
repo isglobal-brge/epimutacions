@@ -88,6 +88,8 @@ genomic region.
 data(GRset)
 data(res.epi.manova)
 
-plot_epimutations(res.epi.manova, GRset)
+\donttest{
+plot_epimutations(res.epi.manova[1,], GRset)
+}
 
 }
