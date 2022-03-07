@@ -91,5 +91,4 @@ data(res.epi.manova)
 \donttest{
 plot_epimutations(res.epi.manova[1,], GRset)
 }
-
 }

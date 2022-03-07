@@ -112,10 +112,7 @@
 #' @importFrom ensembldb seqlevelsStyle 
 #' @importFrom S4Vectors to from
 #' @importFrom tibble as_tibble
-#' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_text_repel 
-#' annotate lims scale_colour_manual theme_bw ggtitle theme labs
-#' @importFrom  Gviz IdeogramTrack GenomeAxisTrack GeneRegionTrack 
-#' HighlightTrack plotTracks grid.arrange
+
 #' 
 #' @export
 epimutations <- function(case_samples, control_panel,
@@ -246,7 +243,7 @@ epimutations <- function(case_samples, control_panel,
           
           bumps <- bumps[bumps$L >= min_cpg, ]
           if(verbose) message(nrow(bumps), 
-                              "candidate regions were found for case sample '",
+                              " candidate regions were found for case sample '",
                               case, "'")
           if(nrow(bumps) != 0){
           # Identify outliers according to selected method

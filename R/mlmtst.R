@@ -154,6 +154,7 @@ mlmtst <- function(fit, X,
       }
     }
   }
+
   
   ## subset
   if(!is.null(subset)){
@@ -161,8 +162,14 @@ mlmtst <- function(fit, X,
     df <- df[iterms]
   }
   
+  print("SS")
+  print(SS)
+  print("df")
+  print(df)
   ## pseudo-F
   f.tilde <- SS/SS.e*df.e/df
+  print("ftilde")
+  print(f.tilde)
   
   ## r.squared
   R2 <- (SS.t - SS.e)/SS.t

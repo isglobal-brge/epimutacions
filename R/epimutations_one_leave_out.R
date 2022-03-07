@@ -81,7 +81,6 @@
 #' }
 #' @importFrom methods is
 #' @importFrom BiocParallel SerialParam bplapply 
-#' @importFrom epimutacions epimutations 
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 
@@ -100,11 +99,11 @@ epimutations_one_leave_out <- function(methy, method = "manova",
                                         function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]
-    epimutacions::epimutations(case_samples, 
-                               control_panel, 
-                               method, 
-                               epi_params = epi_params,
-                               verbose = verbose, ...)
+    epimutations(case_samples, 
+                 control_panel, 
+                 method, 
+                 epi_params = epi_params,
+                 verbose = verbose, ...)
   }, BPPARAM = BPPARAM))
   return(rst)
 }

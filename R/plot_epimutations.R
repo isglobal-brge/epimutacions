@@ -64,6 +64,13 @@
 #' \donttest{
 #' plot_epimutations(res.epi.manova[1,], GRset)
 #' }
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
+#' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
+#' @importFrom Gviz IdeogramTrack GenomeAxisTrack GeneRegionTrack HighlightTrack
+#' plotTracks
+#' @importFrom grid grid.grabExpr
+#' @importFrom gridExtra grid.arrange 
 #' 
 #' @export
 plot_epimutations <- function(dmr, 
