@@ -54,6 +54,9 @@
 #' 
 #' 
 #' @importFrom methods is
+#' @importFrom minfi read.metharray.sheet read.metharray.exp combineArrays 
+#' preprocessRaw preprocessIllumina preprocessSWAN preprocessQuantile
+#' preprocessNoob preprocessFunnorm mapToGenome ratioConvert
 
 epi_preprocess <-function(cases_dir, 
                           reference_panel, 

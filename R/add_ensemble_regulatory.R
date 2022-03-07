@@ -25,6 +25,8 @@
 #'  region per tissue. The different
 #'  activation states are separated by `/`}
 #' }
+#' 
+#' @importFrom biomaRt useEnsembl useDataset getBM
 #'
 add_ensemble_regulatory <- function(epimutations, 
                                     build = "37"){

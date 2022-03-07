@@ -105,6 +105,18 @@
 #' epimutations(case_samples, control_panel, method = "manova")
 
 #' @importFrom methods is
+#' @importFrom minfi annotation getBeta
+#' @importFrom GenomicRanges granges makeGRangesFromDataFrame findOverlaps
+#' @importFrom stats model.matrix qchisq
+#' @importFrom bumphunter bumphunter
+#' @importFrom ensembldb seqlevelsStyle 
+#' @importFrom S4Vectors to from
+#' @importFrom tibble as_tibble
+#' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_text_repel 
+#' annotate lims scale_colour_manual theme_bw ggtitle theme labs
+#' @importFrom  Gviz IdeogramTrack GenomeAxisTrack GeneRegionTrack 
+#' HighlightTrack plotTracks grid.arrange
+#' 
 #' @export
 epimutations <- function(case_samples, control_panel,
                          method = "manova", 
@@ -148,13 +160,12 @@ epimutations <- function(case_samples, control_panel,
     if(length(start) != length(end) & length(chr) != length(start)){
       stop("'start' and 'end' length must be same")
     }
-    for(i in seq_along(start)){
-      if(start[i] > end[i]){
+
+    
+      if(isTRUE(any(start > end))){
         stop("'start' cannot be higher than 'end'")
       }
-      
-    }
-    
+
   }
   if(!is.null(start) & is.null(end) | is.null(start) & !is.null(end)){
     stop("'start' and 'end' arguments must be introduced together")
@@ -187,16 +198,7 @@ epimutations <- function(case_samples, control_panel,
   
   if(!is.null(chr)){
     if(!is.null(start) & !is.null(end)){
-      fd_split <- NULL
-      for(i in seq_along(chr)){
-        fd_split <- rbind(fd_split, 
-                          fd[fd$seqnames %in% chr[i] & 
-                               fd$start >= start[i] & 
-                               fd$end <= end[i],])
-      }
-      fd <- fd_split
-      rm(fd_split)
-      
+      fd <- fd[fd$seqnames %in% chr & fd$start >= start & fd$end <= end,]
     }else{
       fd <- fd[fd$seqnames %in% chr,]
     }
@@ -328,7 +330,6 @@ epimutations <- function(case_samples, control_panel,
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
-    #case <- betas[ , cas_sam[1], drop=FALSE]
       # Run region detection
     rst <- do.call(rbind, lapply(cas_sam, function(case) {
       betas <- cbind(betas_control, betas_case[,case,drop=FALSE])
@@ -432,5 +433,4 @@ epimutations <- function(case_samples, control_panel,
       rst <- tibble::as_tibble(rst_c)
       return(rst)
     }
-  #})
 

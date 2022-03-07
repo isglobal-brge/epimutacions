@@ -1,3 +1,5 @@
+#' @importFrom utils globalVariables
+#' 
 utils::globalVariables(c("chr", "pos", "cpg_n", "quantile", "start", 
                          "value", "variable", "status", 
                          "sd_2_lower", "sd_2_upper", "sd_1.5_lower",

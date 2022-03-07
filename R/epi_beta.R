@@ -31,6 +31,10 @@
 #' combine them into an epimutation.
 #' @return The function returns a data frame with 
 #' the candidate regions to be epimutations.
+#' 
+#' @importFrom purrr pmap_dbl
+#' @importFrom stats pbeta
+#' 
 epi_beta <-  function(beta_params, 
                       beta_mean, 
                       betas_case, case, 
@@ -81,7 +85,14 @@ epi_beta <-  function(beta_params,
 #' @title  Model methylation as a beta distribution
 #' @param x Matrix of methylation expressed as a beta. 
 #' CpGs are in columns and samples in rows.   
-#' @return Beta distribution.                    
+#' @return Beta distribution. 
+#' 
+#' @importFrom matrixStats colVars
+#' @importFrom bumphunter clusterMaker
+#' @importFrom BiocGenerics start
+#' @importFrom GenomeInfoDb seqnames
+#' @importFrom BiocGenerics start end width
+#'                                       
 getBetaParams <- function(x){
   xbar <- colMeans(x, na.rm = TRUE)
   s2 <- matrixStats::colVars(x, na.rm = TRUE)

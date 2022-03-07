@@ -12,6 +12,8 @@
 #' thread of [Cross Validated](https://cutt.ly/Kka0M87)
 #' @return The function returns the computed Robust Mahalanobis distance.
 #' 
+#' @importFrom robustbase covMcd
+#' 
 
 epi_mahdistmcd <- function(mixture, 
                            nsamp = c("best", "exact", "deterministic")) {

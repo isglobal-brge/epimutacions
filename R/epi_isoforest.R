@@ -8,6 +8,9 @@
 #' Default is \code{100}. 
 #' @return The function returns the outlier score for the given case sample.
 #' 
+#' @importFrom isotree isolation.forest
+#' @importFrom stats predict
+#' 
 epi_isoforest <- function(mixture, case_id, ntrees) {
 	mixture <- t(mixture)
 	#Generate train and test(sample with suspected disease) data frame

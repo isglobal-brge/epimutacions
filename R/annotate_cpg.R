@@ -21,6 +21,9 @@
 #' Takes a bit longer. Default TRUE.
 #' @return The function returns a 
 #' DataFrame-like object annotated.
+#' 
+#' @importFrom minfi getAnnotation
+#' @importFrom biomaRt useEnsembl getBM 
 
 annotate_cpg <- function(data, db, split = ',', 
 		# illumina annotation parameters

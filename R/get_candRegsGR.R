@@ -2,9 +2,11 @@
 #' @description  Load candidate regions to be epimutations 
 #' from \code{epimutacionsData} package in \code{ExperimentHub}. 
 #' @import ExperimentHubData
-#' @import epimutacionsData
 #' @return  The function returns a GRanges object containing 
-#' the candidate regions. 
+#' the candidate regions.
+#' 
+#' @importFrom ExperimentHub ExperimentHub
+#' @importFrom AnnotationHub query 
 #' 
 
 get_candRegsGR <- function(){

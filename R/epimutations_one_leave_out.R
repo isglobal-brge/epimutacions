@@ -80,6 +80,8 @@
 #' epimutations_one_leave_out(GRset[,c(1:5,11)], method = "manova")
 #' }
 #' @importFrom methods is
+#' @importFrom BiocParallel SerialParam bplapply 
+#' @importFrom epimutacions epimutations 
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 

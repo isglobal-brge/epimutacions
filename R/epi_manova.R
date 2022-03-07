@@ -9,6 +9,8 @@
 #' the name of the case sample.
 #' @return The function returns the F statistic, Pillai and P value.
 #' 
+#' @importFrom stats manova p.adjust
+#' 
 epi_manova <-  function(mixture, model, case_id){
 	mixture <- t(mixture)
 	mod <- stats::manova(mixture ~ model)

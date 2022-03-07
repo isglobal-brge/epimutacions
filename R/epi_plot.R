@@ -8,7 +8,27 @@
 #' CpGs in the DMR of interest. 
 #' @return  The function returns a GRanges object containing the 
 #' beta values and the genomic ranges of the CpGs of interest. 
+#' @importFrom minfi getBeta
 #' @importFrom methods is
+#' @importFrom SummarizedExperiment rowRanges
+#' @importFrom GenomicRanges makeGRangesFromDataFrame GRanges
+#' @importFrom S4Vectors values
+#' @importFrom reshape2 melt
+#' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene 
+#' TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @importFrom TxDb.Hsapiens.UCSC.hg38.knownGene 
+#' TxDb.Hsapiens.UCSC.hg38.knownGene
+#' @importFrom TxDb.Hsapiens.UCSC.hg18.knownGene 
+#' TxDb.Hsapiens.UCSC.hg18.knownGene
+#' @importFrom GenomicFeatures genes 
+#' @importFrom AnnotationDbi mapIds
+#' @importFrom Homo.sapiens Homo.sapiens
+#' @importFrom Gviz UcscTrack DataTrack
+#' @importFrom rtracklayer browserSession genome getTable ucscTableQuery
+#' @importFrom IRanges IRanges
+#' @importFrom AnnotationHub AnnotationHub query
+#' 
+#' 
 create_GRanges_class <- function(methy, cpg_ids){
   
   #Identify type of input and extract required data:
@@ -138,6 +158,10 @@ cols_names <- function(x, cpg_ids_col = FALSE){
 #' the population mean and 1, 1.5, and 2 standard deviations 
 #' from the mean of the distribution.
 #' 
+#' @importFrom GenomicRanges elementMetadata
+#' @importFrom S4Vectors values
+#' @importFrom reshape2 melt
+#' 
 
 betas_sd_mean <- function(gr){
   
@@ -207,6 +231,21 @@ betas_sd_mean <- function(gr){
 #' @return The function returns gene 
 #' annotations for the specified genome assembly.
 #' 
+#' @importFrom  TxDb.Hsapiens.UCSC.hg19.knownGene 
+#' TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @importFrom  TxDb.Hsapiens.UCSC.hg38.knownGene 
+#' TxDb.Hsapiens.UCSC.hg38.knownGene
+#' @importFrom  TxDb.Hsapiens.UCSC.hg18.knownGene 
+#' TxDb.Hsapiens.UCSC.hg18.knownGene
+#' @importFrom  GenomicFeatures genes
+#' @importFrom  AnnotationDbi mapIds
+#' @importFrom  Gviz UcscTrack 
+#' @importFrom  rtracklayer browserSession genome getTable ucscTableQuery
+#' @importFrom  GenomicRanges GRanges makeGRangesFromDataFrame
+#' @importFrom  IRanges IRanges
+#' @importFrom  S4Vectors values
+#' @importFrom  Gviz DataTrack
+#' @importFrom  AnnotationHub AnnotationHub query 
 
 
 UCSC_annotation <- function(genome = "hg19"){

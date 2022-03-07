@@ -75,8 +75,8 @@
 ##' 
 ##' @author Diego Garrido-Martín
 ##' 
-##' @import stats
-##' @import car
+##' @import car 
+##' @importFrom stats model.frame 
 ##' 
 ##' 
 mlm <- function(formula, data, transform = "none", type = "II", 
@@ -221,15 +221,11 @@ print.MLM <- function (x,
                        digits = max(getOption("digits") - 2L, 3L), 
                        ...){ 
   
-  ## Print Call and type of SS
-  #cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
-      #"\n\n", sep = "")
-  #cat("Type", x$type, "Sum of Squares\n\n")
+
   
   ## Print ANOVA table
   cmat <- x$aov.tab
   if (!is.null(heading <- attr(cmat, "heading"))) 
-    #cat(heading, sep = "\n")
   nc <- dim(cmat)[2L]
   if (is.null(cn <- colnames(cmat))) 
     stop("'aov.tab' object must have colnames")
@@ -250,8 +246,6 @@ print.MLM <- function (x,
                   eps.Pvalue = x$precision + 1e-30, ...)
   na <- x$na.omit
   if(!is.null(na)){
-    #cat(sprintf("%s observation%s deleted due to missingness\n", 
-                #length(na), ifelse(length(na) > 1, "s", "")))
   }
   invisible(x)
 } # #nocov end

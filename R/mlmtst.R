@@ -39,6 +39,7 @@
 ##' @author Diego Garrido-Martín
 ##'
 ##' @keywords internal
+##' @importFrom car Anova
 ##' 
 mlmtst <- function(fit, X, 
                    type = "II", 
@@ -50,7 +51,7 @@ mlmtst <- function(fit, X,
   
   ## Residual sum-of-squares and df
   SS.e <- sum(diag(SSCP.e))
-  df.e <- fit$df.residual # df.e <- (n-1) - sum(df)
+  df.e <- fit$df.residual 
   
   ## Total sum-of-squares
   SS.t <- sum(diag(crossprod(fit$model[[1L]])))
@@ -97,7 +98,7 @@ mlmtst <- function(fit, X,
     }
     
     B <- fit$coefficients     # Coefficients
-    V <- solve(crossprod(X))  # V = (X'X)^{-1}
+    V <- solve(crossprod(X)) 
     p <- nrow(B)
     I.p <- diag(p)
     
@@ -165,11 +166,8 @@ mlmtst <- function(fit, X,
   
   ## r.squared
   R2 <- (SS.t - SS.e)/SS.t
-  # R2adj <- 1-( (1-R2)*(n-1) / df.e ) 
   r2 <- SS/SS.t
-  # r2adj <- 1-( (1-r2)*(n-1) / df.e )
   
-  # Get eigenvalues from cov(R)*(n-1)/df.e
   e <- eigen(SSCP.e/df.e, 
              symmetric = TRUE, 
              only.values = TRUE)$values

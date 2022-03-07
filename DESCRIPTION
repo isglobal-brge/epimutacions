@@ -33,40 +33,41 @@ Imports:
     Homo.sapiens, 
     IRanges,
     SummarizedExperiment,
-    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
-    ExperimentHubData,
+    gridExtra,
     methods,
     stats,
-    CompQuadForm,
-    car
+    biomaRt,
+    purrr,
+    matrixStats,
+    BiocGenerics,
+    S4Vectors,
+    reshape2,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    TxDb.Hsapiens.UCSC.hg18.knownGene,
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    rtracklayer,
+    BiocParallel,
+    ensembldb,
+    tibble,
+    utils,
+    car,
+    grid
 Suggests:
+  ExperimentHubData,
+  IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
   testthat,
   knitr,
   rmarkdown, 
   BiocStyle,
-  reshape2,
   a4Base,
   ggrepel,
-  gridExtra,
-  S4Vectors,
-  BiocParallel,
   kableExtra, 
-  matrixStats,
-  purrr,
-  rtracklayer,
-  TxDb.Hsapiens.UCSC.hg18.knownGene,
-  TxDb.Hsapiens.UCSC.hg19.knownGene,
-  TxDb.Hsapiens.UCSC.hg38.knownGene, 
-  biomaRt,
-  ensembldb,
-  tibble,
-  BiocGenerics,
   IlluminaHumanMethylation450kanno.ilmn12.hg19,
   IlluminaHumanMethylation450kmanifest,
   IlluminaHumanMethylationEPICmanifest
 VignetteBuilder: knitr
 Encoding: UTF-8
-Depends: R (>= 4.2.0), epimutacionsData
+Depends: R (>= 4.1.0), epimutacionsData
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/isglobal-brge/epimutacions
 BugReports: https://github.com/isglobal-brge/epimutacions/issues
