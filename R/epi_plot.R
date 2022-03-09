@@ -8,26 +8,9 @@
 #' CpGs in the DMR of interest. 
 #' @return  The function returns a GRanges object containing the 
 #' beta values and the genomic ranges of the CpGs of interest. 
-#' @importFrom minfi getBeta
-#' @importFrom methods is
-#' @importFrom SummarizedExperiment rowRanges
-#' @importFrom GenomicRanges makeGRangesFromDataFrame GRanges
-#' @importFrom S4Vectors values
-#' @importFrom reshape2 melt
-#' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene 
-#' TxDb.Hsapiens.UCSC.hg19.knownGene
-#' @importFrom TxDb.Hsapiens.UCSC.hg38.knownGene 
-#' TxDb.Hsapiens.UCSC.hg38.knownGene
-#' @importFrom TxDb.Hsapiens.UCSC.hg18.knownGene 
-#' TxDb.Hsapiens.UCSC.hg18.knownGene
-#' @importFrom GenomicFeatures genes 
-#' @importFrom AnnotationDbi mapIds
-#' @importFrom Homo.sapiens Homo.sapiens
-#' @importFrom Gviz UcscTrack DataTrack
-#' @importFrom rtracklayer browserSession genome getTable ucscTableQuery
-#' @importFrom IRanges IRanges
-#' @importFrom AnnotationHub AnnotationHub query
 #' 
+#' @importFrom minfi getBeta
+#' @importFrom  GenomicRanges GRanges makeGRangesFromDataFrame
 #' 
 create_GRanges_class <- function(methy, cpg_ids){
   
@@ -41,6 +24,8 @@ create_GRanges_class <- function(methy, cpg_ids){
   } else {
     stop("Input data 'methy' must be a 'GenomicRatioSet'")
   }
+  
+  
   
   #CpG names
   cpg_ids <- unlist(strsplit(cpg_ids, ","))
@@ -160,7 +145,8 @@ cols_names <- function(x, cpg_ids_col = FALSE){
 #' 
 #' @importFrom GenomicRanges elementMetadata
 #' @importFrom S4Vectors values
-#' @importFrom reshape2 melt
+#' 
+#' 
 #' 
 
 betas_sd_mean <- function(gr){
@@ -196,6 +182,9 @@ betas_sd_mean <- function(gr){
   
   #Melt beta values, mean and sd object (necessary for the ggplot)
   
+  if (!requireNamespace("reshape2")) stop("'reshape2' package not available")
+  
+  
   beta_values <- reshape2::melt(df, id = c("seqnames", 
                                            "start", 
                                            "end", 
@@ -230,25 +219,18 @@ betas_sd_mean <- function(gr){
 #' \code{'hg38'}, \code{'hg19'} and \code{'hg18'}. 
 #' @return The function returns gene 
 #' annotations for the specified genome assembly.
-#' 
-#' @importFrom  TxDb.Hsapiens.UCSC.hg19.knownGene 
-#' TxDb.Hsapiens.UCSC.hg19.knownGene
-#' @importFrom  TxDb.Hsapiens.UCSC.hg38.knownGene 
-#' TxDb.Hsapiens.UCSC.hg38.knownGene
-#' @importFrom  TxDb.Hsapiens.UCSC.hg18.knownGene 
-#' TxDb.Hsapiens.UCSC.hg18.knownGene
 #' @importFrom  GenomicFeatures genes
-#' @importFrom  AnnotationDbi mapIds
-#' @importFrom  Gviz UcscTrack 
-#' @importFrom  rtracklayer browserSession genome getTable ucscTableQuery
-#' @importFrom  GenomicRanges GRanges makeGRangesFromDataFrame
-#' @importFrom  IRanges IRanges
-#' @importFrom  S4Vectors values
-#' @importFrom  Gviz DataTrack
-#' @importFrom  AnnotationHub AnnotationHub query 
 
 
 UCSC_annotation <- function(genome = "hg19"){
+  
+  if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")) 
+    stop("'TxDb.Hsapiens.UCSC.hg19.knownGene' package not available")
+  if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")) 
+    stop("'TxDb.Hsapiens.UCSC.hg38.knownGene' package not available")
+  if (!requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")) 
+    stop("'TxDb.Hsapiens.UCSC.hg18.knownGene' package not available")
+  
   if(genome == "hg19" & 
      requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
     txdb <- 
@@ -269,6 +251,9 @@ UCSC_annotation <- function(genome = "hg19"){
   
   if(!is.null(txdb)){
     all_genes <- GenomicFeatures::genes(txdb)
+    
+    if (!requireNamespace("AnnotationDbi")) 
+      stop("'AnnotationDbi' package not available")
     all_genes$symbol <- AnnotationDbi::mapIds(Homo.sapiens::Homo.sapiens, 
                                               keys = all_genes$gene_id,
                                               keytype = "ENTREZID",
@@ -292,9 +277,14 @@ UCSC_annotation <- function(genome = "hg19"){
 #' Note that \code{from} cannot be larger than \code{to}. 
 #' @return \code{UCSC_regulation} returns
 #' a list containing CpG Islands, H3K27Ac and H3K4Me3 tacks. 
-#' 
+#' @importFrom  IRanges IRanges
+#' @importFrom  S4Vectors values
+#' @importFrom GenomicRanges GRanges makeGRangesFromDataFrame
 UCSC_regulation <- function(genome, chr, from, to){
-  
+  if (!requireNamespace("Gviz")) 
+    stop("'Gviz' package not available")
+  if (!requireNamespace("rtracklayer")) 
+    stop("'rtracklayer' package not available")
   #cpgIslands
   cpgIslands <- Gviz::UcscTrack(genome = genome, 
                                 chromosome = chr,
@@ -353,6 +343,9 @@ UCSC_regulation <- function(genome, chr, from, to){
   #H3K27Me3
   
   if(genome == "hg19"){
+    
+    if (!requireNamespace("AnnotationHub")) 
+      stop("'AnnotationHub' package not available")
     ah <- AnnotationHub::AnnotationHub()
     H3K27Me3 <- AnnotationHub::query(ah , c("UCSC", "H3K27me3", "hg19"))
     H3K27Me3 <- Gviz::DataTrack(H3K27Me3[["AH23260"]], 

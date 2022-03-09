@@ -26,7 +26,6 @@
 #'  activation states are separated by `/`}
 #' }
 #' 
-#' @importFrom biomaRt useEnsembl useDataset getBM
 #'
 add_ensemble_regulatory <- function(epimutations, 
                                     build = "37"){
@@ -35,6 +34,8 @@ add_ensemble_regulatory <- function(epimutations,
                                   "", 
                                   epimutations$chromosome)
   ## Create connection to ENSEMBL 
+  
+  if (!requireNamespace("biomaRt")) stop("'biomaRt' package not available")
   
   mart <- biomaRt::useEnsembl(biomart = "regulation",
                               GRCh = build)

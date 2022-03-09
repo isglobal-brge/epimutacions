@@ -13,9 +13,6 @@
 ##' 
 ##' @param fit multivariate fit obtained by \code{\link{lm}}.
 ##' @param X design matrix obtained by \code{\link{model.matrix}}. 
-##' @param type type of sum of squares 
-##' ("\code{I}", "\code{II}" or "\code{III}"). 
-##' Default is "\code{II}".
 ##' @param subset subset of predictors for which summary 
 ##' statistics will be reported. 
 ##' Note that this is different from the 
@@ -39,10 +36,8 @@
 ##' @author Diego Garrido-Martín
 ##'
 ##' @keywords internal
-##' @importFrom car Anova
 ##' 
 mlmtst <- function(fit, X, 
-                   type = "II", 
                    subset = NULL, 
                    tol = 1e-3){
   
@@ -75,23 +70,7 @@ mlmtst <- function(fit, X,
   }
   asgn <- fit$assign
   
-  df <- SS <- numeric(n.terms) # Initialize empty
-  names(df) <- names(SS) <- terms
   
-  if (type == "I"){
-    
-    effects <- as.matrix(fit$effects)[seq_along(asgn),
-                                      , drop = FALSE]
-    
-    for (i in iterms) {
-      subs <- which(asgn == i) 
-      SS[i] <- sum(diag(crossprod(effects[subs, 
-                                          , drop = FALSE])))
-      df[i] <- length(subs)
-    }
-    
-  } else {
-    
     sscp <- function(L, B, V){
       LB <- L %*% B
       crossprod(LB, solve(L %*% tcrossprod(V, L), LB))
@@ -106,70 +85,21 @@ mlmtst <- function(fit, X,
     # information is not returned for
     # type III sums-of-squares
     
-    if (type == "III"){
       
-      for (i in iterms){
-        subs <- which(asgn == i) 
-        L <- I.p[subs, , drop = FALSE] # Hypothesis matrix
-        SS[i] <- sum(diag(sscp(L, B, V)))
-        df[i] <- length(subs)
-      }
-      
-    } else {
-      
-      is.relative <- function(term1, term2, factors) {
-        all( !( factors[, term1] & ( !factors[, term2] ) ) )
-      }
-      
-      fac <- attr(fit$terms, "factors") 
-      for (i in iterms){
-        term <- terms[i]
-        subs.term <- which(asgn == i)
-        if(n.terms > 1) { # Obtain relatives
-          relatives <- (seq_len(n.terms))[-i][vapply(terms[-i], 
-                                              function(term2) 
-                                                is.relative(term, 
-                                                            term2, 
-                                                            fac),
-                                                            logical = TRUE)]
-        } else { 
-          relatives <- NULL
-        }
+        term <- terms[1]
+        subs.term <- which(asgn == 1)
+        relatives <- NULL
         subs.relatives <- NULL
-        for (relative in relatives){
-          subs.relatives <- c(subs.relatives, 
-                              which(asgn == relative))
-        }
         L1 <- I.p[subs.relatives, , drop = FALSE]
-        if (length(subs.relatives) == 0) {
-          SSCP1 <- 0
-        } else {
-          SSCP1 <- sscp(L1, B, V)
-        }
+        SSCP1 <- 0
         L2 <- I.p[c(subs.relatives, subs.term), , drop = FALSE] 
         # Hyp. matrix (relatives + term) 
         SSCP2 <- sscp(L2, B, V)
-        SS[i] <- sum(diag(SSCP2 - SSCP1))
-        df[i] <- length(subs.term)
-      }
-    }
-  }
-
+        SS <- sum(diag(SSCP2 - SSCP1))
+        df <- length(subs.term)
   
-  ## subset
-  if(!is.null(subset)){
-    SS <- SS[iterms]
-    df <- df[iterms]
-  }
-  
-  print("SS")
-  print(SS)
-  print("df")
-  print(df)
   ## pseudo-F
   f.tilde <- SS/SS.e*df.e/df
-  print("ftilde")
-  print(f.tilde)
   
   ## r.squared
   R2 <- (SS.t - SS.e)/SS.t

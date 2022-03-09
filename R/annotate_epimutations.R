@@ -24,7 +24,7 @@
 #' See \link[epimutacions]{annotate_cpg} and 
 #' \link[epimutacions]{add_ensemble_regulatory}
 #' for an in-depth description of these variables.
-#' @import IlluminaHumanMethylationEPICanno.ilm10b2.hg19
+#' 
 #' @examples 
 #' 
 #' data(res.epi.manova)

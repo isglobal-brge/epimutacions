@@ -9,14 +9,9 @@
 ##' the original response variables.
 ##'  Then, the multivariate fit obtained by 
 ##' \code{\link{lm}} can be used to 
-##' compute sums of squares (type-I, type-II or 
-##' type-III), pseudo-F statistics and asymptotic 
+##' compute sums of squares, pseudo-F statistics and asymptotic 
 ##' P-values for the terms specified by the \code{formula} 
-##' in a non-parametric manner. The designations "type-II" 
-##' and "type-III" correspond exactly 
-##' to those used in \code{\link[car]{Anova}}. 
-##' "type-I" refers to sequential sums of squares.
-##' 
+##' in a non-parametric manner. 
 ##' @param formula object of class "\code{\link{formula}}" 
 ##' (or one that can be 
 ##' coerced to that class): a symbolic description 
@@ -34,9 +29,6 @@
 ##' of the response variables: "\code{none}", 
 ##' "\code{sqrt}" or "\code{log}". 
 ##' Default is "\code{none}".
-##' @param type type of sum of squares: 
-##' "\code{I}", "\code{II}" or "\code{III}". 
-##' Default is "\code{II}".
 ##' @param contrasts an optional list.
 ##'  See \code{contrasts.arg} in 
 ##' \code{\link{model.matrix.default}}. 
@@ -60,8 +52,6 @@
 ##' \item{call}{the matched call.}
 ##' \item{aov.tab}{ANOVA table with Df, Sum Sq, Mean Sq, F values, 
 ##' partial R-squared and P-values.}
-##' \item{type}{the type of sum of squares (\code{"I"}, 
-##' \code{"II"} or \code{"III"}).}
 ##' \item{precision}{the precision in P-value computation.}
 ##' \item{transform}{the transformation 
 ##' applied to the response variables.}
@@ -75,15 +65,13 @@
 ##' 
 ##' @author Diego Garrido-Martín
 ##' 
-##' @import car 
 ##' @importFrom stats model.frame 
 ##' 
 ##' 
-mlm <- function(formula, data, transform = "none", type = "II", 
+mlm <- function(formula, data, transform = "none", 
                 contrasts = NULL, subset = NULL, fit = FALSE){
   ## Checks
   transform <- match.arg(transform, c("none", "sqrt", "log"))
-  type <- match.arg(type, c("I", "II", "III"))
   
   ## Save call, build model frame, obtain responses
   cl <- match.call()
@@ -159,7 +147,7 @@ mlm <- function(formula, data, transform = "none", type = "II",
 
   ## Compute sums of squares, df's, pseudo-F 
   ## statistics, partial R2s and eigenvalues 
-  stats <- mlmtst(fit = lmfit, X = X, type = type, subset = subset)
+  stats <- mlmtst(fit = lmfit, X = X, subset = subset)
   SS <- stats$SS
   df <- stats$df
   f.tilde <- stats$f.tilde

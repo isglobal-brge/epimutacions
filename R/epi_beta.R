@@ -32,7 +32,6 @@
 #' @return The function returns a data frame with 
 #' the candidate regions to be epimutations.
 #' 
-#' @importFrom purrr pmap_dbl
 #' @importFrom stats pbeta
 #' 
 epi_beta <-  function(beta_params, 
@@ -46,6 +45,7 @@ epi_beta <-  function(beta_params,
   
   
   ## Compute p-value for case
+  if (!requireNamespace('purrr')) stop("purrr package not available")
   pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], 
                                 beta_params[, 2]), 
                            function(x, shape1, shape2) 

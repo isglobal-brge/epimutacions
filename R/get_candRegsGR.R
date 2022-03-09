@@ -5,11 +5,13 @@
 #' @return  The function returns a GRanges object containing 
 #' the candidate regions.
 #' 
-#' @importFrom ExperimentHub ExperimentHub
-#' @importFrom AnnotationHub query 
 #' 
 
 get_candRegsGR <- function(){
+  if (!requireNamespace("ExperimentHub")) 
+    stop("'ExperimentHub' package not available")
+  if (!requireNamespace("AnnotationHub")) 
+    stop("'AnnotationHub' package not available")
   eh <- ExperimentHub::ExperimentHub()
   AnnotationHub::query(eh, c("epimutacionsData"))
   return(eh[["EH6692"]])

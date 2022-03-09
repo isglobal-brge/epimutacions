@@ -37,7 +37,6 @@
 #' @return The function returns a data 
 #' frame with the regions candidates to be
 #' epimutations.
-#' @importFrom methods is
 epi_quantile <- function(case, 
                          fd, 
                          bctr_pmin, 
@@ -54,6 +53,9 @@ epi_quantile <- function(case,
   if(N < 3){
     stop("The minimum number of CpGs allowed is 3")
   }
+  
+  if (!requireNamespace("methods")) 
+    stop("'methods' package not available")
   
   flag_result <- data.frame(
     chr = as.character(fd[rownames(case), "seqnames"]),

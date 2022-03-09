@@ -64,13 +64,9 @@
 #' \donttest{
 #' plot_epimutations(res.epi.manova[1,], GRset)
 #' }
-#' @importFrom ggrepel geom_text_repel
+#' 
 #' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
 #' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
-#' @importFrom Gviz IdeogramTrack GenomeAxisTrack GeneRegionTrack HighlightTrack
-#' plotTracks
-#' @importFrom grid grid.grabExpr
-#' @importFrom gridExtra grid.arrange 
 #' 
 #' @export
 plot_epimutations <- function(dmr, 
@@ -117,6 +113,15 @@ plot_epimutations <- function(dmr,
       stop("The value of argument 'from' must be smaller than 'to'")	
     }
   }
+  
+  if (!requireNamespace("grid")) 
+    stop("'grid' package not available")
+  if (!requireNamespace("gridExtra")) 
+    stop("'gridExtra' package not available")
+  if (!requireNamespace("ggrepel")) 
+    stop("'ggrepel' package not available")
+  if (!requireNamespace("Gviz")) 
+    stop("'Gviz' package not available")
   
   # DMR column names must be always
   # the same (set the common column names)

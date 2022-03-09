@@ -79,8 +79,6 @@
 #' \donttest{
 #' epimutations_one_leave_out(GRset[,c(1:5,11)], method = "manova")
 #' }
-#' @importFrom methods is
-#' @importFrom BiocParallel SerialParam bplapply 
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 
@@ -93,6 +91,11 @@ epimutations_one_leave_out <- function(methy, method = "manova",
          'makeGenomicRatioSetFromMatrix' function from 'minfi' package 
          can be useful to create a 'GenomicRatioSet' class object")
   }
+  
+  if (!requireNamespace("methods")) 
+    stop("'methods' package not available")
+  if (!requireNamespace("BiocParallel")) 
+    stop("'BiocParallel' package not available")
   
   rst <- do.call(rbind, 
                  BiocParallel::bplapply(colnames(methy), 

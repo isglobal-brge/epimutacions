@@ -8,7 +8,6 @@ mlm(
   formula,
   data,
   transform = "none",
-  type = "II",
   contrasts = NULL,
   subset = NULL,
   fit = FALSE
@@ -34,10 +33,6 @@ is called.}
 of the response variables: "\code{none}",
 "\code{sqrt}" or "\code{log}".
 Default is "\code{none}".}
-
-\item{type}{type of sum of squares:
-"\code{I}", "\code{II}" or "\code{III}".
-Default is "\code{II}".}
 
 \item{contrasts}{an optional list.
 See \code{contrasts.arg} in
@@ -65,8 +60,6 @@ a list containing:
 \item{call}{the matched call.}
 \item{aov.tab}{ANOVA table with Df, Sum Sq, Mean Sq, F values,
 partial R-squared and P-values.}
-\item{type}{the type of sum of squares (\code{"I"},
-\code{"II"} or \code{"III"}).}
 \item{precision}{the precision in P-value computation.}
 \item{transform}{the transformation
 applied to the response variables.}
@@ -87,13 +80,9 @@ A \code{Y} matrix is obtained after transforming
 the original response variables.
 Then, the multivariate fit obtained by
 \code{\link{lm}} can be used to
-compute sums of squares (type-I, type-II or
-type-III), pseudo-F statistics and asymptotic
+compute sums of squares, pseudo-F statistics and asymptotic
 P-values for the terms specified by the \code{formula}
-in a non-parametric manner. The designations "type-II"
-and "type-III" correspond exactly
-to those used in \code{\link[car]{Anova}}.
-"type-I" refers to sequential sums of squares.
+in a non-parametric manner.
 }
 \seealso{
 \code{\link{lm}}, \code{\link[car]{Anova}}

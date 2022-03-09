@@ -104,14 +104,11 @@
 #' control_panel <- GRset[,1:10]
 #' epimutations(case_samples, control_panel, method = "manova")
 
-#' @importFrom methods is
 #' @importFrom minfi annotation getBeta
 #' @importFrom GenomicRanges granges makeGRangesFromDataFrame findOverlaps
 #' @importFrom stats model.matrix qchisq
 #' @importFrom bumphunter bumphunter
-#' @importFrom ensembldb seqlevelsStyle 
 #' @importFrom S4Vectors to from
-#' @importFrom tibble as_tibble
 
 #' 
 #' @export
@@ -175,6 +172,14 @@ epimutations <- function(case_samples, control_panel,
   if(is.na(method)) stop("Invalid method was selected'")
   
   if(verbose) message("Selected epimutation detection method '", method, "'")
+  
+  if (!requireNamespace("methods")) 
+    stop("'methods' package not available")
+  if (!requireNamespace("ensembldb")) 
+    stop("'ensembldb' package not available")
+  if (!requireNamespace("tibble")) 
+    stop("'tibble' package not available")
+  
   
   
   ## Extract required data:

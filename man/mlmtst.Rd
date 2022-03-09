@@ -4,16 +4,12 @@
 \alias{mlmtst}
 \title{Sums of Squares and Pseudo-F Statistics from a Multivariate Fit}
 \usage{
-mlmtst(fit, X, type = "II", subset = NULL, tol = 0.001)
+mlmtst(fit, X, subset = NULL, tol = 0.001)
 }
 \arguments{
 \item{fit}{multivariate fit obtained by \code{\link{lm}}.}
 
 \item{X}{design matrix obtained by \code{\link{model.matrix}}.}
-
-\item{type}{type of sum of squares
-("\code{I}", "\code{II}" or "\code{III}").
-Default is "\code{II}".}
 
 \item{subset}{subset of predictors for which summary
 statistics will be reported.

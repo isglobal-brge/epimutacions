@@ -23,7 +23,6 @@
 #' DataFrame-like object annotated.
 #' 
 #' @importFrom minfi getAnnotation
-#' @importFrom biomaRt useEnsembl getBM 
 
 annotate_cpg <- function(data, db, split = ',', 
 		# illumina annotation parameters
@@ -83,6 +82,7 @@ annotate_cpg <- function(data, db, split = ',',
 	if (omim == TRUE){
 	# Using biomart  to extract OMIMs
 	message('- Extracting and annotating OMIMs')
+	if (!requireNamespace("biomaRt")) stop("'biomaRt' package not available")
 	gene_mart <- biomaRt::useEnsembl(biomart = "ENSEMBL_MART_ENSEMBL", 
 									 GRCh = build, 
 									 host = "www.ensembl.org", 
