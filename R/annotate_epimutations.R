@@ -30,7 +30,7 @@
 #' data(res.epi.manova)
 #' 
 #' #Annotate the epimutations
-#' \donttest{
+#' \dontrun{
 #' anno_results <- annotate_epimutations(res.epi.manova)
 #' anno_results[1:2, c(1, 12:14)]}
 #' 

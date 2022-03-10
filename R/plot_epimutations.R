@@ -122,6 +122,9 @@ plot_epimutations <- function(dmr,
     stop("'ggrepel' package not available")
   if (!requireNamespace("Gviz")) 
     stop("'Gviz' package not available")
+  if (!requireNamespace("grDevices")) 
+    stop("'grDevices' package not available")
+  
   
   # DMR column names must be always
   # the same (set the common column names)
@@ -299,7 +302,7 @@ plot_epimutations <- function(dmr,
   
   #Plot window
   
-  dev.new(width = 1080, height = 1350, unit = "px")
+  grDevices::dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
   p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, 
                                                   tracks_Highlight), 

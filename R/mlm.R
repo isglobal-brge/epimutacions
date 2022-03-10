@@ -65,7 +65,9 @@
 ##' 
 ##' @author Diego Garrido-Martín
 ##' 
-##' @importFrom stats model.frame 
+##' @importFrom stats model.frame model.response lm.fit
+##' .getXlevels
+##' 
 ##' 
 ##' 
 mlm <- function(formula, data, transform = "none", 
@@ -85,7 +87,7 @@ mlm <- function(formula, data, transform = "none",
   mf[[1L]] <- quote(stats::model.frame)
   mf <- eval(mf, parent.frame())   
   mt <- attr(mf, "terms")
-  response <- model.response(mf, "numeric")
+  response <- stats::model.response(mf, "numeric")
   
   ## Checks
   if (NCOL(response) < 2){
@@ -134,11 +136,11 @@ mlm <- function(formula, data, transform = "none",
   X <- model.matrix(mt, mf, contr.list)
   
   ## Fit lm
-  lmfit <- lm.fit(X, Y)
+  lmfit <- stats::lm.fit(X, Y)
   class(lmfit) <- c("mlm", "lm")
   lmfit$na.action <- attr(mf, "na.action")
   lmfit$contrasts <- attr(X, "contrasts")
-  lmfit$xlevels <- .getXlevels(mt, mf)
+  lmfit$xlevels <- stats::.getXlevels(mt, mf)
   lmfit$call <- cl[c(1L, m)]
   lmfit$call[[1L]] <- quote(lm)
   if(length(contr.list) > 0) lmfit$call$contrasts <- quote(contr.list)

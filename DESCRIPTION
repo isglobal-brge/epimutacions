@@ -48,7 +48,7 @@ Suggests:
   kableExtra, 
   IlluminaHumanMethylation450kanno.ilmn12.hg19,
   IlluminaHumanMethylation450kmanifest,
-  IlluminaHumanMethylationEPICmanifest
+  IlluminaHumanMethylationEPICmanifest,
   TxDb.Hsapiens.UCSC.hg19.knownGene,
   TxDb.Hsapiens.UCSC.hg18.knownGene,
   TxDb.Hsapiens.UCSC.hg38.knownGene,
@@ -59,7 +59,6 @@ Suggests:
   ensembldb,
   tibble,
   ExperimentHub,
-  ExperimentHubData,
   IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
   grid,
   gridExtra,
