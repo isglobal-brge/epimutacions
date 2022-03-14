@@ -121,13 +121,13 @@ epi_quantile <- function(case,
       
       # Correct the base position of 
       # the change in the region
-      red_df$cum2 <- sapply(seq(2, nrow(red_df)), function(ii) {
+      red_df$cum2 <- c(red_df$cum[1], sapply(seq(2, nrow(red_df)), function(ii) {
         if(red_df$cum[ii] != red_df$cum[ii - 1] & red_df$in_prev[ii] & !red_df$in_next[ii]) {
           return red_df$cum[ii] - 1
         } else {
           return red_df$cum[ii]
         }
-      })
+      }))
       #red_df$cum2 <- red_df$cum
       #for(ii in seq(2, nrow(red_df))) {
       #  if(red_df$cum[ii] != red_df$cum[ii - 1] & 
