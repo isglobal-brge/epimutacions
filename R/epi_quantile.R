@@ -127,7 +127,7 @@ epi_quantile <- function(case,
         } else {
           return red_df$cum[ii]
         }
-      })
+      }))
       #red_df$cum2 <- red_df$cum
       #for(ii in seq(2, nrow(red_df))) {
       #  if(red_df$cum[ii] != red_df$cum[ii - 1] & 
