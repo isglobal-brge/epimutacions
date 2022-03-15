@@ -123,19 +123,12 @@ epi_quantile <- function(case,
       # the change in the region
       red_df$cum2 <- c(red_df$cum[1], sapply(seq(2, nrow(red_df)), function(ii) {
         if(red_df$cum[ii] != red_df$cum[ii - 1] & red_df$in_prev[ii] & !red_df$in_next[ii]) {
-          return red_df$cum[ii] - 1
+          return (red_df$cum[ii] - 1)
         } else {
-          return red_df$cum[ii]
+          return (red_df$cum[ii])
         }
       }))
-      #red_df$cum2 <- red_df$cum
-      #for(ii in seq(2, nrow(red_df))) {
-      #  if(red_df$cum[ii] != red_df$cum[ii - 1] & 
-      #     red_df$in_prev[ii] & !red_df$in_next[ii]) {
-      #    red_df$cum2[ii] <- red_df$cum[ii] - 1
-      #  }
-      #}
-      
+
       # Computing the frequency of each 
       # "number" assign to the region we can 
       # know how may probes are in it. 
