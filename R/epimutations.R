@@ -233,11 +233,10 @@ epimutations <- function(case_samples, control_panel,
       model <- stats::model.matrix(~status, status)
       
       # Run bumphunter for region partitioning
-      suppressMessages(
         bumps <- bumphunter::bumphunter(object = betas, design = model,
                                         pos = fd$start, chr = fd$seqnames, 
                                         maxGap = maxGap,
-                                        cutoff = bump_cutoff)$table)
+                                        cutoff = bump_cutoff)$table
       
         if(all(!is.na(bumps))){
           
@@ -323,12 +322,11 @@ epimutations <- function(case_samples, control_panel,
                         epi_params$quantile$qinf, 
                         " and ", 
                         epi_params$quantile$qsup)
-    bctr_prc <- suppressWarnings(apply(betas_control, 
-                                       1, 
-                                       quantile, 
-                                       probs = c(epi_params$quantile$qinf,
-                                                 epi_params$quantile$qsup), 
-                                       na.rm = TRUE))
+    bctr_prc <- apply(betas_control, 
+                      1, quantile, 
+                      probs = c(epi_params$quantile$qinf,
+                                epi_params$quantile$qsup), 
+                      na.rm = TRUE)
     bctr_pmin <- bctr_prc[1, ]
     bctr_pmax <- bctr_prc[2, ]
     rm(bctr_prc)
@@ -415,7 +413,7 @@ epimutations <- function(case_samples, control_panel,
       rst_c <- tryCatch({
         rstGR <- GenomicRanges::makeGRangesFromDataFrame(rst)
         ## Ensure chromosomes have the same format
-        ensembldb::seqlevelsStyle(rstGR) <- "UCSC" 
+        seqlevelsStyle(rstGR) <- "UCSC" 
         #Get candidate regions 
         candRegsGR <- get_candRegsGR()
         over <- GenomicRanges::findOverlaps(rstGR, candRegsGR)
@@ -432,7 +430,7 @@ epimutations <- function(case_samples, control_panel,
       }, error = function(e) { rst })
       
       ## Convert rst into a tibble class
-      rst <- tibble::as_tibble(rst_c)
+      rst <- as_tibble(rst_c)
       return(rst)
     }
 

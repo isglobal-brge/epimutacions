@@ -11,7 +11,7 @@ get_candRegsGR <- function(){
     stop("'ExperimentHub' package not available")
   if (!requireNamespace("AnnotationHub")) 
     stop("'AnnotationHub' package not available")
-  eh <- ExperimentHub::ExperimentHub()
-  AnnotationHub::query(eh, c("epimutacionsData"))
+  eh <- ExperimentHub()
+  query(eh, c("epimutacionsData"))
   return(eh[["EH6692"]])
 }

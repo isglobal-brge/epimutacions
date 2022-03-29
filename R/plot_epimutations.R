@@ -209,7 +209,7 @@ plot_epimutations <- function(dmr,
                         show.legend = TRUE)
   
   plot_cpg_names <- plot_mean +
-    ggrepel::geom_text_repel() + 
+                    geom_text_repel() + 
     ggplot2::annotate(geom = "text", 
                       x = names$start, 
                       y = names$value + 0.05, 
@@ -231,27 +231,28 @@ plot_epimutations <- function(dmr,
   #Plot gene annotations
   if(genes_annot == TRUE | regulation == TRUE){
   
-  ideo_track <- Gviz::IdeogramTrack(genome = genome, 
+  ideo_track <- IdeogramTrack(genome = genome, 
                                     chromosome = dmr$seqnames)
-  genome_track <- Gviz::GenomeAxisTrack()
+  genome_track <- GenomeAxisTrack()
   genes <- UCSC_annotation(genome) #epi_plot
-  gene_track <- Gviz::GeneRegionTrack(genes, 
-                                      chromosome = dmr$seqnames,
-                                      name = "Genes",
-                                      transcriptAnnotation = "symbol",
-                                      background.title = "#8F913A",
-                                      rotation.title = 0)
+  gene_track <- GeneRegionTrack(genes, 
+                                chromosome = dmr$seqnames,
+                                name = "Genes",
+                                transcriptAnnotation = "symbol",
+                                background.title = "#8F913A",
+                                rotation.title = 0)
   }
   if(genes_annot == TRUE){
-  tracks_Highlight <- Gviz::HighlightTrack(trackList = list(genome_track,
-                                                            gene_track),
-                                           start = dmr$start, 
-                                           end = dmr$end,
-                                           chromosome = dmr$seqnames,
-                                           col = "#7EA577", 
-                                           fill = "#C6D7C3",
-                                           alpha = 0.4,
-                                           inBackground = FALSE)
+  tracks_Highlight <- HighlightTrack(trackList = 
+                                       list(genome_track,
+                                            gene_track),
+                                       start = dmr$start, 
+                                       end = dmr$end,
+                                       chromosome = dmr$seqnames,
+                                       col = "#7EA577", 
+                                       fill = "#C6D7C3",
+                                       alpha = 0.4,
+                                       inBackground = FALSE)
   }
   if(regulation == TRUE){
     
@@ -266,7 +267,7 @@ plot_epimutations <- function(dmr,
                                     to)
 
     if(genome ==  "hg19"){
-      tracks_Highlight <- Gviz::HighlightTrack(trackList = 
+      tracks_Highlight <- HighlightTrack(trackList = 
                                                  list(genome_track, 
                                                       gene_track, 
                                                       annotation$cpgIslands,
@@ -282,7 +283,7 @@ plot_epimutations <- function(dmr,
                                                 inBackground = FALSE)
       
     }else{
-      tracks_Highlight <- Gviz::HighlightTrack(trackList = 
+      tracks_Highlight <- HighlightTrack(trackList = 
                                                  list(genome_track, 
                                                       gene_track, 
                                                       annotation$cpgIslands,
@@ -302,13 +303,13 @@ plot_epimutations <- function(dmr,
   
   #Plot window
   
-  grDevices::dev.new(width = 1080, height = 1350, unit = "px")
+  dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
-  p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, 
-                                                  tracks_Highlight), 
-                                               from = from, 
-                                               to = to, add = TRUE))
-  gridExtra::grid.arrange(grobs = list(p1,p2), row=2)
+  p2 <- grid.grabExpr(plotTracks(list(ideo_track, 
+                                      tracks_Highlight), 
+                                      from = from, 
+                                      to = to, add = TRUE))
+  grid.arrange(grobs = list(p1,p2), row=2)
   }else{
     plot
   }

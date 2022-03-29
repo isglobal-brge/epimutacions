@@ -85,8 +85,7 @@ epimutations_one_leave_out <- function(methy, method = "manova",
                                        BPPARAM = BiocParallel::SerialParam(),
                                        verbose = TRUE, ...){
   
-  if(!is(methy, "GenomicRatioSet"))
-  {
+  if(!is(methy, "GenomicRatioSet")){
     stop("Input data 'methy' must be a 'GenomicRatioSet'. 
          'makeGenomicRatioSetFromMatrix' function from 'minfi' package 
          can be useful to create a 'GenomicRatioSet' class object")
@@ -97,9 +96,7 @@ epimutations_one_leave_out <- function(methy, method = "manova",
   if (!requireNamespace("BiocParallel")) 
     stop("'BiocParallel' package not available")
   
-  rst <- do.call(rbind, 
-                 BiocParallel::bplapply(colnames(methy), 
-                                        function(case){
+  rst <- do.call(rbind, bplapply(colnames(methy), function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]
     epimutations(case_samples, 

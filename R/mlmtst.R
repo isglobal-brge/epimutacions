@@ -81,11 +81,7 @@ mlmtst <- function(fit, X,
     p <- nrow(B)
     I.p <- diag(p)
     
-    # In contrast to car::Anova, intercept 
-    # information is not returned for
-    # type III sums-of-squares
     
-      
         term <- terms[1]
         subs.term <- which(asgn == 1)
         relatives <- NULL

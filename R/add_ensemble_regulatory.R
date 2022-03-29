@@ -37,9 +37,9 @@ add_ensemble_regulatory <- function(epimutations,
   
   if (!requireNamespace("biomaRt")) stop("'biomaRt' package not available")
   
-  mart <- biomaRt::useEnsembl(biomart = "regulation",
+  mart <- useEnsembl(biomart = "regulation",
                               GRCh = build)
-  ensembl <- biomaRt::useDataset(dataset = "hsapiens_regulatory_feature", 
+  ensembl <- useDataset(dataset = "hsapiens_regulatory_feature", 
                                  mart = mart)
   
   reg_res <- lapply(seq_len(nrow(epimutations)), function(i) {
@@ -68,7 +68,7 @@ get_ENSEMBL_data <- function(chromosome,
                              start, 
                              end, 
                              mart){
-	bm <- biomaRt::getBM(
+	bm <- getBM(
 	  attributes = c("activity", 
 	                 "regulatory_stable_id", 
 	                 "chromosome_name", 

@@ -83,7 +83,7 @@ annotate_cpg <- function(data, db, split = ',',
 	# Using biomart  to extract OMIMs
 	message('- Extracting and annotating OMIMs')
 	if (!requireNamespace("biomaRt")) stop("'biomaRt' package not available")
-	gene_mart <- biomaRt::useEnsembl(biomart = "ENSEMBL_MART_ENSEMBL", 
+	gene_mart <- useEnsembl(biomart = "ENSEMBL_MART_ENSEMBL", 
 									 GRCh = build, 
 									 host = "www.ensembl.org", 
 									 dataset="hsapiens_gene_ensembl")
@@ -94,7 +94,7 @@ annotate_cpg <- function(data, db, split = ',',
 		
 		# extract OMIM info from db
 	
-		omims <- biomaRt::getBM(mart = gene_mart,
+		omims <- getBM(mart = gene_mart,
 								attributes = c("hgnc_symbol", 
 								               "mim_morbid_accession", 
 								               "mim_morbid_description"),

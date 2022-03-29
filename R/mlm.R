@@ -80,7 +80,7 @@ mlm <- function(formula, data, transform = "none",
   m <- match(c("formula", "data"), names(cl), 0L)
   mf <- cl[c(1L, m)]
   mf$drop.unused.levels <- TRUE
-  mf$na.action = "na.omit"
+  mf$na.action <- "na.omit"
     # The rows with at least one NA either in Y or X 
     # (only considering variables used in the formula) 
     # will be removed before transforming/centering

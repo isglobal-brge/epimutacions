@@ -185,28 +185,28 @@ betas_sd_mean <- function(gr){
   if (!requireNamespace("reshape2")) stop("'reshape2' package not available")
   
   
-  beta_values <- reshape2::melt(df, id = c("seqnames", 
-                                           "start", 
-                                           "end", 
-                                           "width", 
-                                           "strand"))
-  mean <- reshape2::melt(mean, id = c("seqnames", 
-                                      "start", 
-                                      "end", 
-                                      "width", 
-                                      "strand",
-                                      "mean"))
-  sd <- reshape2::melt(sd, id = c("seqnames", 
+  beta_values <- melt(df, id = c("seqnames", 
                                   "start", 
                                   "end", 
                                   "width", 
-                                  "strand",
-                                  "sd_1_lower", 
-                                  "sd_1_upper", 
-                                  "sd_1.5_lower",
-                                  "sd_1.5_upper",
-                                  "sd_2_lower",
-                                  "sd_2_upper"))
+                                   "strand"))
+  mean <- melt(mean, id = c("seqnames", 
+                            "start", 
+                            "end", 
+                            "width", 
+                            "strand",
+                            "mean"))
+  sd <- melt(sd, id = c("seqnames", 
+                        "start", 
+                        "end", 
+                        "width", 
+                        "strand",
+                        "sd_1_lower", 
+                        "sd_1_upper", 
+                        "sd_1.5_lower",
+                        "sd_1.5_upper",
+                        "sd_2_lower",
+                        "sd_2_upper"))
   
   #Create the output list
   output <- list("beta_values" = beta_values, "mean" = mean, "sd" = sd)
@@ -231,33 +231,16 @@ UCSC_annotation <- function(genome = "hg19"){
   if (!requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")) 
     stop("'TxDb.Hsapiens.UCSC.hg18.knownGene' package not available")
   
-  if(genome == "hg19" & 
-     requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
-    txdb <- 
-      TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
-  } else if (genome == "hg38" & 
-             requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
-    txdb <- 
-      TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
-  } else if(genome == "hg18" & 
-            requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
-    txdb <- 
-      TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
-  } else{
-    warning("Genes are not shown since TxDb database 
-            is not installed in you computer")
-    txdb <- NULL
-  }
-  
+
   if(!is.null(txdb)){
     all_genes <- GenomicFeatures::genes(txdb)
     
     if (!requireNamespace("AnnotationDbi")) 
       stop("'AnnotationDbi' package not available")
-    all_genes$symbol <- AnnotationDbi::mapIds(Homo.sapiens::Homo.sapiens, 
-                                              keys = all_genes$gene_id,
-                                              keytype = "ENTREZID",
-                                              column = "SYMBOL")
+    all_genes$symbol <- mapIds(Homo.sapiens::Homo.sapiens, 
+                               keys = all_genes$gene_id,
+                               keytype = "ENTREZID",
+                               column = "SYMBOL")
   }else{
     all_genes <- NULL
   }
@@ -286,59 +269,60 @@ UCSC_regulation <- function(genome, chr, from, to){
   if (!requireNamespace("rtracklayer")) 
     stop("'rtracklayer' package not available")
   #cpgIslands
-  cpgIslands <- Gviz::UcscTrack(genome = genome, 
-                                chromosome = chr,
-                                track = "CpG Island", 
-                                from = from,
-                                to = to, 
-                                trackType = "AnnotationTrack",
-                                start = "chromStart", 
-                                end = "chromEnd",
-                                id = "name", 
-                                shape = "box",
-                                fill = "#FA9114", 
-                                name = "CpG",
-                                background.title = "#9D5D10", 
-                                rotation.title = 0)
+  cpgIslands <- UcscTrack(genome = genome, 
+                          chromosome = chr,
+                          track = "CpG Island", 
+                          from = from,
+                          to = to, 
+                          trackType = "AnnotationTrack",
+                          start = "chromStart", 
+                          end = "chromEnd",
+                          id = "name", 
+                          shape = "box",
+                          fill = "#FA9114", 
+                          name = "CpG",
+                          background.title = "#9D5D10", 
+                          rotation.title = 0)
   
   #H3K27Ac, H3K4Me3 and H3K27Me3
-  mySession <-  rtracklayer::browserSession("UCSC")
-  rtracklayer::genome(mySession) <- "hg19"
+  mySession <-  browserSession("UCSC")
+  genome(mySession) <- "hg19"
   granges <- GenomicRanges::GRanges(chr, 
                                     IRanges::IRanges(from, to))
   
   #H3K27Ac
-  H3K27Ac <- rtracklayer::getTable(
-                                    rtracklayer::ucscTableQuery(mySession, 
-                                            track = "Layered H3K27Ac",
-                                            range = granges))
+  H3K27Ac <- getTable(ucscTableQuery(mySession, 
+                      track = "Layered H3K27Ac",
+                      range = granges))
   H3K27Ac$seqnames <- chr
   value <- H3K27Ac$value
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
   S4Vectors::values(H3K27Ac) <- value 
-  H3K27Ac <- Gviz::DataTrack(H3K27Ac, 
-                             type = "hist", window = "auto",
-                             col.histogram = "darkblue",
-                             fill.histogram = "darkblue", data = "X", 
-                             name = "H3K27Ac", chr = chr,
-                             background.title = "#C0E4B0")
+  H3K27Ac <- DataTrack(H3K27Ac, 
+                       type = "hist",
+                       window = "auto",
+                       col.histogram = "darkblue",
+                       fill.histogram = "darkblue", 
+                       data = "X", 
+                       name = "H3K27Ac",
+                       chr = chr,
+                       background.title = "#C0E4B0")
   
   
   #H3K4Me3
-  H3K4Me3 <- rtracklayer::getTable(
-                  rtracklayer::ucscTableQuery(mySession, 
-                                              track = "Layered H3K4Me3",
-                                              range = granges))
+  H3K4Me3 <- getTable(ucscTableQuery(mySession, 
+                                     track = "Layered H3K4Me3",
+                                     range = granges))
   H3K4Me3$seqnames <- chr
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
   S4Vectors::values(H3K4Me3) <- value 
-  H3K4Me3 <- Gviz::DataTrack(H3K4Me3, 
-                             type = "hist", window = "auto",
-                             col.histogram = "darkred",
-                             fill.histogram = "darkred", data = "X", 
-                             name = "H3K4Me3", chr = chr,
-                             background.title = "#C0E4B0")
+  H3K4Me3 <- DataTrack(H3K4Me3, 
+                       type = "hist", window = "auto",
+                       col.histogram = "darkred",
+                       fill.histogram = "darkred", data = "X", 
+                       name = "H3K4Me3", chr = chr,
+                       background.title = "#C0E4B0")
 
   #H3K27Me3
   
@@ -346,15 +330,19 @@ UCSC_regulation <- function(genome, chr, from, to){
     
     if (!requireNamespace("AnnotationHub")) 
       stop("'AnnotationHub' package not available")
-    ah <- AnnotationHub::AnnotationHub()
-    H3K27Me3 <- AnnotationHub::query(ah , c("UCSC", "H3K27me3", "hg19"))
-    H3K27Me3 <- Gviz::DataTrack(H3K27Me3[["AH23260"]], 
-                                type = "hist", window = "auto",
-                                col.histogram = "darkgreen",
-                                fill.histogram = "darkgreen", data = "score", 
-                                name = "H3K27Me3", chr = chr, start = from, 
-                                end = to,
-                                background.title = "#C0E4B0")
+    ah <- AnnotationHub()
+    H3K27Me3 <- query(ah , c("UCSC", "H3K27me3", "hg19"))
+    H3K27Me3 <- DataTrack(H3K27Me3[["AH23260"]], 
+                          type = "hist", 
+                          window = "auto",
+                          col.histogram = "darkgreen",
+                          fill.histogram = "darkgreen", 
+                          data = "score", 
+                          name = "H3K27Me3", 
+                          chr = chr, 
+                          start = from, 
+                          end = to,
+                          background.title = "#C0E4B0")
   }
 
   
