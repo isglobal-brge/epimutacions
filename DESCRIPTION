@@ -62,7 +62,8 @@ Suggests:
   IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
   grid,
   gridExtra,
-  ggrepel
+  ggrepel,
+  grDevices
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.2.0), epimutacionsData
