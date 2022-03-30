@@ -41,17 +41,18 @@
 #'
 #' # The reference panel for this example is available in 
 #' #epimutacionsData (ExperimentHub) package
+#' \dontrun{
 #' library(ExperimentHub)
 #' eh <- ExperimentHub()
 #' query(eh, c("epimutacionsData"))
 #' reference_panel <- eh[["EH6691"]]
 #' cases_dir <- system.file("extdata", package = "epimutacionsData")
 #' #Preprocessing
-#' \dontrun{
+#' 
 #' epi_preprocess(cases_dir, 
 #'                reference_panel, 
 #'                pattern = "SampleSheet.csv")
-#'                }
+#'}
 #' 
 #' 
 #' 

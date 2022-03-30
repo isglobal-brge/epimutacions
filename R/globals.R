@@ -4,4 +4,12 @@ utils::globalVariables(c("chr", "pos", "cpg_n", "quantile", "start",
                          "value", "variable", "status", 
                          "sd_2_lower", "sd_2_upper", "sd_1.5_lower",
                          "sd_1.5_upper", "sd_1_lower", "sd_1_upper",
-                         "betas", "type"))
+                         "betas", "type", "txdb", "mapIds", "UcscTrack",
+                         "browserSession", "getTable", "genome<-",
+                         "ucscTableQuery", "DataTrack", "AnnotationHub",
+                         "query", "useEnsembl", "useDataset", "getBM",
+                         "melt", "seqlevelsStyle<-", "bplapply", 
+                         "ExperimentHub", "geom_text_repel", "IdeogramTrack",
+                         "GenomeAxisTrack", "GeneRegionTrack", 
+                         "HighlightTrack", "grid.grabExpr", "dev.new", 
+                         "plotTracks", "grid.arrange"))

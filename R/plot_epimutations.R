@@ -60,10 +60,7 @@
 #' 
 #' data(GRset)
 #' data(res.epi.manova)
-#' 
-#' \donttest{
 #' plot_epimutations(res.epi.manova[1,], GRset)
-#' }
 #' 
 #' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
 #' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
@@ -114,16 +111,9 @@ plot_epimutations <- function(dmr,
     }
   }
   
-  if (!requireNamespace("grid")) 
-    stop("'grid' package not available")
-  if (!requireNamespace("gridExtra")) 
-    stop("'gridExtra' package not available")
-  if (!requireNamespace("ggrepel")) 
-    stop("'ggrepel' package not available")
-  if (!requireNamespace("Gviz")) 
-    stop("'Gviz' package not available")
-  if (!requireNamespace("grDevices")) 
-    stop("'grDevices' package not available")
+  pck <- c("grid", "gridExtra", "ggrepel", "Gviz", "grDevices")
+  lapply(pck, function(x) if (!requireNamespace(x))
+    stop("'",x,"'", " package not avaibale"))
   
   
   # DMR column names must be always

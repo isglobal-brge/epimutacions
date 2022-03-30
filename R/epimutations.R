@@ -9,7 +9,7 @@
 #' @param method a character string naming the 
 #' outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, 
-#' \code{"mlm"}, \code{"iForest"}, \code{"mahdistmcd"}, 
+#' \code{"mlm"}, \code{"iForest"}, \code{"mahdist"}, 
 #' \code{"quantile"} and \code{"beta"}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
@@ -41,7 +41,7 @@
 #'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
 #'  * Isolation Forest (\code{"iForest"}) \link[isotree]{isolation.forest}
-#'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) 
+#'  * Robust Mahalanobis Distance (\code{"mahdist"}) 
 #'  \link[robustbase]{covMcd}
 #'  * Quantile distribution (\code{"quantile"})
 #'  * Beta (\code{"beta"})
@@ -72,10 +72,10 @@
 #'    the magnitude of the outlier score.
 #'    * For method \code{beta} it provides the mean outlier p-value.
 #'    * For methods \code{quantile} and 
-#'    \code{mahdistmcd} it is filled with NA.
+#'    \code{mahdist} it is filled with NA.
 #' * \code{outlier_direction}: indicates the direction 
 #' of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
-#'    * For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdistmcd} 
+#'    * For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdist} 
 #'    it is computed from the values obtained from bumphunter.
 #'    * For \code{quantile} it is computed from the location 
 #'    of the sample in the reference distribution (left vs. right outlier).
@@ -83,7 +83,7 @@
 #' * \code{pvalue}: 
 #'    * For methods \code{manova}, \code{mlm}, and \code{iForest} 
 #'    it provides the p-value obtained from the model.
-#'    * For method \code{quantile}, \code{mahdistmcd} and \code{beta} 
+#'    * For method \code{quantile}, \code{mahdist} and \code{beta} 
 #'    is filled with NA.    
 #' * \code{adj_pvalue}: for methods with p-value (\code{manova} and 
 #' \code{mlm} adjusted p-value with Benjamini-Hochberg based on the total 
@@ -166,21 +166,16 @@ epimutations <- function(case_samples, control_panel,
     
   }
   
-  avail <- c("manova", "mlm", "iForest", "mahdistmcd", "quantile", "beta")
+  avail <- c("manova", "mlm", "iForest", "mahdist", "quantile", "beta")
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
   
   if(verbose) message("Selected epimutation detection method '", method, "'")
   
-  if (!requireNamespace("methods")) 
-    stop("'methods' package not available")
-  if (!requireNamespace("ensembldb")) 
-    stop("'ensembldb' package not available")
-  if (!requireNamespace("tibble")) 
-    stop("'tibble' package not available")
-  
-  
+  pck <- c("methods", "ensembldb", "tibble")
+  lapply(pck, function(x) if (!requireNamespace(x))
+    stop("'",x,"'", " package not avaibale"))
   
   ## Extract required data:
       #	* feature annotation
@@ -219,8 +214,8 @@ epimutations <- function(case_samples, control_panel,
   
   # 2. Epimutations definition (using different methods)
   ##Methods that need bumphunter 
-  ##("manova", "mlm", "mahdistmcd" and "iForest")
-  if(method %in% c("manova", "mlm", "mahdistmcd", "iForest")) {
+  ##("manova", "mlm", "mahdist" and "iForest")
+  if(method %in% c("manova", "mlm", "mahdist", "iForest")) {
     if(verbose) message("Selected method '", 
                         method, 
                         "' required of 'bumphunter'")
@@ -261,16 +256,16 @@ epimutations <- function(case_samples, control_panel,
             bump$sample <- case
             bump$delta_beta <- abs(mean(beta_bump[,ctr_sam]) -
                                      mean(beta_bump[,case]))
-            if(method == "mahdistmcd") {
-              dst <- try(epi_mahdistmcd(beta_bump, 
-                                        epi_params$mahdistmcd$nsamp),
+            if(method == "mahdist") {
+              dst <- try(epi_mahdist(beta_bump, 
+                                        epi_params$mahdist$nsamp),
                          silent = TRUE)
               if(!is(dst, "try-error")){
                 threshold <- sqrt(stats::qchisq(p = 0.999975, 
                                                 df = ncol(beta_bump)))
                 outliers <- which(dst$statistic >= threshold)
                 outliers <- dst$ID[outliers] 
-                x <- res_mahdistmcd(case, bump, outliers)
+                x <- res_mahdist(case, bump, outliers)
               }
             } else if(method == "mlm") {
               sts <- try(epi_mlm(beta_bump, model), silent = TRUE)

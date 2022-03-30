@@ -26,13 +26,13 @@
 #' for an in-depth description of these variables.
 #' 
 #' @examples 
-#' 
+#' \dontrun{
 #' data(res.epi.manova)
 #' 
 #' #Annotate the epimutations
-#' \dontrun{
 #' anno_results <- annotate_epimutations(res.epi.manova)
-#' anno_results[1:2, c(1, 12:14)]}
+#' anno_results[1:2, c(1, 12:14)]
+#' }
 #' 
 #' @export
 annotate_epimutations <- function(epi_results, 

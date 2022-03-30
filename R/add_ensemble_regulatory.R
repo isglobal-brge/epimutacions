@@ -36,7 +36,7 @@ add_ensemble_regulatory <- function(epimutations,
   ## Create connection to ENSEMBL 
   
   if (!requireNamespace("biomaRt")) stop("'biomaRt' package not available")
-  
+
   mart <- useEnsembl(biomart = "regulation",
                               GRCh = build)
   ensembl <- useDataset(dataset = "hsapiens_regulatory_feature", 

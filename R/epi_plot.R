@@ -224,13 +224,11 @@ betas_sd_mean <- function(gr){
 
 UCSC_annotation <- function(genome = "hg19"){
   
-  if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")) 
-    stop("'TxDb.Hsapiens.UCSC.hg19.knownGene' package not available")
-  if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")) 
-    stop("'TxDb.Hsapiens.UCSC.hg38.knownGene' package not available")
-  if (!requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")) 
-    stop("'TxDb.Hsapiens.UCSC.hg18.knownGene' package not available")
-  
+  pck <- c("TxDb.Hsapiens.UCSC.hg19.knownGene", 
+           "TxDb.Hsapiens.UCSC.hg38.knownGene", 
+           "TxDb.Hsapiens.UCSC.hg18.knownGene")
+  lapply(pck, function(x) if (!requireNamespace(x))
+    stop("'",x,"'", " package not avaibale"))
 
   if(!is.null(txdb)){
     all_genes <- GenomicFeatures::genes(txdb)
@@ -264,10 +262,10 @@ UCSC_annotation <- function(genome = "hg19"){
 #' @importFrom  S4Vectors values
 #' @importFrom GenomicRanges GRanges makeGRangesFromDataFrame
 UCSC_regulation <- function(genome, chr, from, to){
-  if (!requireNamespace("Gviz")) 
-    stop("'Gviz' package not available")
-  if (!requireNamespace("rtracklayer")) 
-    stop("'rtracklayer' package not available")
+  pck <- c("Gviz", "rtracklayer")
+  lapply(pck, function(x) if (!requireNamespace(x))
+    stop("'",x,"'", " package not avaibale"))
+  
   #cpgIslands
   cpgIslands <- UcscTrack(genome = genome, 
                           chromosome = chr,

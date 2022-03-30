@@ -113,7 +113,6 @@ detection methods can be selected:
 }
 \examples{
 data(GRset)
-
-manova_result <- epimutations_one_leave_out(GRset[,c(1:4)], 
+manova_result <- epimutations_one_leave_out(GRset, 
                                             method = "manova")
 }

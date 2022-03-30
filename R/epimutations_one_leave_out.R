@@ -76,10 +76,8 @@
 #'    the sample in the reference distribution (left vs. right outlier).
 #' @examples 
 #' data(GRset)
-#' \donttest{
-#' manova_result <- epimutations_one_leave_out(GRset[,c(1:4)], 
+#' manova_result <- epimutations_one_leave_out(GRset, 
 #'                                             method = "manova")
-#'                                             }
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 
@@ -92,11 +90,11 @@ epimutations_one_leave_out <- function(methy, method = "manova",
          can be useful to create a 'GenomicRatioSet' class object")
   }
   
-  if (!requireNamespace("methods")) 
-    stop("'methods' package not available")
-  if (!requireNamespace("BiocParallel")) 
-    stop("'BiocParallel' package not available")
+  pck <- c("methods", "BiocParallel")
+  lapply(pck, function(x) if (!requireNamespace(x))
+    stop("'",x,"'", " package not avaibale"))
   
+
   rst <- do.call(rbind, bplapply(colnames(methy), function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]

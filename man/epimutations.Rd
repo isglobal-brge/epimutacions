@@ -29,7 +29,7 @@ control panel (control panel).}
 \item{method}{a character string naming the
 outlier detection method to be used.
 This can be set as: \code{"manova"},
-\code{"mlm"}, \code{"iForest"}, \code{"mahdistmcd"},
+\code{"mlm"}, \code{"iForest"}, \code{"mahdist"},
 \code{"quantile"} and \code{"beta"}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
@@ -83,12 +83,12 @@ F-test and the R2 of the model, separated by \code{/}.
 the magnitude of the outlier score.
 \item For method \code{beta} it provides the mean outlier p-value.
 \item For methods \code{quantile} and
-\code{mahdistmcd} it is filled with NA.
+\code{mahdist} it is filled with NA.
 }
 \item \code{outlier_direction}: indicates the direction
 of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 \itemize{
-\item For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdistmcd}
+\item For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdist}
 it is computed from the values obtained from bumphunter.
 \item For \code{quantile} it is computed from the location
 of the sample in the reference distribution (left vs. right outlier).
@@ -98,7 +98,7 @@ of the sample in the reference distribution (left vs. right outlier).
 \itemize{
 \item For methods \code{manova}, \code{mlm}, and \code{iForest}
 it provides the p-value obtained from the model.
-\item For method \code{quantile}, \code{mahdistmcd} and \code{beta}
+\item For method \code{quantile}, \code{mahdist} and \code{beta}
 is filled with NA.
 }
 \item \code{adj_pvalue}: for methods with p-value (\code{manova} and
@@ -129,7 +129,7 @@ For that, different outlier detection methods can be selected:
 \item Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 \item Multivariate Linear Model (\code{"mlm"})
 \item Isolation Forest (\code{"iForest"}) \link[isotree]{isolation.forest}
-\item Robust Mahalanobis Distance (\code{"mahdistmcd"})
+\item Robust Mahalanobis Distance (\code{"mahdist"})
 \link[robustbase]{covMcd}
 \item Quantile distribution (\code{"quantile"})
 \item Beta (\code{"beta"})
