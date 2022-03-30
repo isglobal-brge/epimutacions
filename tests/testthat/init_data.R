@@ -8,8 +8,8 @@ control <- GRset[,1:10]
 # Run the epimutations function 
 result_manova <- epimutations(case, control, "manova")
 result_mlm <- epimutations(case, control, "mlm")
-result_isoforest <- epimutations(case, control, "isoforest")
-result_mahadistmcd <- epimutations(case, control, "mahdistmcd")
+result_iForest <- epimutations(case, control, "iForest")
+result_mahdist <- epimutations(case, control, "mahdist")
 result_quantile <- epimutations(case, control, "quantile")
 result_beta <- epimutations(case, control, "beta")
 

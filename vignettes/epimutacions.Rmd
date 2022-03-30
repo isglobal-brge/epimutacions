@@ -78,7 +78,7 @@ We have implemented those two methods
 We implemented four additional approaches, 
 using a different distribution to detect CpG outliers (`beta`), 
 or a different model to 
-assess region significance (`mlm`, `mahdistmcd`, and `isoforest`).
+assess region significance (`mlm`, `mahdist`, and `iForest`).
 
 
 The package `epimutacions` provides tools to  raw DNA methylation microarray 
@@ -107,10 +107,10 @@ other samples from the same cohort.
 The `epimutacions` package includes 6 outlier detection approaches 
 (figure \@ref(fig:implementation)): 
 (1) Multivariate Analysis of variance (`manova`), 
-(2) Multivariate Linear Model (`mlm`), (3) isolation forest (`isoforest`), 
-(4) robust mahalanobis distance  (`mahdistmcd`) (5) `quantile` and (6) `beta`.
+(2) Multivariate Linear Model (`mlm`), (3) isolation forest (`iForest`), 
+(4) robust mahalanobis distance  (`mahdist`) (5) `quantile` and (6) `beta`.
 
-The approaches `manova`, `mlm`, `isoforest` and  `mahdistmcd` 
+The approaches `manova`, `mlm`, `iForest` and  `mahdist` 
 define the candidate regions (differentially methylated regions (DMRs)) 
 using bumphunter method [@jaffe2012bump]. 
 Then, those DMRs are tested to identify regions 
@@ -418,8 +418,8 @@ GRset <- epi_preprocess(baseDir,
 The function `epimutations()` includes 6 methods for epimutation identification: 
 (1) Multivariate Analysis of variance (`manova`), 
 (2) Multivariate Linear Model (`mlm`), 
-(3) isolation forest (`isoforest`), 
-(4) robust mahalanobis distance (`mahdistmcd`) 
+(3) isolation forest (`iForest`), 
+(4) robust mahalanobis distance (`mahdist`) 
 (5) `quantile` and (6) `beta`. 
 
 To illustrate the following examples we are 
@@ -537,21 +537,21 @@ The following table describes each argument:
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `outlier_score`       | For method `manova` it provides the approximation to F-test and the Pillai score, separated by `/`<br>                |
 |                       | For method `mlm` it provides the approximation to F-test and the R2 of the model, separated by `/`<br>                |
-|                       | For method `isoforest` it provides the magnitude of the outlier score.<br>                                            |
+|                       | For method `iForest` it provides the magnitude of the outlier score.<br>                                            |
 |                       | For method `beta` it provides the mean p-value of all GpGs in that DMR<br>                                            |
-|                       | For methods `quantile` and `mahdistmcd` it is filled with `NA`.                                                       |
+|                       | For methods `quantile` and `mahdist` it is filled with `NA`.                                                       |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `pvalue`              | For methods `manova` and  `mlm` it provides the p-value obtained from the model.<br>                                  |
-|                       | For method `quantile`, `isoforest`, `beta` and `mahdistmcd` it is filled with `NA`.                                    |
+|                       | For method `quantile`, `iForest`, `beta` and `mahdist` it is filled with `NA`.                                    |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 | `outlier_direction`   | Indicates the direction of the outlier with "hypomethylation" and "hypermethylation".<br>                             | 
-|                       | For `manova`, `mlm`, `isoforest`, and `mahdistmcd` it is computed from the values obtained from `bumphunter`.<br>     |
+|                       | For `manova`, `mlm`, `iForest`, and `mahdist` it is computed from the values obtained from `bumphunter`.<br>     |
 |                       | For `beta` is computed from the p value for each CpG using `diff_threshold` and `pvalue_threshold` arguments.<br>     |
 |                       | For `quantile` it is computed from the location of the sample in the reference distribution (left vs. right outlier).  |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `adj_pvalue`          | For methods `manova` and  `mlm` it provides the adjusted p-value with                                                 |
 |                       | Benjamini-Hochberg based on the total number of regions detected by Bumphunter.<br>                                   |
-|                       | For method `quantile`, `isoforest`, `mahdistmcd` and `beta` it is filled with `NA`.                                    |
+|                       | For method `quantile`, `iForest`, `mahdist` and `beta` it is filled with `NA`.                                    |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+ 
 | `epi_region_id`       | Name of the epimutation region as defined in `candRegsGR`.                                                            |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+

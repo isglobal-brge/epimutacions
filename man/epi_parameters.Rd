@@ -8,14 +8,14 @@ and \code{epimutations_one_leave_out} functions}
 epi_parameters(
   manova = list(pvalue_cutoff = 0.05),
   mlm = list(pvalue_cutoff = 0.05),
-  isoforest = list(outlier_score_cutoff = 0.7, ntrees = 100),
-  mahdistmcd = list(nsamp = "deterministic"),
+  iForest = list(outlier_score_cutoff = 0.7, ntrees = 100),
+  mahdist = list(nsamp = "deterministic"),
   quantile = list(window_sz = 1000, offset_abs = 0.15, qsup = 0.995, qinf = 0.005),
   beta = list(pvalue_cutoff = 1e-06, diff_threshold = 0.1)
 )
 }
 \arguments{
-\item{manova, mlm, isoforest, mahdistmcd, quantile, beta}{method selected
+\item{manova, mlm, iForest, mahdist, quantile, beta}{method selected
 in the function \link[epimutacions]{epimutations}.}
 
 \item{pvalue_cutoff}{the threshold p value to select
@@ -24,16 +24,16 @@ which CpG regions are outliers in \code{manova},
 
 \item{outlier_score_cutoff}{The outlier score
 threshold to identify outliers CpGs in
-isolation forest (\code{isoforest}) method. Default is \code{0.5}.}
+isolation forest (\code{iForest}) method. Default is \code{0.5}.}
 
 \item{ntrees}{number of binary trees to build for the model build by
-isolation forest (\code{isoforest}) method.
+isolation forest (\code{iForest}) method.
 Default is \code{100}.}
 
 \item{nsamp}{the number of subsets used for initial
 estimates in the Minimum Covariance Determinant
 which is used to compute the Robust Mahalanobis
-distance (\code{mahdistmcd}).
+distance (\code{mahdist}).
 It can be set as:
 \code{"best"}, \code{"exact"}, or \code{"deterministic"}.
 For \code{nsamp = "best"} exhaustive enumeration is done,

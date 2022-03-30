@@ -13,7 +13,7 @@
 #' outlier detection method to be used. 
 #' This can be set as: 
 #' \code{"manova"}, \code{"mlm"}, 
-#' \code{"isoforest"}, \code{"mahdistmcd"}, 
+#' \code{"iForest"}, \code{"mahdist"}, 
 #' \code{"barbosa"} and \code{beta}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
@@ -40,9 +40,9 @@
 #'  * Multivariate Analysis of Variance 
 #'  (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
-#'  * Isolation Forest (\code{"isoforest"}) 
+#'  * Isolation Forest (\code{"iForest"}) 
 #'  \link[isotree]{isolation.forest}
-#'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) 
+#'  * Robust Mahalanobis Distance (\code{"mahdist"}) 
 #'  \link[robustbase]{covMcd}
 #'  * Barbosa (\code{"barbosa"})
 #' @return The function returns an object of class tibble 
@@ -61,24 +61,25 @@
 #'    to F-test and the Pillai score, separated by \code{/}.
 #'    * For method \code{mlm} it provides the approximation to 
 #'    F-test and the R2 of the model, separated by \code{/}.
-#'    * For method \code{isoforest} it provides the 
+#'    * For method \code{iForest} it provides the 
 #'    magnitude of the outlier score.
-#'    * For methods \code{barbosa} and \code{mahdistmcd} is filled with NA.
+#'    * For methods \code{barbosa} and \code{mahdist} is filled with NA.
 #' * \code{outlier_significance}: 
-#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} 
+#'    * For methods \code{manova}, \code{mlm}, and \code{iForest} 
 #'    it provides the p-value obtained from the model.
-#'    * For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
+#'    * For method \code{barbosa} and \code{mahdist} is filled with NA.
 #' * \code{outlier_direction}: indicates the direction of 
 #' the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
-#'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} 
+#'    * For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdist} 
 #'    it is computed from the values obtained from bumphunter.
 #'    * For \code{barbosa} it is computed from the location of 
 #'    the sample in the reference distribution (left vs. right outlier).
 #' @examples 
 #' data(GRset)
 #' \donttest{
-#' epimutations_one_leave_out(GRset[,c(1:5,11)], method = "manova")
-#' }
+#' manova_result <- epimutations_one_leave_out(GRset[,c(1:4)], 
+#'                                             method = "manova")
+#'                                             }
 #' @export 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 

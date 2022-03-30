@@ -11,7 +11,7 @@
 #' @importFrom isotree isolation.forest
 #' @importFrom stats predict
 #' 
-epi_isoforest <- function(mixture, case_id, ntrees) {
+epi_iForest <- function(mixture, case_id, ntrees) {
 	mixture <- t(mixture)
 	#Generate train and test(sample with suspected disease) data frame
 	train <- mixture[row.names(mixture) != case_id, ]
@@ -34,7 +34,7 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 #' @param bump a DMR obtained from \link[bumphunter]{bumphunter}
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
 #' @param sts the outlier score from
-#'  \link[epimutacions]{epi_isoforest} function results. 
+#'  \link[epimutacions]{epi_iForest} function results. 
 #' @param outlier_score_cutoff numeric specifying 
 #' the outlier score cut off
 #' @returns The function returns a data frame 
@@ -51,7 +51,7 @@ epi_isoforest <- function(mixture, case_id, ntrees) {
 #' For more information about the output see 
 #' \link[epimutacions]{epimutations}.
 
-res_isoforest <- function(bump, sts, outlier_score_cutoff){
+res_iForest <- function(bump, sts, outlier_score_cutoff){
   if(sts > outlier_score_cutoff){
 	bump$outlier_score <- sts
 	bump$pvalue <- NA

@@ -9,7 +9,7 @@
 #' @param method a character string naming the 
 #' outlier detection method to be used. 
 #' This can be set as: \code{"manova"}, 
-#' \code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"}, 
+#' \code{"mlm"}, \code{"iForest"}, \code{"mahdistmcd"}, 
 #' \code{"quantile"} and \code{"beta"}. 
 #' The default is \code{"manova"}. 
 #' For more information see \strong{Details}. 
@@ -40,7 +40,7 @@
 #' For that, different outlier detection methods can be selected:  
 #'  * Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 #'  * Multivariate Linear Model (\code{"mlm"})
-#'  * Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
+#'  * Isolation Forest (\code{"iForest"}) \link[isotree]{isolation.forest}
 #'  * Robust Mahalanobis Distance (\code{"mahdistmcd"}) 
 #'  \link[robustbase]{covMcd}
 #'  * Quantile distribution (\code{"quantile"})
@@ -68,20 +68,20 @@
 #'    to F-test and the Pillai score, separated by \code{/}.
 #'    * For method \code{mlm} it provides the approximation to 
 #'    F-test and the R2 of the model, separated by \code{/}.
-#'    * For method \code{isoforest} it provides 
+#'    * For method \code{iForest} it provides 
 #'    the magnitude of the outlier score.
 #'    * For method \code{beta} it provides the mean outlier p-value.
 #'    * For methods \code{quantile} and 
 #'    \code{mahdistmcd} it is filled with NA.
 #' * \code{outlier_direction}: indicates the direction 
 #' of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
-#'    * For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd} 
+#'    * For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdistmcd} 
 #'    it is computed from the values obtained from bumphunter.
 #'    * For \code{quantile} it is computed from the location 
 #'    of the sample in the reference distribution (left vs. right outlier).
 #'    * For method \code{beta} it return a NA.
 #' * \code{pvalue}: 
-#'    * For methods \code{manova}, \code{mlm}, and \code{isoforest} 
+#'    * For methods \code{manova}, \code{mlm}, and \code{iForest} 
 #'    it provides the p-value obtained from the model.
 #'    * For method \code{quantile}, \code{mahdistmcd} and \code{beta} 
 #'    is filled with NA.    
@@ -166,7 +166,7 @@ epimutations <- function(case_samples, control_panel,
     
   }
   
-  avail <- c("manova", "mlm", "isoforest", "mahdistmcd", "quantile", "beta")
+  avail <- c("manova", "mlm", "iForest", "mahdistmcd", "quantile", "beta")
   method <- charmatch(method, avail)
   method <- avail[method]
   if(is.na(method)) stop("Invalid method was selected'")
@@ -219,8 +219,8 @@ epimutations <- function(case_samples, control_panel,
   
   # 2. Epimutations definition (using different methods)
   ##Methods that need bumphunter 
-  ##("manova", "mlm", "mahdistmcd" and "isoforest")
-  if(method %in% c("manova", "mlm", "mahdistmcd", "isoforest")) {
+  ##("manova", "mlm", "mahdistmcd" and "iForest")
+  if(method %in% c("manova", "mlm", "mahdistmcd", "iForest")) {
     if(verbose) message("Selected method '", 
                         method, 
                         "' required of 'bumphunter'")
@@ -278,12 +278,12 @@ epimutations <- function(case_samples, control_panel,
             } else if(method == "manova") {
               sts <- epi_manova(beta_bump, model, case)
               x <- res_manova(bump, sts)
-            } else if(method == "isoforest") {
-              sts <- epi_isoforest(beta_bump, case, 
-                                   epi_params$isoforest$ntrees)
-              x <- res_isoforest(bump,
+            } else if(method == "iForest") {
+              sts <- epi_iForest(beta_bump, case, 
+                                   epi_params$iForest$ntrees)
+              x <- res_iForest(bump,
                                  sts,
-                                 epi_params$isoforest$outlier_score_cutoff)
+                                 epi_params$iForest$outlier_score_cutoff)
             } 
           }))
           ## Filter using the adjusted p-value calculated from regions 

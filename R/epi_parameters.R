@@ -5,21 +5,21 @@
 #' of the parameters to compute the functions 
 #' \link[epimutacions]{epimutations} 
 #' and \link[epimutacions]{epimutations_one_leave_out}.
-#' @param manova,mlm,isoforest,mahdistmcd,quantile,beta method selected 
+#' @param manova,mlm,iForest,mahdist,quantile,beta method selected 
 #' in the function \link[epimutacions]{epimutations}. 
 #' @param pvalue_cutoff the threshold p value to select 
 #' which CpG regions are outliers in \code{manova}, 
 #' \code{mlm} and \code{beta} methods.
 #' @param outlier_score_cutoff The outlier score 
 #' threshold to identify outliers CpGs in
-#' isolation forest (\code{isoforest}) method. Default is \code{0.5}. 
+#' isolation forest (\code{iForest}) method. Default is \code{0.5}. 
 #' @param ntrees number of binary trees to build for the model build by 
-#' isolation forest (\code{isoforest}) method. 
+#' isolation forest (\code{iForest}) method. 
 #' Default is \code{100}. 
 #' @param nsamp the number of subsets used for initial 
 #' estimates in the Minimum Covariance Determinant 
 #' which is used to compute the Robust Mahalanobis 
-#' distance (\code{mahdistmcd}). 
+#' distance (\code{mahdist}). 
 #' It can be set as:
 #' \code{"best"}, \code{"exact"}, or \code{"deterministic"}. 
 #' For \code{nsamp = "best"} exhaustive enumeration is done, 
@@ -55,9 +55,9 @@
 epi_parameters <- function(
   manova = list("pvalue_cutoff" = 0.05), 
   mlm = list("pvalue_cutoff" = 0.05), 
-  isoforest = list("outlier_score_cutoff" = 0.7, 
+  iForest = list("outlier_score_cutoff" = 0.7, 
                    "ntrees" = 100), 
-  mahdistmcd = list("nsamp" = "deterministic"),
+  mahdist = list("nsamp" = "deterministic"),
   quantile = list("window_sz" = 1000,
                   "offset_abs" = 0.15,
                   "qsup" = 0.995,
@@ -66,8 +66,8 @@ epi_parameters <- function(
                "diff_threshold" = 0.1)){
   return(list("manova" = manova ,
               "mlm" = mlm,
-              "isoforest" = isoforest, 
-              "mahdistmcd" = mahdistmcd, 
+              "iForest" = iForest, 
+              "mahdist" = mahdist, 
               "quantile" = quantile,
               "beta" = beta))
 }

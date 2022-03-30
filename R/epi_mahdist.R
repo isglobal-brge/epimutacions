@@ -15,7 +15,7 @@
 #' @importFrom robustbase covMcd
 #' 
 
-epi_mahdistmcd <- function(mixture, 
+epi_mahdist <- function(mixture, 
                            nsamp = c("best", "exact", "deterministic")) {
 	nsamp <- charmatch(nsamp, c("best", "exact", "deterministic"))
 	nsamp <- c("best", "exact", "deterministic")[nsamp]
@@ -56,7 +56,7 @@ epi_mahdistmcd <- function(mixture,
 #' @param bump a DMR obtained from \link[bumphunter]{bumphunter}
 #' (i.e. a row from \link[bumphunter]{bumphunter} method result).
 #' @param outliers  the robust distance computed by 
-#'  \link[epimutacions]{epi_mahdistmcd} function results. 
+#'  \link[epimutacions]{epi_mahdist} function results. 
 #' @param case a character string specifying the case sample name. 
 #' @returns The function returns a data frame containing 
 #' the following information for each DMR: 
@@ -72,7 +72,7 @@ epi_mahdistmcd <- function(mixture,
 #' For more information about the output see 
 #' \link[epimutacions]{epimutations}.
 
-res_mahdistmcd <- function(case, bump, outliers) {
+res_mahdist <- function(case, bump, outliers) {
 	bump$outlier <- case %in% outliers
 	bump$outlier_score <- NA
 	bump$pvalue <- NA 

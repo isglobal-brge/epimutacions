@@ -29,7 +29,7 @@ control panel (control panel).}
 \item{method}{a character string naming the
 outlier detection method to be used.
 This can be set as: \code{"manova"},
-\code{"mlm"}, \code{"isoforest"}, \code{"mahdistmcd"},
+\code{"mlm"}, \code{"iForest"}, \code{"mahdistmcd"},
 \code{"quantile"} and \code{"beta"}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
@@ -79,7 +79,7 @@ indicate the location of the epimutation.
 to F-test and the Pillai score, separated by \code{/}.
 \item For method \code{mlm} it provides the approximation to
 F-test and the R2 of the model, separated by \code{/}.
-\item For method \code{isoforest} it provides
+\item For method \code{iForest} it provides
 the magnitude of the outlier score.
 \item For method \code{beta} it provides the mean outlier p-value.
 \item For methods \code{quantile} and
@@ -88,7 +88,7 @@ the magnitude of the outlier score.
 \item \code{outlier_direction}: indicates the direction
 of the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 \itemize{
-\item For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd}
+\item For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdistmcd}
 it is computed from the values obtained from bumphunter.
 \item For \code{quantile} it is computed from the location
 of the sample in the reference distribution (left vs. right outlier).
@@ -96,7 +96,7 @@ of the sample in the reference distribution (left vs. right outlier).
 }
 \item \code{pvalue}:
 \itemize{
-\item For methods \code{manova}, \code{mlm}, and \code{isoforest}
+\item For methods \code{manova}, \code{mlm}, and \code{iForest}
 it provides the p-value obtained from the model.
 \item For method \code{quantile}, \code{mahdistmcd} and \code{beta}
 is filled with NA.
@@ -128,7 +128,7 @@ For that, different outlier detection methods can be selected:
 \itemize{
 \item Multivariate Analysis of Variance (\code{"manova"}). \link[stats]{manova}
 \item Multivariate Linear Model (\code{"mlm"})
-\item Isolation Forest (\code{"isoforest"}) \link[isotree]{isolation.forest}
+\item Isolation Forest (\code{"iForest"}) \link[isotree]{isolation.forest}
 \item Robust Mahalanobis Distance (\code{"mahdistmcd"})
 \link[robustbase]{covMcd}
 \item Quantile distribution (\code{"quantile"})

@@ -24,7 +24,7 @@ analysis. See the constructor function
 outlier detection method to be used.
 This can be set as:
 \code{"manova"}, \code{"mlm"},
-\code{"isoforest"}, \code{"mahdistmcd"},
+\code{"iForest"}, \code{"mahdist"},
 \code{"barbosa"} and \code{beta}.
 The default is \code{"manova"}.
 For more information see \strong{Details}.}
@@ -62,20 +62,20 @@ indicate the location of the epimutation.
 to F-test and the Pillai score, separated by \code{/}.
 \item For method \code{mlm} it provides the approximation to
 F-test and the R2 of the model, separated by \code{/}.
-\item For method \code{isoforest} it provides the
+\item For method \code{iForest} it provides the
 magnitude of the outlier score.
-\item For methods \code{barbosa} and \code{mahdistmcd} is filled with NA.
+\item For methods \code{barbosa} and \code{mahdist} is filled with NA.
 }
 \item \code{outlier_significance}:
 \itemize{
-\item For methods \code{manova}, \code{mlm}, and \code{isoforest}
+\item For methods \code{manova}, \code{mlm}, and \code{iForest}
 it provides the p-value obtained from the model.
-\item For method \code{barbosa} and \code{mahdistmcd} is filled with NA.
+\item For method \code{barbosa} and \code{mahdist} is filled with NA.
 }
 \item \code{outlier_direction}: indicates the direction of
 the outlier with \code{"hypomethylation"} and \code{"hypermethylation"}
 \itemize{
-\item For \code{manova}, \code{mlm}, \code{isoforest}, and \code{mahdistmcd}
+\item For \code{manova}, \code{mlm}, \code{iForest}, and \code{mahdist}
 it is computed from the values obtained from bumphunter.
 \item For \code{barbosa} it is computed from the location of
 the sample in the reference distribution (left vs. right outlier).
@@ -104,16 +104,16 @@ detection methods can be selected:
 \item Multivariate Analysis of Variance
 (\code{"manova"}). \link[stats]{manova}
 \item Multivariate Linear Model (\code{"mlm"})
-\item Isolation Forest (\code{"isoforest"})
+\item Isolation Forest (\code{"iForest"})
 \link[isotree]{isolation.forest}
-\item Robust Mahalanobis Distance (\code{"mahdistmcd"})
+\item Robust Mahalanobis Distance (\code{"mahdist"})
 \link[robustbase]{covMcd}
 \item Barbosa (\code{"barbosa"})
 }
 }
 \examples{
 data(GRset)
-\donttest{
-epimutations_one_leave_out(GRset[,c(1:5,11)], method = "manova")
-}
+
+manova_result <- epimutations_one_leave_out(GRset[,c(1:4)], 
+                                            method = "manova")
 }
