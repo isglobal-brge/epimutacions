@@ -222,7 +222,6 @@ betas_sd_mean <- function(gr){
 
 
 UCSC_annotation <- function(genome = "hg19"){
-
   if(genome == "hg19" & 
      requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
     txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
@@ -237,10 +236,9 @@ UCSC_annotation <- function(genome = "hg19"){
             is not installed in you computer")
     txdb <- NULL
   }
-
+  
   if(!is.null(txdb)){
-    all_genes <- GenomicFeatures::genes(txdb)
-    
+    suppressMessages(all_genes <- GenomicFeatures::genes(txdb))
     if (!requireNamespace("AnnotationDbi")) 
       stop("'AnnotationDbi' package not available")
     all_genes$symbol <- mapIds(Homo.sapiens::Homo.sapiens, 
@@ -304,7 +302,7 @@ UCSC_regulation <- function(genome, chr, from, to){
   value <- H3K27Ac$value
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
   S4Vectors::values(H3K27Ac) <- value 
-  H3K27Ac <- DataTrack(H3K27Ac, 
+  H3K27Ac <- Gviz::DataTrack(H3K27Ac, 
                        type = "hist",
                        window = "auto",
                        col.histogram = "darkblue",

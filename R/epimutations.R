@@ -109,7 +109,6 @@
 #' @importFrom stats model.matrix qchisq
 #' @importFrom bumphunter bumphunter
 #' @importFrom S4Vectors to from
-#' @importFrom tibble as_tibble
 
 #' 
 #' @export
@@ -174,7 +173,7 @@ epimutations <- function(case_samples, control_panel,
   
   if(verbose) message("Selected epimutation detection method '", method, "'")
   
-  pck <- c("methods", "ensembldb")
+  pck <- c("methods", "ensembldb", "tibble")
   lapply(pck, function(x) if (!requireNamespace(x))
     stop("'",x,"'", " package not avaibale"))
   
@@ -426,7 +425,7 @@ epimutations <- function(case_samples, control_panel,
       }, error = function(e) { rst })
       
       ## Convert rst into a tibble class
-      rst <- tibble::as_tibble(rst_c)
+      rst <- as_tibble(rst_c)
       return(rst)
     }
 

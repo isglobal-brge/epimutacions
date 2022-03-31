@@ -94,12 +94,9 @@ epimutations_one_leave_out <- function(methy, method = "manova",
   }
   
   if (!requireNamespace("methods")) stop("'methods' package not available")
+  if (!requireNamespace("BiocParallel")) stop("'methods' package not available")
   
-
-  
-
-  rst <- do.call(rbind, 
-                 BiocParallel::bplapply(colnames(methy), function(case){
+  rst <- do.call(rbind, bplapply(colnames(methy), function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]
     epimutations(case_samples, 

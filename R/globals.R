@@ -12,4 +12,7 @@ utils::globalVariables(c("chr", "pos", "cpg_n", "quantile", "start",
                          "ExperimentHub", "geom_text_repel", "IdeogramTrack",
                          "GenomeAxisTrack", "GeneRegionTrack", 
                          "HighlightTrack", "grid.grabExpr", "dev.new", 
-                         "plotTracks", "grid.arrange"))
+                         "plotTracks", "grid.arrange",
+                         "TxDb.Hsapiens.UCSC.hg19.knownGene", 
+                         "TxDb.Hsapiens.UCSC.hg38.knownGene", 
+                         "TxDb.Hsapiens.UCSC.hg18.knownGene"))

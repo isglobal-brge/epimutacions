@@ -125,7 +125,7 @@ window of a minimum of 3 outliers CpGs with a maximum
 distance of 1kb between them [@barbosa2018identification].
 
 ```{r implementation, echo=FALSE, fig.cap= "Implementation of each outlier detection method", out.width = '90%', fig.align='center'}
-knitr::include_graphics(file.path(getwd(),"fig/implementation.png"))
+knitr::include_graphics("fig/implementation.png")
 ```
 
 
@@ -178,7 +178,7 @@ The data should contain information about \beta values of CpG sites,
 phenotype and feature data.   
 
 ```{r workflow, echo=FALSE, fig.cap="Allowed data formats, normalization and input types", out.width = '90%', fig.align='center'}
-knitr::include_graphics(file.path(getwd(),"fig/workflow.png"))
+knitr::include_graphics("fig/workflow.png")
 ```
 
 
@@ -580,21 +580,8 @@ methylation consortium, the location of the
 CpG relative to the CpG island, OMIM accession 
 and description number and Ensembl region id, coordinates, type and tissue:
 
-```{r, ann, message=FALSE, tidy = TRUE}
+```{r eval = FALSE}
 rst_mvo <- annotate_epimutations(epi_mvo)
-```
-
-```{r}
-colnames(rst_mvo[2:3, c(1, 12:14)])
-```
-
-```{r ann results, eval = FALSE}
-rst_mvo[c(1,29), c(1, 12:14)]```
-```
-
-```{r echo = FALSE}
-library(knitr)
-kable(rst_mvo[c(1,29), c(1, 12:14)])
 ```
 
 

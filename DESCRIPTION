@@ -33,8 +33,6 @@ Imports:
     BiocGenerics,
     S4Vectors,
     utils, 
-    tibble,
-    BiocParallel,
     biomaRt,
     reshape2,
     ggrepel,
@@ -63,7 +61,9 @@ Suggests:
   IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
   grid,
   gridExtra,
-  grDevices
+  grDevices,
+  tibble,
+  BiocParallel
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 4.2.0), epimutacionsData

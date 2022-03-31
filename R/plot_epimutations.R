@@ -296,10 +296,9 @@ plot_epimutations <- function(dmr,
   if(genes_annot == TRUE |  regulation == TRUE){
   
   #Plot window
-  
   dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
-  p2 <- grid.grabExpr(plotTracks(list(ideo_track, 
+  p2 <- grid.grabExpr(Gviz::plotTracks(list(ideo_track, 
                                       tracks_Highlight), 
                                       from = from, 
                                       to = to, add = TRUE))
