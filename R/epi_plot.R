@@ -11,7 +11,6 @@
 #' 
 #' @importFrom minfi getBeta
 #' @importFrom GenomicRanges GRanges makeGRangesFromDataFrame
-#' @importFrom reshape2 melt
 #' 
 create_GRanges_class <- function(methy, cpg_ids){
   
@@ -183,12 +182,13 @@ betas_sd_mean <- function(gr){
   
   #Melt beta values, mean and sd object (necessary for the ggplot)
   
-  
+
+  if (requireNamespace("reshape2", quietly = TRUE)){
   beta_values <- reshape2::melt(df, id = c("seqnames", 
-                                  "start", 
-                                  "end", 
-                                  "width", 
-                                   "strand"))
+                                           "start", 
+                                           "end", 
+                                           "width", 
+                                           "strand"))
   mean <- reshape2::melt(mean, id = c("seqnames", 
                                       "start", 
                                       "end", 
@@ -206,6 +206,9 @@ betas_sd_mean <- function(gr){
                                   "sd_1.5_upper",
                                   "sd_2_lower",
                                   "sd_2_upper"))
+  }else{
+    stop("'reshape2' package not available")
+  }
   
   #Create the output list
   output <- list("beta_values" = beta_values, "mean" = mean, "sd" = sd)
@@ -220,17 +223,21 @@ betas_sd_mean <- function(gr){
 #' annotations for the specified genome assembly.
 #' @importFrom  GenomicFeatures genes
 
-
 UCSC_annotation <- function(genome = "hg19"){
+
+
   if(genome == "hg19" & 
      requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
-    txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+    txdb <- 
+      TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
   } else if (genome == "hg38" & 
              requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
-    txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+    txdb <- 
+      TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
   } else if(genome == "hg18" & 
             requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
-    txdb <- TxDb.Hsapiens.UCSC.hg18.knownGene
+    txdb <- 
+    TxDb.Hsapiens.UCSC.hg18.knownGene::TxDb.Hsapiens.UCSC.hg18.knownGene
   } else{
     warning("Genes are not shown since TxDb database 
             is not installed in you computer")
@@ -239,12 +246,19 @@ UCSC_annotation <- function(genome = "hg19"){
   
   if(!is.null(txdb)){
     suppressMessages(all_genes <- GenomicFeatures::genes(txdb))
-    if (!requireNamespace("AnnotationDbi")) 
-      stop("'AnnotationDbi' package not available")
-    all_genes$symbol <- mapIds(Homo.sapiens::Homo.sapiens, 
-                               keys = all_genes$gene_id,
+    if (requireNamespace("AnnotationDbi", quietly = TRUE)){
+      if (requireNamespace("Homo.sapiens", quietly = TRUE)){
+    all_genes$symbol <- AnnotationDbi::mapIds(Homo.sapiens::Homo.sapiens, 
+                                keys = all_genes$gene_id,
                                keytype = "ENTREZID",
                                column = "SYMBOL")
+      }else{
+        stop("'AnnotationDbi' package not avaibale")
+        
+      }}else{
+        stop("'Homo.sapiens' package not avaibale")
+        
+      }
   }else{
     all_genes <- NULL
   }
@@ -268,10 +282,8 @@ UCSC_annotation <- function(genome = "hg19"){
 #' @importFrom  S4Vectors values
 #' @importFrom GenomicRanges GRanges makeGRangesFromDataFrame
 UCSC_regulation <- function(genome, chr, from, to){
-  pck <- c("Gviz", "rtracklayer")
-  lapply(pck, function(x) if (!requireNamespace(x))
-    stop("'",x,"'", " package not avaibale"))
   
+  if (requireNamespace("Gviz", quietly = TRUE)){
   #cpgIslands
   cpgIslands <- Gviz::UcscTrack(genome = genome, 
                                 chromosome = chr,
@@ -289,13 +301,15 @@ UCSC_regulation <- function(genome, chr, from, to){
                                 rotation.title = 0)
   
   #H3K27Ac, H3K4Me3 and H3K27Me3
-  mySession <-  browserSession("UCSC")
+  if (requireNamespace("rtracklayer", quietly = TRUE)) {
+  mySession <-  rtracklayer::browserSession("UCSC")
   genome(mySession) <- "hg19"
   granges <- GenomicRanges::GRanges(chr, 
                                     IRanges::IRanges(from, to))
   
+  
   #H3K27Ac
-  H3K27Ac <- getTable(ucscTableQuery(mySession, 
+  H3K27Ac <- rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
                       track = "Layered H3K27Ac",
                       range = granges))
   H3K27Ac$seqnames <- chr
@@ -303,20 +317,23 @@ UCSC_regulation <- function(genome, chr, from, to){
   H3K27Ac <- GenomicRanges::makeGRangesFromDataFrame(H3K27Ac)
   S4Vectors::values(H3K27Ac) <- value 
   H3K27Ac <- Gviz::DataTrack(H3K27Ac, 
-                       type = "hist",
-                       window = "auto",
-                       col.histogram = "darkblue",
-                       fill.histogram = "darkblue", 
-                       data = "X", 
-                       name = "H3K27Ac",
-                       chr = chr,
-                       background.title = "#C0E4B0")
+                             type = "hist",
+                             window = "auto",
+                             col.histogram = "darkblue",
+                             fill.histogram = "darkblue", 
+                             data = "X", 
+                             name = "H3K27Ac",
+                             chr = chr,
+                             background.title = "#C0E4B0")
   
   
   #H3K4Me3
-  H3K4Me3 <- getTable(ucscTableQuery(mySession, 
+  H3K4Me3 <- rtracklayer::getTable(rtracklayer::ucscTableQuery(mySession, 
                                      track = "Layered H3K4Me3",
                                      range = granges))
+  }else{
+    stop("'rtracklayer' package not avaibale")
+  }
   H3K4Me3$seqnames <- chr
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
@@ -332,10 +349,15 @@ UCSC_regulation <- function(genome, chr, from, to){
   
   if(genome == "hg19"){
     
-    if (!requireNamespace("AnnotationHub")) 
-      stop("'AnnotationHub' package not available")
-    ah <- AnnotationHub()
-    H3K27Me3 <- query(ah , c("UCSC", "H3K27me3", "hg19"))
+    if (requireNamespace("AnnotationHub", quietly = TRUE)) {
+    ah <- AnnotationHub::AnnotationHub()
+    }else{
+      stop("'AnnotationHub' package not avaibale")
+      
+    }
+    H3K27Me3 <- AnnotationHub::query(ah , c("UCSC", 
+                                            "H3K27me3",
+                                            "hg19"))
     H3K27Me3 <- Gviz::DataTrack(H3K27Me3[["AH23260"]], 
                           type = "hist", 
                           window = "auto",
@@ -347,6 +369,10 @@ UCSC_regulation <- function(genome, chr, from, to){
                           start = from, 
                           end = to,
                           background.title = "#C0E4B0")
+    }
+  }else{
+    stop("'Gviz' package not avaibale")
+    
   }
 
   

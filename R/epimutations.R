@@ -173,7 +173,7 @@ epimutations <- function(case_samples, control_panel,
   
   if(verbose) message("Selected epimutation detection method '", method, "'")
   
-  pck <- c("methods", "ensembldb", "tibble")
+  pck <- c("methods", "ensembldb")
   lapply(pck, function(x) if (!requireNamespace(x))
     stop("'",x,"'", " package not avaibale"))
   
@@ -425,7 +425,11 @@ epimutations <- function(case_samples, control_panel,
       }, error = function(e) { rst })
       
       ## Convert rst into a tibble class
-      rst <- as_tibble(rst_c)
+      if (requireNamespace("tibble", quietly = TRUE)) {
+        rst <- tibble::as_tibble(rst_c)
+      } else {
+        stop("'tibble' package not avaibale")
+      }
       return(rst)
     }
 

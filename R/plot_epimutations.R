@@ -64,9 +64,6 @@
 #' 
 #' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
 #' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
-#' @importFrom ggrepel geom_text_repel
-#' @importFrom Gviz HighlightTrack IdeogramTrack 
-#' GenomeAxisTrack GeneRegionTrack
 #' 
 #' @export
 plot_epimutations <- function(dmr, 
@@ -114,10 +111,11 @@ plot_epimutations <- function(dmr,
     }
   }
   
-  pck <- c("grid", "gridExtra", "grDevices")
-  lapply(pck, function(x) if (!requireNamespace(x))
-    stop("'",x,"'", " package not avaibale"))
-  
+  if (!requireNamespace("grDevices"))
+    stop("'grDevices' package not avaibale")
+
+
+
   
   # DMR column names must be always
   # the same (set the common column names)
@@ -201,13 +199,18 @@ plot_epimutations <- function(dmr,
                         ggplot2::aes(x = start, y = mean), 
                         show.legend = TRUE)
   
-  plot_cpg_names <- plot_mean +
-    ggrepel::geom_text_repel() + 
-    ggplot2::annotate(geom = "text", 
-                      x = names$start, 
-                      y = names$value + 0.05, 
-                      label = names$id, 
-                      color = "black")
+  if (requireNamespace("ggrepel", quietly = TRUE)) {
+    plot_cpg_names <- plot_mean +
+      ggrepel::geom_text_repel() + 
+      ggplot2::annotate(geom = "text", 
+                        x = names$start, 
+                        y = names$value + 0.05, 
+                        label = names$id, 
+                        color = "black")
+  } else {
+    stop("'ggrepel' package not avaibale")
+  }
+
   
   plot <- plot_cpg_names + 
     ggplot2::lims(y = c(0,1)) +  
@@ -222,20 +225,18 @@ plot_epimutations <- function(dmr,
     ggplot2::labs(y = "DNA methylation level")
   
   #Plot gene annotations
+  if (requireNamespace("Gviz", quietly = TRUE)){
   if(genes_annot == TRUE | regulation == TRUE){
-    
-    
   ideo_track <- Gviz::IdeogramTrack(genome = genome, 
                                     chromosome = dmr$seqnames)
   genome_track <- Gviz::GenomeAxisTrack()
   genes <- UCSC_annotation(genome) #epi_plot
   gene_track <- Gviz::GeneRegionTrack(genes, 
-                                      chromosome = dmr$seqnames,
-                                      name = "Genes",
-                                      transcriptAnnotation = "symbol",
-                                      background.title = "#8F913A",
-                                      rotation.title = 0)
-  }
+                                chromosome = dmr$seqnames,
+                                name = "Genes",
+                                transcriptAnnotation = "symbol",
+                                background.title = "#8F913A",
+                                rotation.title = 0)
   if(genes_annot == TRUE){
   tracks_Highlight <- Gviz::HighlightTrack(trackList = 
                                        list(genome_track,
@@ -293,18 +294,30 @@ plot_epimutations <- function(dmr,
     }
     
   }
+  }
   if(genes_annot == TRUE |  regulation == TRUE){
   
   #Plot window
   dev.new(width = 1080, height = 1350, unit = "px")
   p1 <- plot
-  p2 <- grid.grabExpr(Gviz::plotTracks(list(ideo_track, 
-                                      tracks_Highlight), 
-                                      from = from, 
-                                      to = to, add = TRUE))
-  grid.arrange(grobs = list(p1,p2), row=2)
+  if (requireNamespace("grid", quietly = TRUE)) {
+    p2 <- grid::grid.grabExpr(Gviz::plotTracks(list(ideo_track, 
+                                              tracks_Highlight), 
+                                         from = from, 
+                                         to = to, add = TRUE))
+  } else {
+    stop("'grid' package not avaibale")
+  }
+  
+  if (requireNamespace("gridExtra", quietly = TRUE)) {
+   gridExtra::grid.arrange(grobs = list(p1,p2), row = 2)
+  } else {
+    stop("'gridExtra' package not avaibale")
+  }
   }else{
     plot
   }
-  
-}
+  }else{
+    
+  }
+  }

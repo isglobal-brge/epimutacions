@@ -55,7 +55,7 @@
 #'}
 #' 
 #' 
-#' 
+#' @import epimutacionsData
 #' @importFrom minfi read.metharray.sheet read.metharray.exp combineArrays 
 #' preprocessRaw preprocessIllumina preprocessSWAN preprocessQuantile
 #' preprocessNoob preprocessFunnorm mapToGenome ratioConvert

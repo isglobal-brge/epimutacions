@@ -33,7 +33,6 @@
 #' the candidate regions to be epimutations.
 #' 
 #' @importFrom stats pbeta
-#' @importFrom purrr pmap_dbl
 #' 
 epi_beta <-  function(beta_params, 
                       beta_mean, 
@@ -45,13 +44,17 @@ epi_beta <-  function(beta_params,
                       maxGap){
   
 
-  
   ## Compute p-value for case
-
-  pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], 
-                                beta_params[, 2]), 
-                           function(x, shape1, shape2) 
-                                    stats::pbeta(x, shape1, shape2))
+  
+  if (requireNamespace("purrr", quietly = TRUE)) {
+    pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], 
+                             beta_params[, 2]), 
+                      function(x, shape1, shape2) 
+                        stats::pbeta(x, shape1, shape2))
+  } else {
+    stop("'purrr' package not avaibale")
+  }
+  
   names(pvals) <- rownames(betas_case)
   
   ## Select CpGs with difference in mean methylation higher than threshold
@@ -103,7 +106,7 @@ getBetaParams <- function(x){
   return(cbind(alpha.hat, beta.hat))
 } 
 
-#' @importFrom GenomeInfoDb seqnames
+
 
 defineRegions <- function(regGR, 
                           case, 
@@ -112,28 +115,34 @@ defineRegions <- function(regGR,
                           maxGap, 
                           up = TRUE){
   
-  regGR <- sort(regGR)
-  cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), 
-                                 BiocGenerics::start(regGR), 
-                                 maxGap = maxGap)
-  reg_list <- lapply(unique(cl), function(i){
-    cpgGR <- regGR[cl == i]
-    rang <- range(cpgGR)
-    data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), 
-               start = BiocGenerics::start(rang), 
-               end = BiocGenerics::end(rang),
-               sz = BiocGenerics::width(rang), cpg_n = length(cpgGR),
-               cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
-               outlier_score = mean(cpgGR$pvals),
-               outlier_direction = ifelse(up, "hypermethylation", 
-                                          "hypomethylation"),
-               pvalue = NA,
-               adj_pvalue =  NA,
-               delta_beta = abs(mean(betas[names(cpgGR), controls]) -
-                                mean(betas[names(cpgGR), case])),
-               sample = NA
-    )
-  })
+
+  if (requireNamespace("GenomeInfoDb", quietly = TRUE)) {
+    regGR <- sort(regGR)
+    cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), 
+                                   BiocGenerics::start(regGR), 
+                                   maxGap = maxGap)
+    reg_list <- lapply(unique(cl), function(i){
+      cpgGR <- regGR[cl == i]
+      rang <- range(cpgGR)
+      data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), 
+                 start = BiocGenerics::start(rang), 
+                 end = BiocGenerics::end(rang),
+                 sz = BiocGenerics::width(rang), cpg_n = length(cpgGR),
+                 cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
+                 outlier_score = mean(cpgGR$pvals),
+                 outlier_direction = ifelse(up, "hypermethylation", 
+                                            "hypomethylation"),
+                 pvalue = NA,
+                 adj_pvalue =  NA,
+                 delta_beta = abs(mean(betas[names(cpgGR), controls]) -
+                                    mean(betas[names(cpgGR), case])),
+                 sample = NA
+      )
+    })
+  } else {
+    stop("'GenomeInfoDb' package not avaibale")
+  }
+  
   if (length(reg_list) == 0){
     df <- data.frame(chromosome = character(), start = numeric(), 
                       end = numeric(),

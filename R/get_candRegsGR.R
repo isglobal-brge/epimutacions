@@ -4,7 +4,7 @@
 #' @return  The function returns a GRanges object containing 
 #' the candidate regions.
 #' 
-#' 
+#' @import epimutacionsData
 
 get_candRegsGR <- function(){
   if (!requireNamespace("ExperimentHub")) 
