@@ -1,6 +1,6 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 0.99.22
+Version: 0.99.23
 Authors@R: 
     c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "abarrategui.leire@gmail.com"),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
@@ -24,7 +24,6 @@ Imports:
     robustbase,
     ggplot2,
     GenomicRanges,
-    GenomeInfoDb,
     GenomicFeatures,
     Homo.sapiens, 
     IRanges,
@@ -33,13 +32,18 @@ Imports:
     matrixStats,
     BiocGenerics,
     S4Vectors,
-    utils
+    utils, 
+    tibble,
+    BiocParallel,
+    biomaRt,
+    reshape2,
+    ggrepel,
+    purrr,
+    GenomeInfoDb,
+    Gviz
 Suggests:
   AnnotationDbi,
   AnnotationHub,
-  purrr,
-  reshape2,
-  biomaRt,
   testthat,
   knitr,
   rmarkdown, 
@@ -53,16 +57,12 @@ Suggests:
   TxDb.Hsapiens.UCSC.hg18.knownGene,
   TxDb.Hsapiens.UCSC.hg38.knownGene,
   rtracklayer,
-  Gviz,
   methods,
-  BiocParallel,
   ensembldb,
-  tibble,
   ExperimentHub,
   IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
   grid,
   gridExtra,
-  ggrepel,
   grDevices
 VignetteBuilder: knitr
 Encoding: UTF-8

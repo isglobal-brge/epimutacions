@@ -33,6 +33,7 @@
 #' the candidate regions to be epimutations.
 #' 
 #' @importFrom stats pbeta
+#' @importFrom purrr pmap_dbl
 #' 
 epi_beta <-  function(beta_params, 
                       beta_mean, 
@@ -43,9 +44,10 @@ epi_beta <-  function(beta_params,
                       min_cpgs = 3, 
                       maxGap){
   
+
   
   ## Compute p-value for case
-  if (!requireNamespace('purrr')) stop("purrr package not available")
+
   pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], 
                                 beta_params[, 2]), 
                            function(x, shape1, shape2) 
@@ -90,7 +92,6 @@ epi_beta <-  function(beta_params,
 #' @importFrom matrixStats colVars
 #' @importFrom bumphunter clusterMaker
 #' @importFrom BiocGenerics start
-#' @importFrom GenomeInfoDb seqnames
 #' @importFrom BiocGenerics start end width
 #'                                       
 getBetaParams <- function(x){
@@ -101,6 +102,8 @@ getBetaParams <- function(x){
   beta.hat <- (1-xbar)*(term-1)
   return(cbind(alpha.hat, beta.hat))
 } 
+
+#' @importFrom GenomeInfoDb seqnames
 
 defineRegions <- function(regGR, 
                           case, 

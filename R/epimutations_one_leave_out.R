@@ -79,6 +79,9 @@
 #' manova_result <- epimutations_one_leave_out(GRset, 
 #'                                             method = "manova")
 #' @export 
+#' 
+#' @importFrom BiocParallel bplapply
+#' 
 epimutations_one_leave_out <- function(methy, method = "manova", 
                                        epi_params = epi_parameters(), 
                                        BPPARAM = BiocParallel::SerialParam(),
@@ -90,12 +93,13 @@ epimutations_one_leave_out <- function(methy, method = "manova",
          can be useful to create a 'GenomicRatioSet' class object")
   }
   
-  pck <- c("methods", "BiocParallel")
-  lapply(pck, function(x) if (!requireNamespace(x))
-    stop("'",x,"'", " package not avaibale"))
+  if (!requireNamespace("methods")) stop("'methods' package not available")
   
 
-  rst <- do.call(rbind, bplapply(colnames(methy), function(case){
+  
+
+  rst <- do.call(rbind, 
+                 BiocParallel::bplapply(colnames(methy), function(case){
     case_samples <- methy[, case]
     control_panel <-  methy[, !colnames(methy) %in% case]
     epimutations(case_samples, 

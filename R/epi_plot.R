@@ -10,7 +10,8 @@
 #' beta values and the genomic ranges of the CpGs of interest. 
 #' 
 #' @importFrom minfi getBeta
-#' @importFrom  GenomicRanges GRanges makeGRangesFromDataFrame
+#' @importFrom GenomicRanges GRanges makeGRangesFromDataFrame
+#' @importFrom reshape2 melt
 #' 
 create_GRanges_class <- function(methy, cpg_ids){
   
@@ -182,31 +183,29 @@ betas_sd_mean <- function(gr){
   
   #Melt beta values, mean and sd object (necessary for the ggplot)
   
-  if (!requireNamespace("reshape2")) stop("'reshape2' package not available")
   
-  
-  beta_values <- melt(df, id = c("seqnames", 
+  beta_values <- reshape2::melt(df, id = c("seqnames", 
                                   "start", 
                                   "end", 
                                   "width", 
                                    "strand"))
-  mean <- melt(mean, id = c("seqnames", 
-                            "start", 
-                            "end", 
-                            "width", 
-                            "strand",
-                            "mean"))
-  sd <- melt(sd, id = c("seqnames", 
-                        "start", 
-                        "end", 
-                        "width", 
-                        "strand",
-                        "sd_1_lower", 
-                        "sd_1_upper", 
-                        "sd_1.5_lower",
-                        "sd_1.5_upper",
-                        "sd_2_lower",
-                        "sd_2_upper"))
+  mean <- reshape2::melt(mean, id = c("seqnames", 
+                                      "start", 
+                                      "end", 
+                                      "width", 
+                                      "strand",
+                                      "mean"))
+  sd <- reshape2::melt(sd, id = c("seqnames", 
+                                  "start", 
+                                  "end", 
+                                  "width", 
+                                  "strand",
+                                  "sd_1_lower", 
+                                  "sd_1_upper", 
+                                  "sd_1.5_lower",
+                                  "sd_1.5_upper",
+                                  "sd_2_lower",
+                                  "sd_2_upper"))
   
   #Create the output list
   output <- list("beta_values" = beta_values, "mean" = mean, "sd" = sd)
@@ -223,12 +222,21 @@ betas_sd_mean <- function(gr){
 
 
 UCSC_annotation <- function(genome = "hg19"){
-  
-  pck <- c("TxDb.Hsapiens.UCSC.hg19.knownGene", 
-           "TxDb.Hsapiens.UCSC.hg38.knownGene", 
-           "TxDb.Hsapiens.UCSC.hg18.knownGene")
-  lapply(pck, function(x) if (!requireNamespace(x))
-    stop("'",x,"'", " package not avaibale"))
+
+  if(genome == "hg19" & 
+     requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene")){
+    txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+  } else if (genome == "hg38" & 
+             requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene")){
+    txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+  } else if(genome == "hg18" & 
+            requireNamespace("TxDb.Hsapiens.UCSC.hg18.knownGene")){
+    txdb <- TxDb.Hsapiens.UCSC.hg18.knownGene
+  } else{
+    warning("Genes are not shown since TxDb database 
+            is not installed in you computer")
+    txdb <- NULL
+  }
 
   if(!is.null(txdb)){
     all_genes <- GenomicFeatures::genes(txdb)
@@ -267,20 +275,20 @@ UCSC_regulation <- function(genome, chr, from, to){
     stop("'",x,"'", " package not avaibale"))
   
   #cpgIslands
-  cpgIslands <- UcscTrack(genome = genome, 
-                          chromosome = chr,
-                          track = "CpG Island", 
-                          from = from,
-                          to = to, 
-                          trackType = "AnnotationTrack",
-                          start = "chromStart", 
-                          end = "chromEnd",
-                          id = "name", 
-                          shape = "box",
-                          fill = "#FA9114", 
-                          name = "CpG",
-                          background.title = "#9D5D10", 
-                          rotation.title = 0)
+  cpgIslands <- Gviz::UcscTrack(genome = genome, 
+                                chromosome = chr,
+                                track = "CpG Island", 
+                                from = from,
+                                to = to, 
+                                trackType = "AnnotationTrack",
+                                start = "chromStart", 
+                                end = "chromEnd",
+                                id = "name", 
+                                shape = "box",
+                                fill = "#FA9114", 
+                                name = "CpG",
+                                background.title = "#9D5D10", 
+                                rotation.title = 0)
   
   #H3K27Ac, H3K4Me3 and H3K27Me3
   mySession <-  browserSession("UCSC")
@@ -315,7 +323,7 @@ UCSC_regulation <- function(genome, chr, from, to){
   value <- H3K4Me3$value
   H3K4Me3 <- GenomicRanges::makeGRangesFromDataFrame(H3K4Me3)
   S4Vectors::values(H3K4Me3) <- value 
-  H3K4Me3 <- DataTrack(H3K4Me3, 
+  H3K4Me3 <- Gviz::DataTrack(H3K4Me3, 
                        type = "hist", window = "auto",
                        col.histogram = "darkred",
                        fill.histogram = "darkred", data = "X", 
@@ -330,7 +338,7 @@ UCSC_regulation <- function(genome, chr, from, to){
       stop("'AnnotationHub' package not available")
     ah <- AnnotationHub()
     H3K27Me3 <- query(ah , c("UCSC", "H3K27me3", "hg19"))
-    H3K27Me3 <- DataTrack(H3K27Me3[["AH23260"]], 
+    H3K27Me3 <- Gviz::DataTrack(H3K27Me3[["AH23260"]], 
                           type = "hist", 
                           window = "auto",
                           col.histogram = "darkgreen",

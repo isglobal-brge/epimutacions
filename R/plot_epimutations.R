@@ -64,6 +64,9 @@
 #' 
 #' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
 #' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom Gviz HighlightTrack IdeogramTrack 
+#' GenomeAxisTrack GeneRegionTrack
 #' 
 #' @export
 plot_epimutations <- function(dmr, 
@@ -111,7 +114,7 @@ plot_epimutations <- function(dmr,
     }
   }
   
-  pck <- c("grid", "gridExtra", "ggrepel", "Gviz", "grDevices")
+  pck <- c("grid", "gridExtra", "grDevices")
   lapply(pck, function(x) if (!requireNamespace(x))
     stop("'",x,"'", " package not avaibale"))
   
@@ -199,7 +202,7 @@ plot_epimutations <- function(dmr,
                         show.legend = TRUE)
   
   plot_cpg_names <- plot_mean +
-                    geom_text_repel() + 
+    ggrepel::geom_text_repel() + 
     ggplot2::annotate(geom = "text", 
                       x = names$start, 
                       y = names$value + 0.05, 
@@ -220,20 +223,21 @@ plot_epimutations <- function(dmr,
   
   #Plot gene annotations
   if(genes_annot == TRUE | regulation == TRUE){
-  
-  ideo_track <- IdeogramTrack(genome = genome, 
+    
+    
+  ideo_track <- Gviz::IdeogramTrack(genome = genome, 
                                     chromosome = dmr$seqnames)
-  genome_track <- GenomeAxisTrack()
+  genome_track <- Gviz::GenomeAxisTrack()
   genes <- UCSC_annotation(genome) #epi_plot
-  gene_track <- GeneRegionTrack(genes, 
-                                chromosome = dmr$seqnames,
-                                name = "Genes",
-                                transcriptAnnotation = "symbol",
-                                background.title = "#8F913A",
-                                rotation.title = 0)
+  gene_track <- Gviz::GeneRegionTrack(genes, 
+                                      chromosome = dmr$seqnames,
+                                      name = "Genes",
+                                      transcriptAnnotation = "symbol",
+                                      background.title = "#8F913A",
+                                      rotation.title = 0)
   }
   if(genes_annot == TRUE){
-  tracks_Highlight <- HighlightTrack(trackList = 
+  tracks_Highlight <- Gviz::HighlightTrack(trackList = 
                                        list(genome_track,
                                             gene_track),
                                        start = dmr$start, 
@@ -257,7 +261,7 @@ plot_epimutations <- function(dmr,
                                     to)
 
     if(genome ==  "hg19"){
-      tracks_Highlight <- HighlightTrack(trackList = 
+      tracks_Highlight <- Gviz::HighlightTrack(trackList = 
                                                  list(genome_track, 
                                                       gene_track, 
                                                       annotation$cpgIslands,
@@ -273,7 +277,7 @@ plot_epimutations <- function(dmr,
                                                 inBackground = FALSE)
       
     }else{
-      tracks_Highlight <- HighlightTrack(trackList = 
+      tracks_Highlight <- Gviz::HighlightTrack(trackList = 
                                                  list(genome_track, 
                                                       gene_track, 
                                                       annotation$cpgIslands,
