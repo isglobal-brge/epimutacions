@@ -1,6 +1,6 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 0.99.25
+Version: 0.99.26
 Authors@R: 
     c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "abarrategui.leire@gmail.com"),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
@@ -32,7 +32,8 @@ Imports:
     BiocGenerics,
     S4Vectors,
     utils, 
-    biomaRt
+    biomaRt,
+    BiocParallel
 Suggests:
   AnnotationDbi,
   AnnotationHub,
@@ -57,7 +58,6 @@ Suggests:
   gridExtra,
   grDevices,
   tibble,
-  BiocParallel, 
   Gviz, 
   ggrepel,
   reshape2,

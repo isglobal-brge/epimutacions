@@ -26,10 +26,10 @@
 #' for an in-depth description of these variables.
 #' 
 #' @examples 
-#' \dontrun{
-#' data(res.epi.manova)
 #' 
+#' data(res.epi.manova)
 #' #Annotate the epimutations
+#' \donttest{
 #' anno_results <- annotate_epimutations(res.epi.manova)
 #' anno_results[1:2, c(1, 12:14)]
 #' }
