@@ -75,13 +75,13 @@ get_ENSEMBL_data <- function(chromosome,
 	                 "chromosome_end", 
 	                 "feature_type_name",
 	                 "epigenome_name"), 
-				   filters = c('chromosome_name',
-				               'start',
-				               'end'),
-				   values = list(chromosome, 
-				                 start, 
-				                 end),
-				   mart = mart)
+	  filters = c('chromosome_name',
+	              'start',
+	              'end'),
+          values = list(chromosome, 
+		        start, 
+	                end),
+	  mart = mart)
 	out_ens <- process_ENSEMBL_results(bm)
 	out_ens
 }
@@ -129,10 +129,12 @@ merge_records <- function(tab){
     }
 	vec <- tab[1, , drop = FALSE]
 	out <- data.frame(ensembl_reg_id = tab$regulatory_stable_id[1], 
-					  ensembl_reg_coordinates = paste0(vec$chromosome_name, ":",
-					  					 vec$chromosome_start, "-",
-					  					 vec$chromosome_end), 
-					  ensembl_reg_type = vec$feature_type_name)
+		          ensembl_reg_coordinates = paste0(vec$chromosome_name, 
+							   ":",
+					  		   vec$chromosome_start, 
+							   "-",
+					  		   vec$chromosome_end), 
+			  ensembl_reg_type = vec$feature_type_name)
 	
 	## Select activity and tissue
 	subtab <- tab[, c("activity", "epigenome_name")]
@@ -147,7 +149,8 @@ merge_records <- function(tab){
 	state_vec <- lapply(states, function(x) {
 		
 		mini <- subtab[subtab$activity == x, ]
-		paste(x, ":", paste(mini$epigenome_name, collapse = ";"))
+		paste(x, ":", paste(mini$epigenome_name, 
+				    collapse = ";"))
 	})
 	
 	out$ensembl_reg_tissues <- paste(unlist(state_vec), 
