@@ -26,7 +26,7 @@
 #' for an in-depth description of these variables.
 #' 
 #' @examples 
-#' \dontrun{
+#' 
 #' data(res.epi.manova)
 #' #Annotate the epimutations
 #' \donttest{
