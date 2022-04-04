@@ -78,6 +78,7 @@
 #' data(GRset)
 #' manova_result <- epimutations_one_leave_out(GRset, 
 #'                                             method = "manova")
+#' @importFrom BiocParallel bplapply SerialParam 
 #' @export 
 #' 
 #' 

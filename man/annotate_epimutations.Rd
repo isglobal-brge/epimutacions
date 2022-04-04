@@ -43,12 +43,11 @@ Information about close genes and regulatory
 elements for epimutations.
 }
 \examples{
-\dontrun{
-data(res.epi.manova)
 
+data(res.epi.manova)
 #Annotate the epimutations
+
 anno_results <- annotate_epimutations(res.epi.manova)
-anno_results[1:2, c(1, 12:14)]
-}
+
 
 }
