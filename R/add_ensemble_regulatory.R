@@ -26,7 +26,7 @@
 #'  activation states are separated by `/`}
 #' }
 #' 
-#' @importFrom biomaRt useEnsembl
+#' @importFrom biomaRt useEnsembl useDataset
 #'
 add_ensemble_regulatory <- function(epimutations, 
                                     build = "37"){
@@ -38,8 +38,9 @@ add_ensemble_regulatory <- function(epimutations,
   
   mart <- biomaRt::useEnsembl(biomart = "regulation",
                               GRCh = build)
-  ensembl <- useDataset(dataset = "hsapiens_regulatory_feature", 
-                                 mart = mart)
+  ensembl <- biomaRt::useDataset(
+    dataset = "hsapiens_regulatory_feature", 
+    mart = mart)
   
   reg_res <- lapply(seq_len(nrow(epimutations)), function(i) {
    get_ENSEMBL_data(epimutations[i, "chromosome"], 
@@ -61,13 +62,14 @@ add_ensemble_regulatory <- function(epimutations,
 #' @param start Start of the region
 #' @param end End of the region
 #' @param mart \code{Mart} object to perform the ENSEMBL query
+#' @importFrom biomaRt getBM
 #' @return `data.frame` of one row with the ENSEMBL regulatory 
 #' regions overlapping the genomic coordinate.
 get_ENSEMBL_data <- function(chromosome, 
                              start, 
                              end, 
                              mart){
-	bm <- getBM(
+	bm <- biomaRt::getBM(
 	  attributes = c("activity", 
 	                 "regulatory_stable_id", 
 	                 "chromosome_name", 
