@@ -47,7 +47,7 @@ elements for epimutations.
 data(res.epi.manova)
 #Annotate the epimutations
 
-anno_results <- annotate_epimutations(res.epi.manova)
+#anno_results <- annotate_epimutations(res.epi.manova)
 
 
 }

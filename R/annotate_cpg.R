@@ -23,7 +23,7 @@
 #' DataFrame-like object annotated.
 #' 
 #' @importFrom minfi getAnnotation
-#' @importFrom biomaRt useEnsembl
+#' @importFrom biomaRt useEnsembl getBM
 
 annotate_cpg <- function(data, db, split = ',', 
 		# illumina annotation parameters
@@ -95,7 +95,7 @@ annotate_cpg <- function(data, db, split = ',',
 		
 		# extract OMIM info from db
 	
-		omims <- getBM(mart = gene_mart,
+		omims <- biomaRt::getBM(mart = gene_mart,
 								attributes = c("hgnc_symbol", 
 								               "mim_morbid_accession", 
 								               "mim_morbid_description"),
