@@ -1,8 +1,8 @@
 # News in Package \pkg{epimutacions}
 
-## Changes in version 0.99.30
+## Changes in version 0.99.31
 
-* Add `Makevars` and `Makefile` files
+* Change ruben.cpp to mlm_init.c
 
 ## Changes in version 0.99.0
 
