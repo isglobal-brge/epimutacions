@@ -1,4 +1,9 @@
-\name{NEWS} 
-\title{News in Package \pkg{epimutacions}}
+# News in Package \pkg{epimutacions}
 
-\section{Changes in version 0.99.0}{\itemize{ \item Sumitted to Bioconductor}}
+## Changes in version 0.99.30
+
+* Add `Makevars` and `Makefile` files
+
+## Changes in version 0.99.0
+
+* Sumitted to Bioconductor
