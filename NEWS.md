@@ -1,4 +1,4 @@
-# News in Package \pkg{epimutacions}
+# News in Package epimutacions
 
 ## Changes in version 0.99.32
 
