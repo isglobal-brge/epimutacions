@@ -1,9 +1,10 @@
 # News in Package \pkg{epimutacions}
 
-## Changes in version 0.99.31
+## Changes in version 0.99.32
 
-* Change ruben.cpp to mlm_init.c
+* Bugs and notes (if possible) fixed
+
 
 ## Changes in version 0.99.0
 
-* Sumitted to Bioconductor
+* Submitted to Bioconductor
