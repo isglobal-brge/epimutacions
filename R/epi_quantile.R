@@ -212,7 +212,7 @@ epi_quantile <- function(case,
     if(nrow(flag_df) == 0) {
       return(empty)
     }
-    if(all(flag_df)){
+    if(all(is.na(flag_df))){
       return(empty)
     }
     do.call(rbind, lapply(unique(flag_df$region), 
