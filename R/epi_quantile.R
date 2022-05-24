@@ -178,7 +178,7 @@ epi_quantile <- function(case,
   # We identify the regions taking into account the direction
   reg_sup <- get_regions(flag_sup, pref = "Rs")
   reg_inf <- get_regions(flag_inf, pref = "Ri")
-  
+
   # We add a column indicating the direction of the regions/outliers
   if(nrow(reg_sup) != 0){
     reg_sup$outlier_direction <- "hypermethylation"
@@ -188,6 +188,8 @@ epi_quantile <- function(case,
     reg_inf$outlier_direction <- "hypomethylation"
     reg_inf$CpG_ids <- rownames(reg_inf)
   }
+  
+  
 
 
   collapse_regions <- function(flag_df, 
@@ -208,6 +210,9 @@ epi_quantile <- function(case,
       delta_beta = numeric()
     )
     if(nrow(flag_df) == 0) {
+      return(empty)
+    }
+    if(all(flag_df)){
       return(empty)
     }
     do.call(rbind, lapply(unique(flag_df$region), 
@@ -245,6 +250,8 @@ epi_quantile <- function(case,
                                 colnames(case), 
                                 controls, 
                                 betas)
+
+  
   
   rst <- rbind(clean_inf, clean_sup)
   rst <- rst[!is.na(rst$chromosome), ]
