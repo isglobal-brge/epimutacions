@@ -1,22 +1,24 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: 
-    c(person("Leire",family = "Abarrategui",role = c("aut", "cre"),email = "abarrategui.leire@gmail.com"),
-      person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut"),
-      person("Carlos", "Ruiz-Arenas", ,"carlos.ruiza@upf.edu", role = "aut"),
-      person("Carles", "Hernandez-Ferrer", ,"carles.hernandez@cnag.crg.eu", role = "aut"))
+    c(person("Dolors", "Pelegri-Siso", ,"dolors.pelegri@isglobal.org", role = c("aut", "cre"),comment = c(ORCID = "0000-0002-5993-3003")),
+      person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut", comment = c(ORCID = "0000-0003-3267-2146")),
+      person("Carlos", "Ruiz-Arenas", ,"carlos.ruiza@upf.edu", role = "aut", comment = c(ORCID = "0000-0002-6014-3498")),
+      person("Carles", "Hernandez-Ferrer", ,"carles.hernandez@cnag.crg.eu", role = "aut", comment = c(ORCID = "0000-0002-8029-7160")),
+      person("Leire",family = "Abarrategui",role = c("aut"),email = "abarrategui.leire@gmail.com", comment = c(ORCID = "0000-0002-1175-038X")))
 Description: The package includes some statistical outlier detection methods for epimutations detection in DNA methylation data.
              The methods included in the package are MANOVA, Multivariate linear models, isolation forest, robust mahalanobis distance, quantile and beta. 
              The methods compare a case sample with a suspected disease against a reference panel (composed of healthy individuals) to identify epimutations in the given case sample. 
              It also contains functions to annotate and visualize the identified epimutations.  
 biocViews: 
-  DNAMethylation,
-  BiologicalQuestion,
-  Preprocessing,
-  StatisticalMethod,
-  Normalization
+    DNAMethylation,
+    BiologicalQuestion,
+    Preprocessing,
+    StatisticalMethod,
+    Normalization
 License: MIT + file LICENSE
+Depends: R (>= 4.2.0), epimutacionsData
 Imports:
     minfi,
     bumphunter,
@@ -33,41 +35,40 @@ Imports:
     S4Vectors,
     utils, 
     biomaRt,
-    BiocParallel
+    BiocParallel,
+    GenomeInfoDb,
+    Homo.sapiens,
+    purrr,
+    tibble,
+    Gviz,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    TxDb.Hsapiens.UCSC.hg18.knownGene,
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    rtracklayer,
+    AnnotationDbi,
+    AnnotationHub,
+    ExperimentHub,
+    reshape2,
+    grid,
+    ensembldb,
+    gridExtra,
+    IlluminaHumanMethylation450kmanifest,
+    IlluminaHumanMethylationEPICmanifest,
+    IlluminaHumanMethylation450kanno.ilmn12.hg19,
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
+    ggrepel
 Suggests:
-  AnnotationDbi,
-  AnnotationHub,
-  testthat,
-  knitr,
-  rmarkdown, 
-  BiocStyle,
-  a4Base,
-  kableExtra, 
-  IlluminaHumanMethylation450kanno.ilmn12.hg19,
-  IlluminaHumanMethylation450kmanifest,
-  IlluminaHumanMethylationEPICmanifest,
-  TxDb.Hsapiens.UCSC.hg19.knownGene,
-  TxDb.Hsapiens.UCSC.hg18.knownGene,
-  TxDb.Hsapiens.UCSC.hg38.knownGene,
-  rtracklayer,
-  methods,
-  ensembldb,
-  ExperimentHub,
-  IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
-  grid,
-  gridExtra,
-  grDevices,
-  tibble,
-  Gviz, 
-  ggrepel,
-  reshape2,
-  purrr,
-  GenomeInfoDb,
-  Homo.sapiens
+    testthat,
+    knitr,
+    rmarkdown, 
+    BiocStyle,
+    a4Base,
+    kableExtra, 
+    methods,
+    grDevices
 VignetteBuilder: knitr
 Encoding: UTF-8
-Depends: R (>= 4.2.0), epimutacionsData
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/isglobal-brge/epimutacions
 BugReports: https://github.com/isglobal-brge/epimutacions/issues
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1

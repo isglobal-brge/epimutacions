@@ -44,7 +44,7 @@ organization of European BioHackathon 2020 for its support.
 
 # Contact
 
-* Leire Abarrategui: leire.abarrategui-martinez@newcastle.ac.uk
+* Dolors Pelegri-Siso: dolors.pelegri@isglobal.org
 * Juan R. Gonzalez: juanr.gonzalez@isglobal.org
 * Carlos Ruiz-Arenas: carlos.ruiza@upf.edu
 * Carles Hernandez-Ferrer: carles.hernandez@cnag.crg.eu
