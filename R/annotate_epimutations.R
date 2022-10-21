@@ -36,12 +36,21 @@
 #' @export
 annotate_epimutations <- function(epi_results, 
                         db = "IlluminaHumanMethylationEPICanno.ilm10b2.hg19", 
-                        build = "37", ...){
-	
-	## Add gene mapping and CpG island information
-	epi_results <- annotate_cpg(epi_results, db = db,  ...)
-	
-	## Add ENSEMBL regulatory regions
-	epi_results <- add_ensemble_regulatory(epi_results, build = build)
-	epi_results
+                        build = "37", ...)
+{
+    
+    if (!requireNamespace(db, quietly = TRUE)) {
+        stop( db, " package not available")
+    }
+    
+    if (!requireNamespace(db, quietly = TRUE)) {
+        stop( "'Homo.sapiens' package not available")
+    }
+    ## Add gene mapping and CpG island information
+    epi_results <- annotate_cpg(epi_results, db = db,  ...)
+    
+    ## Add ENSEMBL regulatory regions
+    epi_results <- add_ensemble_regulatory(epi_results, build = build)
+    
+    epi_results
 }

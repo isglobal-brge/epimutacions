@@ -23,6 +23,7 @@
 
 # produced vignettes
 vignettes/*.pdf
+vignettes/*.html
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
@@ -41,4 +42,12 @@ vignettes/*.pdf
 # MAC OS store
 .DS*
 
+# Compiled sourde files
 src/*o
+
+# pkgdown files
+docs
+pkgdown
+^_pkgdown\.yml$
+epimutacions.Rproj
+_pkgdown.yml

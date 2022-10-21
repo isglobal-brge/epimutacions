@@ -1,5 +1,13 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.Rproj\.user
 \.o$
 \.so$
 \.dll$
+^.git$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.git$
+^\.git
+
