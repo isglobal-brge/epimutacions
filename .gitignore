@@ -51,3 +51,4 @@ pkgdown
 ^_pkgdown\.yml$
 epimutacions.Rproj
 _pkgdown.yml
+*.dll
