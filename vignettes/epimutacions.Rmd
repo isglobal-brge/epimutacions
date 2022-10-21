@@ -3,31 +3,41 @@ title: "The epimutacions User's Guide"
 author:
 - name: Leire Abarrategui
   affiliation:
-  - isglobal Bioinformatics Research Group in Epidemiology (BRGE), Barcelona Insitute for Global Health (ISGlobal)
-  - Faculty of Medical Sciences, Newcastle University, Newcastle-Upon-Tyne, UK
+  - Bioinformatics Research Group in Epidemiology (BRGE)
+  - Barcelona Insitute for Global Health (ISGlobal)
+  - Faculty of Medical Sciences, Newcastle University
   - Autonomous University of Barcelona (UAB)
   email: leire.abarrategui-martinez@newcastle.ac.uk
 - name: Carles Hernandez-Ferrer
   affiliation:
-  - Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation
-  - Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain
+  - Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic Regulation
+  - Barcelona Institute of Science and Technology (BIST)
   email: carles.hernandez@cnag.crg.eu
 - name: Carlos Ruiz-Arenas
   affiliation:
-  - Centro de Investigación Biomédica en Red de Enfermedades Raras (CIBERER), Barcelona, Spain
-  - Universitat Pompeu Fabra (UPF), Barcelona, Spain
+  - Centro de Investigación Biomédica en Red de Enfermedades Raras (CIBERER)
+  - Universitat Pompeu Fabra (UPF)
   email: carlos.ruiza@upf.edu
 - name: Juan R. Gonzalez
   affiliation:
-  - isglobal Bioinformatics Research Group in Epidemiology (BRGE), Barcelona Insitute for Global Health (ISGlobal)
-  - uab Department of Mathematics, Autonomous University of Barcelona (UAB)
+  - Bioinformatics Research Group in Epidemiology (BRGE), 
+  - Barcelona Insitute for Global Health (ISGlobal)
+  - Department of Mathematics, Autonomous University of Barcelona (UAB)
   email: juanr.gonzalez@isglobal.org
 date: "`r Sys.Date()`"
 package: "`r pkg_ver('epimutacions')`"
 abstract: >
-    Epimutations are rare alterations in the methylation pattern at specific loci. Have been demonstrated that epimutations could be the causative factor of some genetic diseases. Nonetheless, no standard methods are available to detect and quantify these alterations. 
+    Epimutations are rare alterations in the methylation pattern at specific 
+    loci. Have been demonstrated that epimutations could be the causative 
+    factor of some genetic diseases. Nonetheless, no standard methods are 
+    available to detect and quantify these alterations. 
     
-    This vignette provides an introductory guide to the `epimutacions` package. The package contains several outlier detection methods to identify epimutations in genome-wide DNA methylation microarrays data. The areas covered in this document are: (1) package installation; (2) data loading and preprocessing; and (3) epimutation identification, annotation and visualization. 
+    This vignette provides an introductory guide to the `epimutacions` package.
+    The package contains several outlier detection methods to identify 
+    epimutations in genome-wide DNA methylation microarrays data. The areas 
+    covered in this document are: (1) package installation; (2) data loading 
+    and preprocessing; and (3) epimutation identification, annotation and 
+    visualization. 
 
 output:
   BiocStyle::html_document:
@@ -45,7 +55,7 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(comment="", 
                       warning = FALSE, 
-                      message = FALSE, 
+                      message = FALSE,
                       cache = FALSE)
 ```
 
@@ -261,7 +271,8 @@ epimutations in Illumina 450K array:
 ```{r eval = FALSE}
 library(minfi)
 # Regions 450K
-library(IlluminaHumanMethylation450kanno.ilmn12.hg19)
+library("IlluminaHumanMethylation450kanno.ilmn12.hg19")
+
 data(Locations)
 
 ### Select CpGs (names starting by cg) in autosomic chromosomes
@@ -357,22 +368,22 @@ df <- data.frame(Method = c(rep("illumina",3),
                                 "dyeCorr", 
                                 "keepCN"),
                  Description = c("Performs background correction", 
-                                 "Performs controls normalization", 
-                                 "The reference array for control normalization",
-                                 "Low outlier Meth and Unmeth signals will be fixed", 
-                                 "Remove bad samples", 
-                                 "The cutoff to label samples as ‘bad’",
-                                 "Performs quantile normalization", 
-                                 "Performs quantile normalization within region strata", 
-                                 "Merged to the output the information in the associated manifest package", 
-                                 "Sex of the samples",
-                                 "Offset for the normexp background correct", 
-                                 "Performs dye normalization",
-                                 "Dye bias correction to be done",
-                                 "The number of principal components from the control probes", 
-                                 "Sex of the samples",
-                                 "Performs NOOB background correction before functional normalization",
-                                 "Performs dye normalization", "Keeps copy number estimates"))
+    "Performs controls normalization", 
+    "The reference array for control normalization",
+    "Low outlier Meth and Unmeth signals will be fixed", 
+    "Remove bad samples", 
+    "The cutoff to label samples as ‘bad’",
+    "Performs quantile normalization", 
+    "Performs quantile normalization within region strata", 
+    "Merged to the output the information in the associated manifest package", 
+    "Sex of the samples",
+    "Offset for the normexp background correct", 
+    "Performs dye normalization",
+    "Dye bias correction to be done",
+    "The number of principal components from the control probes", 
+    "Sex of the samples",
+    "Performs NOOB background correction before functional normalization",
+    "Performs dye normalization", "Keeps copy number estimates"))
 
 kable(df[,2:3]) %>% 
       pack_rows(index = c("illumina" = 3,
@@ -580,7 +591,7 @@ methylation consortium, the location of the
 CpG relative to the CpG island, OMIM accession 
 and description number and Ensembl region id, coordinates, type and tissue:
 
-```{r eval = FALSE}
+```{r annot, eval = TRUE}
 rst_mvo <- annotate_epimutations(epi_mvo)
 ```
 
@@ -603,6 +614,29 @@ rst_mvo <- annotate_epimutations(epi_mvo)
 |`ensembl_reg_tissues`      |                                                                                         |
 +---------------------------+-----------------------------------------------------------------------------------------+
 
+As an example we are going to visualize different annotations
+
+```{r annot_relIsland, eval = TRUE}
+kableExtra::kable(
+    rst_mvo[ c(27,32) ,c("epi_id", "cpg_ids", "Relation_to_Island")],
+    row.names = FALSE) %>% 
+  column_spec(1:3, width = "4cm")
+```
+
+```{r annot_omim, eval = TRUE}
+kableExtra::kable(
+    rst_mvo[ c(4,8,22) , c("epi_id", "OMIM_ACC", "OMIM_DESC")],
+    row.names = FALSE ) %>% 
+  column_spec(1:3, width = "4cm")
+    
+```
+
+```{r annot_ensembl, eval = TRUE}
+kableExtra::kable(
+    rst_mvo[ c(1:5), c("epi_id", "ensembl_reg_id", "ensembl_reg_type")],
+    row.names = FALSE ) %>% 
+  column_spec(1:3, width = "4cm")
+```
 
 ## Epimutation visualization
 
@@ -619,10 +653,15 @@ plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 If we set the argument `gene_annot == TRUE` the plot includes the gene annotations: 
 
 ```{r, plot_mvo_genes_annot}
-plot_epimutations(as.data.frame(epi_mvo[1,]), methy, genes_annot = TRUE)
+p <- plot_epimutations(as.data.frame(epi_mvo[1,]), 
+                       methy = methy, 
+                       genes_annot = TRUE)
 ```
 
+```{r plot_genes_annot, results='asis', fig.align = "center", fig.height=12 }
+plot(p)
 
+```
 
 To  plot the chromatin marks H3K4me3, 
 H3K27me3 and H3K27ac we need to specify the argument  `regulation = TRUE`:
@@ -636,9 +675,15 @@ activation of transcription and therefore defined as an active enhancer mark
 
 
 ```{r, plot_mvo_regulation}
-plot_epimutations(as.data.frame(epi_mvo[1,]), methy, regulation = TRUE)
+p <- plot_epimutations(as.data.frame(epi_mvo[1,]), 
+                       methy =  methy, 
+                       regulation = TRUE)
 ```
 
+```{r plot_genes_regulation, results='asis', fig.align = "center", fig.height=12 }
+plot(p)
+
+```
 
 # Acknowledgements
 
@@ -657,7 +702,7 @@ All the team members of *Project #5* for the contribution to this package:
 | Lordstrong | Akano | 0000-0002-1404-0295 | College of Medicine, University of Ibadan | Development |
 | James | Baye | 0000-0002-0078-3688 | Wellcome/MRC Cambridge Stem Cell Institute, University of Cambridge, Cambridge CB2 0AW, UK; Department of Physics, University of Cambridge, Cambridge CB2 3DY, UK | Development |
 | Alejandro | Caceres | - | ISGlobal, Barcelona Institute for Global Health, Dr Aiguader 88, 08003 Barcelona, Spain; Centro de Investigación Biomédica en Red en Epidemiología y Salud Pública (CIBERESP), Madrid, Spain | Development |
-| Carles | Hernandez-Ferrer | 0000-0002-8029-7160 | Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation; Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain | Development |		
+| Carles | Hernandez-Ferrer | 0000-0002-8029-7160 | Centro Nacional de Análisis Genómico (CNAG-CRG), Center for Genomic, Regulation; Barcelona Institute of Science and Technology (BIST), Barcelona, Catalonia, Spain | Development |
 | Pavlo | Hrab | 0000-0002-0742-8478 | Department of Genetics and Biotechnology, Biology faculty, Ivan Franko National University of Lviv | Validation |
 | Raquel | Manzano | 0000-0002-5124-8992 | Cancer Research UK Cambridge Institute; University of Cambridge, Cambridge, United Kingdom | Reporting |
 | Margherita | Mutarelli | 0000-0002-2168-5059 | Institute of Applied Sciences and Intelligent Systems (ISASI-CNR) | Validation |
