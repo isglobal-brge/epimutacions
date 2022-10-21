@@ -83,31 +83,29 @@
 #' 
 #' 
 epimutations_one_leave_out <- function(methy, method = "manova", 
-                                       epi_params = epi_parameters(), 
-                                       BPPARAM = BiocParallel::SerialParam(),
-                                       verbose = TRUE, ...){
-  
-  if(!is(methy, "GenomicRatioSet")){
-    stop("Input data 'methy' must be a 'GenomicRatioSet'. 
-         'makeGenomicRatioSetFromMatrix' function from 'minfi' package 
-         can be useful to create a 'GenomicRatioSet' class object")
-  }
-  
-  if (!requireNamespace("methods"))
-    stop("'methods' package not avaibale")
-  
-    rst <- do.call(rbind, 
-                   BiocParallel::bplapply(colnames(methy), 
-                                          function(case){
-      case_samples <- methy[, case]
-      control_panel <-  methy[, !colnames(methy) %in% case]
-      epimutations(case_samples, 
-                   control_panel, 
-                   method, 
-                   epi_params = epi_params,
-                   verbose = verbose, ...)
-    }, BPPARAM = BPPARAM))
+                                    epi_params = epi_parameters(), 
+                                    BPPARAM = BiocParallel::SerialParam(),
+                                    verbose = TRUE, ...)
+{
+    if (!is(methy, "GenomicRatioSet")) {
+        stop(
+            "Input data 'methy' must be a 'GenomicRatioSet'.
+            'makeGenomicRatioSetFromMatrix' function from 'minfi' package
+            can be useful to create a 'GenomicRatioSet' class object"
+        )
+    }
+    
+    if (!requireNamespace("methods"))
+        stop("'methods' package not avaibale")
+    
+    rst <- do.call(rbind,
+                    BiocParallel::bplapply(colnames(methy), function(case) {
+                        case_samples <- methy[, case]
+                        control_panel <-  methy[,!colnames(methy) %in% case]
+                        epimutations( case_samples, control_panel,
+                            method, epi_params = epi_params, verbose = verbose,
+                            ... )
+                    }, BPPARAM = BPPARAM))
 
-  return(rst)
+    return(rst)
 }
-

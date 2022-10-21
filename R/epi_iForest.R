@@ -11,20 +11,20 @@
 #' @importFrom isotree isolation.forest
 #' @importFrom stats predict
 #' 
-epi_iForest <- function(mixture, case_id, ntrees) {
-	mixture <- t(mixture)
-	#Generate train and test(sample with suspected disease) data frame
-	train <- mixture[row.names(mixture) != case_id, ]
-	test <- mixture[case_id, , drop = FALSE]
-	
-	#Run the isolation forest methods 
-	iso <- isotree::isolation.forest(train, ntrees = ntrees)
-	
-	#Predict
-	score <- stats::predict(iso, test)
-	
-	
-	return(score)
+epi_iForest <- function(mixture, case_id, ntrees) 
+{
+    mixture <- t(mixture)
+    #Generate train and test(sample with suspected disease) data frame
+    train <- mixture[row.names(mixture) != case_id,]
+    test <- mixture[case_id, , drop = FALSE]
+    
+    #Run the isolation forest methods
+    iso <- isotree::isolation.forest(train, ntrees = ntrees)
+    
+    #Predict
+    score <- stats::predict(iso, test)
+    
+    return(score)
 }
 
 #' @title  Creates a data frame containing the results 
@@ -51,30 +51,28 @@ epi_iForest <- function(mixture, case_id, ntrees) {
 #' For more information about the output see 
 #' \link[epimutacions]{epimutations}.
 
-res_iForest <- function(bump, sts, outlier_score_cutoff){
-  if(sts > outlier_score_cutoff){
-	bump$outlier_score <- sts
-	bump$pvalue <- NA
-	bump$adj_pvalue <- NA
-	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", 
-	                                 "hypermethylation")
-	bump[ , c("chromosome", 
-	          "start", "end",
-	          "sz", "cpg_n", 
-	          "cpg_ids", "outlier_score",
-	          "outlier_direction", "pvalue", 
-	          "adj_pvalue", "delta_beta", "sample")]
-	}else{
-    data.frame(chromosome = character(), start = numeric(), 
-               end = numeric(),
-               sz = numeric(),
-               cpg_n = numeric(),
-               cpg_ids = character(),
-               outlier_score = numeric(),
-               outlier_direction = character(),
-               pvalue = numeric(),
-               adj_pvalue = numeric(),
-               delta_beta = numeric(),
-               sample = character())
-  }
-	 }
+res_iForest <- function(bump, sts, outlier_score_cutoff)
+{
+
+    if (sts > outlier_score_cutoff) {
+        
+        bump$outlier_score <- sts
+        bump$pvalue <- NA
+        bump$adj_pvalue <- NA
+        bump$outlier_direction <-
+            ifelse(bump$value < 0, "hypomethylation",
+                                    "hypermethylation")
+        bump[, c( "chromosome", "start", "end", "sz", "cpg_n", "cpg_ids",
+            "outlier_score", "outlier_direction", "pvalue",
+            "adj_pvalue", "delta_beta", "sample" )]
+        
+    } else {
+        
+        data.frame( chromosome = character(), start = numeric(),
+            end = numeric(), sz = numeric(), cpg_n = numeric(),
+            cpg_ids = character(), outlier_score = numeric(),
+            outlier_direction = character(), pvalue = numeric(),
+            adj_pvalue = numeric(), delta_beta = numeric(),
+            sample = character() )
+    }
+}

@@ -74,8 +74,8 @@ Invoking \code{epi_parameters()} with
 no arguments returns return a list with the default values.
 }
 \examples{
- #Default set of parameters
- epi_parameters()
- #change p value for manova method
- epi_parameters(manova = list("pvalue_cutoff" = 0.01))
+   #Default set of parameters
+   epi_parameters()
+   #change p value for manova method
+   epi_parameters(manova = list("pvalue_cutoff" = 0.01))
 }

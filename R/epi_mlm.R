@@ -7,11 +7,11 @@
 #' @return The function returns the F statistic, 
 #' R2 test statistic and Pillai.
 #' 
-epi_mlm <- function(mixture, model) {
-  
-  mod <- mlm(t(mixture) ~ model[,2])
-	statistics <- mod$aov.tab[1, c("F value", "R2", "Pr(>F)")]
-	return(statistics)
+epi_mlm <- function(mixture, model) 
+{
+    mod <- mlm(t(mixture) ~ model[,2])
+    statistics <- mod$aov.tab[1, c("F value", "R2", "Pr(>F)")]
+    return(statistics)
 }
 
 #' @title  Creates a data frame containing the results 
@@ -39,15 +39,15 @@ epi_mlm <- function(mixture, model) {
 #' \link[epimutacions]{epimutations}.
 #' 
 
-res_mlm <- function(bump, sts) {
-	bump$outlier_score <- paste0(sts[1], "/", sts[2])
-	bump$outlier_direction <- ifelse(bump$value < 0, 
-	                                 "hypomethylation", 
-	                                 "hypermethylation")
-	bump$pvalue <- sts[3]
-	bump$adj_pvalue <- NA
-	bump[ , c("chromosome", "start", "end", "sz", "cpg_n", 
-	          "cpg_ids", "outlier_score",
-	          "outlier_direction", "pvalue", 
-	          "adj_pvalue", "delta_beta", "sample")]
+res_mlm <- function(bump, sts) 
+{
+    
+    bump$outlier_score <- paste0(sts[1], "/", sts[2])
+    bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation",
+                                                    "hypermethylation")
+    bump$pvalue <- sts[3]
+    bump$adj_pvalue <- NA
+    bump[, c( "chromosome", "start", "end", "sz", "cpg_n", "cpg_ids",
+        "outlier_score", "outlier_direction", "pvalue", "adj_pvalue",
+        "delta_beta", "sample" )]
 }

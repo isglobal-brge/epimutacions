@@ -34,55 +34,49 @@
 #' 
 #' @importFrom stats pbeta
 #' 
-epi_beta <-  function(beta_params, 
-                      beta_mean, 
-                      betas_case, case, 
-                      controls, betas, annot, 
-                      pvalue_threshold, 
-                      diff_threshold, 
-                      min_cpgs = 3, 
-                      maxGap){
-  
+epi_beta <-  function(beta_params, beta_mean, betas_case, case, controls, 
+                    betas, annot, pvalue_threshold, diff_threshold, 
+                    min_cpgs = 3, maxGap)
+{
 
-  ## Compute p-value for case
-  
-  if (requireNamespace("purrr", quietly = TRUE)) {
-    pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1], 
-                             beta_params[, 2]), 
-                      function(x, shape1, shape2) 
-                        stats::pbeta(x, shape1, shape2))
-  } else {
-    stop("'purrr' package not avaibale")
-  }
-  
-  names(pvals) <- rownames(betas_case)
-  
-  ## Select CpGs with difference in mean methylation higher than threshold
-  diff_vec <- abs(betas_case - beta_mean) > diff_threshold
-  pvals <- pvals[diff_vec]
-  
-  ## Remove NAs
-  pvals <- pvals[!is.na(pvals)]
-  
-  ## Hypomethylation regions
-  negCpGs <- pvals[pvals < pvalue_threshold]
-  negGR <- annot[names(negCpGs)]
-  negGR$pvals <- negCpGs
-  negRegs <- defineRegions(negGR,case, controls, betas, maxGap, up = FALSE)
-  
-  
-  ## Hypermethylation regions
-  posCpGs <- 1 - pvals[1 - pvals < pvalue_threshold]
-  posGR <- annot[names(posCpGs)]
-  posGR$pvals <- posCpGs
-  posRegs <- defineRegions(posGR,case, controls, betas, maxGap)
-  
-  df <- rbind(posRegs, negRegs)
-  
-  if (nrow(df) > 0){
-    df <- subset(df, cpg_n >= min_cpgs, drop = FALSE)
-  }
-  df
+    ## Compute p-value for case
+    if (requireNamespace("purrr", quietly = TRUE)) {
+        pvals <- purrr::pmap_dbl(list(betas_case, beta_params[, 1],
+                                        beta_params[, 2]),
+                                function(x, shape1, shape2)
+                                    stats::pbeta(x, shape1, shape2))
+    } else {
+        stop("'purrr' package not avaibale")
+    }
+    
+    names(pvals) <- rownames(betas_case)
+    
+    ## Select CpGs with difference in mean methylation higher than threshold
+    diff_vec <- abs(betas_case - beta_mean) > diff_threshold
+    pvals <- pvals[diff_vec]
+    
+    ## Remove NAs
+    pvals <- pvals[!is.na(pvals)]
+    
+    ## Hypomethylation regions
+    negCpGs <- pvals[pvals < pvalue_threshold]
+    negGR <- annot[names(negCpGs)]
+    negGR$pvals <- negCpGs
+    negRegs <- defineRegions(negGR, case, controls, betas, maxGap, up = FALSE)
+    
+    
+    ## Hypermethylation regions
+    posCpGs <- 1 - pvals[1 - pvals < pvalue_threshold]
+    posGR <- annot[names(posCpGs)]
+    posGR$pvals <- posCpGs
+    posRegs <- defineRegions(posGR, case, controls, betas, maxGap)
+    
+    df <- rbind(posRegs, negRegs)
+    
+    if (nrow(df) > 0) {
+        df <- subset(df, cpg_n >= min_cpgs, drop = FALSE)
+    }
+    df
 }
 
 
@@ -97,63 +91,57 @@ epi_beta <-  function(beta_params,
 #' @importFrom BiocGenerics start
 #' @importFrom BiocGenerics start end width
 #'                                       
-getBetaParams <- function(x){
-  xbar <- colMeans(x, na.rm = TRUE)
-  s2 <- matrixStats::colVars(x, na.rm = TRUE)
-  term <- (xbar*(1-xbar))/s2
-  alpha.hat <- xbar*(term-1)
-  beta.hat <- (1-xbar)*(term-1)
-  return(cbind(alpha.hat, beta.hat))
+getBetaParams <- function(x)
+{
+    xbar <- colMeans(x, na.rm = TRUE)
+    s2 <- matrixStats::colVars(x, na.rm = TRUE)
+    term <- (xbar * (1 - xbar)) / s2
+    alpha.hat <- xbar * (term - 1)
+    beta.hat <- (1 - xbar) * (term - 1)
+    return(cbind(alpha.hat, beta.hat))
 } 
 
 
 
-defineRegions <- function(regGR, 
-                          case, 
-                          controls, 
-                          betas, 
-                          maxGap, 
-                          up = TRUE){
-  
+defineRegions <- function(regGR, case, controls, betas, maxGap, up = TRUE)
+{
 
-  if (requireNamespace("GenomeInfoDb", quietly = TRUE)) {
-    regGR <- sort(regGR)
-    cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR), 
-                                   BiocGenerics::start(regGR), 
-                                   maxGap = maxGap)
-    reg_list <- lapply(unique(cl), function(i){
-      cpgGR <- regGR[cl == i]
-      rang <- range(cpgGR)
-      data.frame(chromosome = as.character(GenomeInfoDb::seqnames(rang)), 
-                 start = BiocGenerics::start(rang), 
-                 end = BiocGenerics::end(rang),
-                 sz = BiocGenerics::width(rang), cpg_n = length(cpgGR),
-                 cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
-                 outlier_score = mean(cpgGR$pvals),
-                 outlier_direction = ifelse(up, "hypermethylation", 
-                                            "hypomethylation"),
-                 pvalue = NA,
-                 adj_pvalue =  NA,
-                 delta_beta = abs(mean(betas[names(cpgGR), controls]) -
-                                    mean(betas[names(cpgGR), case])),
-                 sample = NA
-      )
-    })
-  } else {
-    stop("'GenomeInfoDb' package not avaibale")
-  }
-  
-  if (length(reg_list) == 0){
-    df <- data.frame(chromosome = character(), start = numeric(), 
-                      end = numeric(),
-                      sz = numeric(), cpg_n = numeric(),
-                      cpg_ids = character(),
-                      outlier_score = numeric(),
-                      outlier_direction = character(),
-                      pvalue = numeric(),
-                      adj_pvalue = numeric(),
-                      delta_beta = numeric())
-  } else {
-    Reduce(rbind, reg_list)
-  }
+    if (requireNamespace("GenomeInfoDb", quietly = TRUE)) {
+        regGR <- sort(regGR)
+        cl <- bumphunter::clusterMaker(GenomeInfoDb::seqnames(regGR),
+                                    BiocGenerics::start(regGR),
+                                    maxGap = maxGap)
+        reg_list <- lapply(unique(cl), function(i) {
+            cpgGR <- regGR[cl == i]
+            rang <- range(cpgGR)
+            data.frame( chromosome = as.character(GenomeInfoDb::seqnames(rang)),
+                        start = BiocGenerics::start(rang),
+                        end = BiocGenerics::end(rang),
+                        sz = BiocGenerics::width(rang),
+                        cpg_n = length(cpgGR),
+                        cpg_ids = paste(names(cpgGR), collapse = ",", sep = ""),
+                        outlier_score = mean(cpgGR$pvals),
+                        outlier_direction = ifelse(up, "hypermethylation",
+                                                        "hypomethylation"),
+                        pvalue = NA,
+                        adj_pvalue =  NA,
+                        delta_beta = abs(mean(betas[names(cpgGR), controls]) -
+                                mean(betas[names(cpgGR), case])),
+                        sample = NA )
+            })
+    } else {
+        stop("'GenomeInfoDb' package not avaibale")
+    }
+    
+    if (length(reg_list) == 0) {
+        df <- data.frame( chromosome = character(), start = numeric(),
+                            end = numeric(), sz = numeric(),
+                            cpg_n = numeric(), cpg_ids = character(),
+                            outlier_score = numeric(),
+                            outlier_direction = character(),
+                            pvalue = numeric(), adj_pvalue = numeric(),
+                            delta_beta = numeric() )
+    } else {
+        Reduce(rbind, reg_list)
+    }
 } 

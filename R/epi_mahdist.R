@@ -16,37 +16,39 @@
 #' 
 
 epi_mahdist <- function(mixture, 
-                           nsamp = c("best", "exact", "deterministic")) {
-	nsamp <- charmatch(nsamp, c("best", "exact", "deterministic"))
-	nsamp <- c("best", "exact", "deterministic")[nsamp]
-	if(is.na(nsamp)) {
-		stop("Argument 'nsamp' shuld be 'best', 'exact', 'deterministic'")
-	}
-	
-	# Transpose input methylation beta matrix to have the samples as rows and 
-	# the CpGs as columns
-	mixture <- t(mixture)
-	
-	# Run the MCD model on the transposed matrix
-	mcd <- robustbase::covMcd(mixture, nsamp = nsamp)
-	
-	# Get MCD stimate of location
-	mean_mcd <- mcd$center
-	
-	# Get MCD estimate scatter
-	cov_mcd <- mcd$cov
-	
-	# Get inverse of scatter
-	cov_mcd_inv <- solve(cov_mcd)
-	
-	# Compute the robust distance between samples
-	robust_dist <- apply(mixture, 1, function(x){
-		x <- (x - mean_mcd)
-		dist <- sqrt((t(x)  %*% cov_mcd_inv %*% x))
-		return(dist)
-	})
-	
-	return(data.frame(ID = names(robust_dist), statistic = robust_dist))
+                        nsamp = c("best", "exact", "deterministic")) 
+{
+
+    nsamp <- charmatch(nsamp, c("best", "exact", "deterministic"))
+    nsamp <- c("best", "exact", "deterministic")[nsamp]
+    if (is.na(nsamp)) {
+        stop("Argument 'nsamp' shuld be 'best', 'exact', 'deterministic'")
+    }
+    
+    # Transpose input methylation beta matrix to have the samples as rows and
+    # the CpGs as columns
+    mixture <- t(mixture)
+    
+    # Run the MCD model on the transposed matrix
+    mcd <- robustbase::covMcd(mixture, nsamp = nsamp)
+    
+    # Get MCD stimate of location
+    mean_mcd <- mcd$center
+    
+    # Get MCD estimate scatter
+    cov_mcd <- mcd$cov
+    
+    # Get inverse of scatter
+    cov_mcd_inv <- solve(cov_mcd)
+    
+    # Compute the robust distance between samples
+    robust_dist <- apply(mixture, 1, function(x) {
+        x <- (x - mean_mcd)
+        dist <- sqrt((t(x)  %*% cov_mcd_inv %*% x))
+        return(dist)
+    })
+    
+    return(data.frame(ID = names(robust_dist), statistic = robust_dist))
 }
 
 #' @title  Creates a data frame containing the results 
@@ -72,21 +74,17 @@ epi_mahdist <- function(mixture,
 #' For more information about the output see 
 #' \link[epimutacions]{epimutations}.
 
-res_mahdist <- function(case, bump, outliers) {
-	bump$outlier <- case %in% outliers
-	bump$outlier_score <- NA
-	bump$pvalue <- NA 
-	bump$adj_pvalue <- NA
-	bump$outlier_direction <- NA
-	bump <- bump[bump$outlier, ]
-	bump <- bump[ , c("chromosome", 
-	                  "start", 
-	                  "end", "sz", 
-	                  "cpg_n", "cpg_ids", 
-	                  "outlier_score",
-	                  "outlier_direction", 
-	                  "pvalue", "adj_pvalue", 
-	                  "delta_beta", "sample")]	
-	return(bump)
+res_mahdist <- function(case, bump, outliers) 
+{
+    bump$outlier <- case %in% outliers
+    bump$outlier_score <- NA
+    bump$pvalue <- NA
+    bump$adj_pvalue <- NA
+    bump$outlier_direction <- NA
+    bump <- bump[bump$outlier,]
+    bump <- bump[, c( "chromosome", "start", "end", "sz", "cpg_n",
+        "cpg_ids", "outlier_score", "outlier_direction", "pvalue",
+        "adj_pvalue", "delta_beta", "sample" )]
+    return(bump)
 }
 

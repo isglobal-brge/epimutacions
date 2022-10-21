@@ -46,28 +46,30 @@
 #' \link[epimutacions]{epimutations} and 
 #' \link[epimutacions]{epimutations_one_leave_out} functions.
 #' @examples 
-#'  #Default set of parameters
-#'  epi_parameters()
-#'  #change p value for manova method
-#'  epi_parameters(manova = list("pvalue_cutoff" = 0.01))
+#'    #Default set of parameters
+#'    epi_parameters()
+#'    #change p value for manova method
+#'    epi_parameters(manova = list("pvalue_cutoff" = 0.01))
 #' @export
 
-epi_parameters <- function(
-  manova = list("pvalue_cutoff" = 0.05), 
-  mlm = list("pvalue_cutoff" = 0.05), 
-  iForest = list("outlier_score_cutoff" = 0.7, 
-                   "ntrees" = 100), 
-  mahdist = list("nsamp" = "deterministic"),
-  quantile = list("window_sz" = 1000,
-                  "offset_abs" = 0.15,
-                  "qsup" = 0.995,
-                  "qinf" = 0.005), 
-  beta =  list("pvalue_cutoff" = 1e-6, 
-               "diff_threshold" = 0.1)){
-  return(list("manova" = manova ,
-              "mlm" = mlm,
-              "iForest" = iForest, 
-              "mahdist" = mahdist, 
-              "quantile" = quantile,
-              "beta" = beta))
+epi_parameters <- function( manova = list("pvalue_cutoff" = 0.05), 
+                            mlm = list("pvalue_cutoff" = 0.05),
+                            iForest = list("outlier_score_cutoff" = 0.7,
+                                            "ntrees" = 100),
+                            mahdist = list("nsamp" = "deterministic"),
+                            quantile = list( "window_sz"=1000,
+                                            "offset_abs"=0.15,
+                                            "qsup"=0.995,
+                                            "qinf"=0.005 ),
+                            beta =  list("pvalue_cutoff" = 1e-6,
+                                        "diff_threshold" = 0.1)) 
+{
+    return( list( "manova" = manova ,
+                    "mlm" = mlm,
+                    "iForest" = iForest,
+                    "mahdist" = mahdist,
+                    "quantile" = quantile,
+                    "beta" = beta 
+                )
+            )
 }

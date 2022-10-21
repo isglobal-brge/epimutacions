@@ -11,21 +11,22 @@
 #' 
 #' @importFrom stats manova p.adjust
 #' 
-epi_manova <-  function(mixture, model, case_id){
-	mixture <- t(mixture)
-	mod <- stats::manova(mixture ~ model)
-	mod_summary <- summary(mod, tol = 0)$stats
-	statistics <- mod_summary[1, c("approx F", "Pillai","Pr(>F)")]
-	
-	# Calculate the beta mean difference
-	keep_case <- which(case_id %in% rownames(mixture))
-	case <- mixture[keep_case,]
-	controls <- mixture[-keep_case, ]
-	coltrols_mean <- colMeans(controls)
-	beta_mean_difference <- coltrols_mean - case
-	
-	output <- list(statistics, beta_mean_difference)
-	return(output)
+epi_manova <-  function(mixture, model, case_id)
+{
+    mixture <- t(mixture)
+    mod <- stats::manova(mixture ~ model)
+    mod_summary <- summary(mod, tol = 0)$stats
+    statistics <- mod_summary[1, c("approx F", "Pillai", "Pr(>F)")]
+    
+    # Calculate the beta mean difference
+    keep_case <- which(case_id %in% rownames(mixture))
+    case <- mixture[keep_case, ]
+    controls <- mixture[-keep_case,]
+    coltrols_mean <- colMeans(controls)
+    beta_mean_difference <- coltrols_mean - case
+    
+    output <- list(statistics, beta_mean_difference)
+    return(output)
 }
 
 #' @title  Creates a data frame containing the results 
@@ -50,22 +51,27 @@ epi_manova <-  function(mixture, model, case_id){
 #' For more information about the output see 
 #' \link[epimutacions]{epimutations}.
 
-res_manova <- function(bump, sts) {
-	bump$outlier_score <- paste0(sts[[1]][1], "/", sts[[1]][2])
-	bump$pvalue <- sts[[1]][3]
-	bump$adj_pvalue <- NA
-	bump$outlier_direction <- ifelse(bump$value < 0, "hypomethylation", 
-	                                 "hypermethylation")
-	bump[ , c("chromosome", "start", "end", "sz", 
-	          "cpg_n", "cpg_ids", "outlier_score",
-	          "outlier_direction", "pvalue", 
-	          "adj_pvalue", "delta_beta", "sample")]
-	}
+res_manova <- function(bump, sts) 
+{
+    
+    bump$outlier_score <- paste0(sts[[1]][1], "/", sts[[1]][2])
+    bump$pvalue <- sts[[1]][3]
+    bump$adj_pvalue <- NA
+    bump$outlier_direction <-
+        ifelse(bump$value < 0, "hypomethylation", "hypermethylation")
+    bump[, c( "chromosome", "start", "end", "sz", "cpg_n", "cpg_ids",
+        "outlier_score", "outlier_direction", "pvalue", "adj_pvalue",
+        "delta_beta", "sample" )]
+}
 
-filter <- function(bump_out, pvalue_cutoff){
-  bump_out$adj_pvalue <- stats::p.adjust(bump_out$pvalue, 
-                                         method = "hochberg")   
-  bump_out <- bump_out[which(bump_out$adj_pvalue < pvalue_cutoff), , 
-                       drop = FALSE]
-  return(bump_out)
+filter <- function(bump_out, pvalue_cutoff)
+{
+    
+    bump_out$adj_pvalue <-
+        stats::p.adjust(bump_out$pvalue, method = "hochberg")
+    
+    bump_out <-
+        bump_out[which(bump_out$adj_pvalue < pvalue_cutoff), , drop = FALSE]
+    
+    return(bump_out)
 }
