@@ -623,7 +623,7 @@ kableExtra::kable(
   column_spec(1:3, width = "4cm")
 ```
 
-```{r annot_omim, eval = TRUE}
+```{r annot_omim, eval = FALSE}
 kableExtra::kable(
     rst_mvo[ c(4,8,22) , c("epi_id", "OMIM_ACC", "OMIM_DESC")],
     row.names = FALSE ) %>% 
