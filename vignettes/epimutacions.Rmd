@@ -592,7 +592,7 @@ CpG relative to the CpG island, OMIM accession
 and description number and Ensembl region id, coordinates, type and tissue:
 
 ```{r annot, eval = TRUE}
-rst_mvo <- annotate_epimutations(epi_mvo)
+rst_mvo <- annotate_epimutations(epi_mvo, omim = FALSE)
 ```
 
 
