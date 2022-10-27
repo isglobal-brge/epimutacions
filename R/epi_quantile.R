@@ -66,7 +66,7 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
         if (all(is.na(flag_df))) {
             return(empty)
         }
-        do.call(rbind, lapply(unique(flag_df$region), function(reg) {
+        do.call(rbind, lapply(unique(flag_df$region[!is.na(flag_df$region)]), function(reg) {
             x <- flag_df[flag_df$region == reg,]
             if (nrow(x) > 0) {
                 data.frame(
@@ -105,8 +105,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
     flag_inf <- flag_result[flag_result$flag_qm_inf,]
     
     # We identify the regions taking into account the direction
-    reg_sup <- get_regions(flag_sup, pref = "Rs")
-    reg_inf <- get_regions(flag_inf, pref = "Ri")
+    reg_sup <- get_regions(flag_sup, chr, pos, pref = "Rs")
+    reg_inf <- get_regions(flag_inf, chr, pos, pref = "Ri")
     
     # We add a column indicating the direction of the regions/outliers
     if (nrow(reg_sup) != 0) {
@@ -130,7 +130,7 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
 
 
 # Function used to detect regions of N CpGs closer than window size
-get_regions <- function(flag_df, window_sz = 1000, N = 3, pref = "R") {
+get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") {
         if (nrow(flag_df) < N) {
             return(data.frame( chr = NA, pos = NA, region = NA ))
         }
