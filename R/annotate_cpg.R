@@ -75,8 +75,8 @@ annotate_cpg <- function(data, db, split = ',',
 
         gene_mart <- biomaRt::useEnsembl( biomart = "ENSEMBL_MART_ENSEMBL",
                                         GRCh = build,
-                                        #..# host = "https://www.ensembl.org",
-                                        host = "www.ensembl.org",
+                                        host = "https://www.ensembl.org",
+                                        #..# host = "www.ensembl.org",
                                         dataset = "hsapiens_gene_ensembl" )
         
         annotated_omim <- lapply(data[[gene_col]], function(gene_list) {
