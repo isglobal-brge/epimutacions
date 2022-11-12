@@ -1,8 +1,7 @@
 # epimutacions v1.1.2
 
-* Get plots fixed
-* Get annotation fixed
-* Removed extra slashes from annotations
+* fixed plots
+* fixed annotations
 
 # epimutacions v0.99.33
 

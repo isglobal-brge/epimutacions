@@ -212,6 +212,15 @@ get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") 
                 red_df$dist_next <- red_df$pos_next - red_df$pos
                 red_df$dist_next[length(red_df$dist_next)] <- 0
                 red_df <- red_df[red_df$dist_next <= window_sz,]
+                # Drop regions with less than N proves after clean
+                small_reg <- names(which(table(red_df$region)<N))
+                if( length(small_reg) > 0) { # 11/11/2022
+                    red_df <- red_df[-which( red_df$region %in% small_reg),]    
+                }
+                
+                if (nrow(red_df) < N) { # 11/11/2022
+                    return(data.frame( chr = NA, pos = NA, region = NA ))
+                }
                 
                 # We drop the columns with the flags
                 # used for the outlier and region detection
