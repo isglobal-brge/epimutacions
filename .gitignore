@@ -47,8 +47,7 @@ src/*o
 
 # pkgdown files
 docs
-pkgdown
-^_pkgdown\.yml$
+pkgdown/*
+!/pkgdown/template/
 epimutacions.Rproj
-_pkgdown.yml
 *.dll
