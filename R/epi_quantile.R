@@ -99,10 +99,20 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
     
     flag_result <- flag_result[!is.na(flag_result$flag_qm_sup) &
                                 !is.na(flag_result$flag_qm_inf), ]
+    #.20221115 - Added.#
+    flag_result <- flag_result[with(flag_result, order(chr, pos)),]
     
     # We select the CpGs according to the direction of the outlier
-    flag_sup <- flag_result[flag_result$flag_qm_sup,]
-    flag_inf <- flag_result[flag_result$flag_qm_inf,]
+    # permisive mode: one CpG not oulier inside sequence of outliers
+    #.20221115.# flag_sup <- flag_result[flag_result$flag_qm_sup,]
+    flag_sup <- which(flag_result$flag_qm_sup)
+    flag_sup <- flag_result[flag_sup[unique(c(which(diff(flag_sup)<=2), 
+                                              which(diff(flag_sup)<=2)+1))],]
+    
+    #.20221115.# flag_inf <- flag_result[flag_result$flag_qm_inf,]
+    flag_inf <- which(flag_result$flag_qm_inf)
+    flag_inf <- flag_result[flag_inf[unique(c(which(diff(flag_inf)<=2), 
+                                              which(diff(flag_inf)<=2)+1))],]
     
     # We identify the regions taking into account the direction
     reg_sup <- get_regions(flag_sup, chr, pos, pref = "Rs")
@@ -130,13 +140,14 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
 
 
 # Function used to detect regions of N CpGs closer than window size
-get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") {
+# get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") {
+get_regions <- function(flag_df, window_sz = 1000, N = 3, pref = "R") {
         if (nrow(flag_df) < N) {
             return(data.frame( chr = NA, pos = NA, region = NA ))
         }
         
-        # Order the input first by chromosome and then by position
-        flag_df <- flag_df[with(flag_df, order(chr, pos)),]
+        # # Order the input first by chromosome and then by position
+        # flag_df <- flag_df[with(flag_df, order(chr, pos)),]
         
         x <- do.call(rbind, lapply(unique(flag_df$chr), function(chr) {
             # Subset by chromosome
