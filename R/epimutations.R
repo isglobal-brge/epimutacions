@@ -315,13 +315,23 @@ epimutations <- function(case_samples, control_panel,
         if (verbose)
             message("Using quantiles ", epi_params$quantile$qinf, " and ",
                         epi_params$quantile$qsup)
-        bctr_prc <- apply( betas_control, 1, quantile, 
-                            probs = c(epi_params$quantile$qinf, 
-                                        epi_params$quantile$qsup),
-                            na.rm = TRUE )
-        bctr_pmin <- bctr_prc[1,]
-        bctr_pmax <- bctr_prc[2,]
-        rm(bctr_prc)
+      
+        if (is.null(epi_params$quantile$reference)){
+          bctr_prc <- apply( betas_control, 1, quantile, 
+                             probs = c(epi_params$quantile$qinf, 
+                                       epi_params$quantile$qsup),
+                             na.rm = TRUE )
+          bctr_pmin <- bctr_prc[1,]
+          bctr_pmax <- bctr_prc[2,]
+          rm(bctr_prc)
+        } else {
+          ## Enable using an outside for quantile reference
+          beta <- quantile.normalize.betas(beta, reference.object$subsets, reference.object$quantiles, verbose=verbose)
+          bctr_pmin <- epi_params$quantile$reference$bctr_pmin
+          bctr_pmax <- epi_params$quantile$reference$bctr_pmax
+        }
+      
+
         # Run region detection
         rst <- do.call(rbind, lapply(cas_sam, function(case) {
             betas <- cbind(betas_control, betas_case[, case, drop = FALSE])
