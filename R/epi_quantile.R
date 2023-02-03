@@ -37,7 +37,7 @@
 #' @return The function returns a data 
 #' frame with the regions candidates to be
 #' epimutations.
-epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
+epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, control_medians,
                         window_sz = 1000, N = 3, offset_abs = 0.15) 
 {
     
@@ -54,7 +54,7 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
     if (!requireNamespace("methods"))
         stop("'methods' package not available")
     
-    collapse_regions <- function(flag_df, case_name, controls, betas) {
+    collapse_regions <- function(flag_df, case_name, control_medians) {
         empty <- data.frame(chromosome = character(), start = numeric(),
                             end = numeric(), sz = numeric(), cpg_n = numeric(),
                             cpg_ids = character(), outlier_score = numeric(),
@@ -80,8 +80,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
                     outlier_direction = x$outlier_direction[1],
                     pvalue = NA,
                     adj_pvalue = NA,
-                    delta_beta = abs(mean(betas[x$CpG_ids, controls]) -
-                                        mean(betas[x$CpG_ids, colnames(case)]))
+                    delta_beta = abs(mean(control_medians[x$CpG_ids] -
+                                        case[x$CpG_ids, ]))
                 )
             } else {
                 empty
@@ -119,8 +119,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, controls, betas,
     }
     
     # We collapse the CpGs in regions and format the output
-    clean_sup <- collapse_regions(reg_sup, colnames(case), controls, betas)
-    clean_inf <- collapse_regions(reg_inf, colnames(case), controls, betas)
+    clean_sup <- collapse_regions(reg_sup, colnames(case), control_medians)
+    clean_inf <- collapse_regions(reg_inf, colnames(case), control_medians)
     
     rst <- rbind(clean_inf, clean_sup)
     rst <- rst[!is.na(rst$chromosome),]

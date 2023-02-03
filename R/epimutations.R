@@ -118,7 +118,7 @@ epimutations <- function(case_samples, control_panel,
                         chr = NULL, start = NULL, end = NULL, 
                         epi_params = epi_parameters(), 
                         maxGap = 1000, bump_cutoff =  0.1, 
-                        min_cpg = 3, verbose = TRUE)
+                        min_cpg = 3, verbose = TRUE, quantile_reference = NULL)
 {
     
     # 1. Inputs check and data extraction
@@ -166,7 +166,7 @@ epimutations <- function(case_samples, control_panel,
         
     }
     
-    avail <- c("manova", "mlm", "iForest", "mahdist", "quantile", "beta")
+    avail <- c("manova", "mlm", "iForest", "mahdist", "quantile", "quantile_reference", "beta")
     method <- charmatch(method, avail)
     method <- avail[method]
     if (is.na(method))
@@ -259,8 +259,9 @@ epimutations <- function(case_samples, control_panel,
                             bump$cpg_ids <- paste(rownames(beta_bump),
                                                     collapse = ",", sep = "")
                             bump$sample <- case
-                            bump$delta_beta <- abs(mean(beta_bump[, ctr_sam]) -
-                                                    mean(beta_bump[, case]))
+                            bump$delta_beta <- abs(mean(rowMedians(beta_bump[, ctr_sam]) -
+                                                        rowMedians(beta_bump[, case])))
+                            
                             if (method == "mahdist") {
                                 dst <- try(epi_mahdist(beta_bump,
                                     epi_params$mahdist$nsamp), silent = TRUE)
@@ -309,47 +310,78 @@ epimutations <- function(case_samples, control_panel,
         }))
         ## Methods that do not need bumphunter ("quantile" and "beta")
     } else if (method == "quantile") {
-        # Compute reference statistics
-        if (verbose)
-            message("Calculating statistics from 'quantile' method")
-        if (verbose)
-            message("Using quantiles ", epi_params$quantile$qinf, " and ",
-                        epi_params$quantile$qsup)
-      
-        if (is.null(epi_params$quantile$reference)){
-          bctr_prc <- apply( betas_control, 1, quantile, 
-                             probs = c(epi_params$quantile$qinf, 
-                                       epi_params$quantile$qsup),
-                             na.rm = TRUE )
-          bctr_pmin <- bctr_prc[1,]
-          bctr_pmax <- bctr_prc[2,]
-          rm(bctr_prc)
+      # Compute reference statistics
+      if (verbose)
+        message("Calculating statistics from 'quantile' method")
+      if (verbose)
+        message("Using quantiles ", epi_params$quantile$qinf, " and ",
+                epi_params$quantile$qsup)
+      bctr_prc <- apply( betas_control, 1, quantile, 
+                         probs = c(epi_params$quantile$qinf, 
+                                   epi_params$quantile$qsup),
+                         na.rm = TRUE )
+      bctr_pmin <- bctr_prc[1,]
+      bctr_pmax <- bctr_prc[2,]
+      rm(bctr_prc)
+      # Run region detection
+      rst <- do.call(rbind, lapply(cas_sam, function(case) {
+        control_medians <- rowMedians(betas_control, na.rm = TRUE)
+        names(control_medians) <- rownames(betas_control)
+        x <- epi_quantile( betas_case[, case, drop = FALSE],
+                           fd, bctr_pmin, bctr_pmax,
+                           control_medians, epi_params$quantile$window_sz,
+                           min_cpg, epi_params$quantile$offset_abs )
+        if (is.null(x) || nrow(x) == 0) {
+          x <- data.frame( chromosome = 0, start = 0, end = 0, sz = NA,
+                           cpg_n = NA, cpg_ids = NA, outlier_score = NA,
+                           outlier_direction = NA, pvalue = NA,
+                           adj_pvalue = NA, delta_beta = NA, 
+                           sample = case )
         } else {
-          ## Enable using an outside for quantile reference
-          beta <- quantile.normalize.betas(beta, reference.object$subsets, reference.object$quantiles, verbose=verbose)
-          bctr_pmin <- epi_params$quantile$reference$bctr_pmin
-          bctr_pmax <- epi_params$quantile$reference$bctr_pmax
+          x$sample <- case
         }
+        x
+      }))
+    } else if (method == "quantile_reference") {
+      if (is.null(quantile_reference)) {
+        stop("The argument 'quantile_reference' is compulsory when using quantile_reference method")
+      }
+      # Compute reference statistics
+      if (verbose)
+        message("Using quantiles reference")
       
-
-        # Run region detection
-        rst <- do.call(rbind, lapply(cas_sam, function(case) {
-            betas <- cbind(betas_control, betas_case[, case, drop = FALSE])
-            x <- epi_quantile( betas_case[, case, drop = FALSE],
-                                fd, bctr_pmin, bctr_pmax, ctr_sam,
-                                betas, epi_params$quantile$window_sz,
-                                min_cpg, epi_params$quantile$offset_abs )
-            if (is.null(x) || nrow(x) == 0) {
-                x <- data.frame( chromosome = 0, start = 0, end = 0, sz = NA,
-                                cpg_n = NA, cpg_ids = NA, outlier_score = NA,
-                                outlier_direction = NA, pvalue = NA,
-                                adj_pvalue = NA, delta_beta = NA, 
-                                sample = case )
-            } else {
-                x$sample <- case
-            }
-            x
-        }))
+      com_cpgs <- intersect(rownames(betas_case), rownames(quantile_reference))
+      quant_ref_com <- quantile_reference[com_cpgs, ]
+      
+      bctr_pmin <- quant_ref_com[, "0.5%"]
+      bctr_pmax <- quant_ref_com[, "99.5%"]
+     
+      if (verbose)
+        message("Integrating cases into reference")
+      
+      betas <- cbind(betas_case, betas_control)
+      betas_corrected <- integrateReferenceQuantile(betas[com_cpgs, ], quant_ref_com)
+      
+      if (verbose)
+        message("Computing epimutations")
+      
+      # Run region detection
+      rst <- do.call(rbind, lapply(cas_sam, function(case) {
+        x <- epi_quantile( betas_corrected[, case, drop = FALSE],
+                           fd, bctr_pmin, bctr_pmax,
+                           quant_ref_com[, "50%"], epi_params$quantile$window_sz,
+                           min_cpg, epi_params$quantile$offset_abs )
+        if (is.null(x) || nrow(x) == 0) {
+          x <- data.frame( chromosome = 0, start = 0, end = 0, sz = NA,
+                           cpg_n = NA, cpg_ids = NA, outlier_score = NA,
+                           outlier_direction = NA, pvalue = NA,
+                           adj_pvalue = NA, delta_beta = NA, 
+                           sample = case )
+        } else {
+          x$sample <- case
+        }
+        x
+      }))
     } else if (method == "beta") {
         # Get Beta distribution params
         message("Computing beta distribution parameters")
