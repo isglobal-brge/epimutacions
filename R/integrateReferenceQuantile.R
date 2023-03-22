@@ -15,15 +15,14 @@ normalizeQuantile <- function(vals, quantiles){
   valsQ <- preprocessCore::normalize.quantiles.use.target(matrix(valsf, ncol = 1), quantiles)
   moddf <- list(Q = valsQ, f = valsf)
   
-  # diff <- valsf - valsQ
+  diff <- valsf - valsQ
   mod <- .lm.fit(cbind(matrix(valsf), 1), valsQ)
-  
-  vals_out <- vals*mod$coefficients[1] + mod$coefficients[2]
-  # bpars <- getBetaParams(matrix(valsf, ncol = 1))
-  # ps <- pbeta(vals, bpars[1], bpars[2])
-  # quants <- pmax(ps, 1 - ps)
-  # vals_out <- (1 - quants)/0.5*(vals*mod$coefficients[1] + mod$coefficients[2]) + (quants - 0.5)/0.5*(vals - mean(diff))
-  # 
+
+  bpars <- getBetaParams(matrix(valsf, ncol = 1))
+  ps <- pbeta(vals, bpars[1], bpars[2])
+  quants <- pmax(ps, 1 - ps)
+  vals_out <- (1 - quants)/0.5*(vals*mod$coefficients[1] + mod$coefficients[2]) + (quants - 0.5)/0.5*(vals - mean(diff))
+
   vals_out[vals_out < 1e-3] <- 1e-3
   vals_out[vals_out > 1-1e-3] <- 1-1e-3
   vals_out
