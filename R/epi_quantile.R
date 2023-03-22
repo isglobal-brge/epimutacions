@@ -99,10 +99,20 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, control_medians,
     
     flag_result <- flag_result[!is.na(flag_result$flag_qm_sup) &
                                 !is.na(flag_result$flag_qm_inf), ]
+    #.20221115 - Added.#
+    flag_result <- flag_result[with(flag_result, order(chr, pos)),]
     
     # We select the CpGs according to the direction of the outlier
-    flag_sup <- flag_result[flag_result$flag_qm_sup,]
-    flag_inf <- flag_result[flag_result$flag_qm_inf,]
+    # permisive mode: one CpG not oulier inside sequence of outliers
+    #.20221115.# flag_sup <- flag_result[flag_result$flag_qm_sup,]
+    flag_sup <- which(flag_result$flag_qm_sup)
+    flag_sup <- flag_result[flag_sup[unique(c(which(diff(flag_sup)<=2), 
+                                              which(diff(flag_sup)<=2)+1))],]
+    
+    #.20221115.# flag_inf <- flag_result[flag_result$flag_qm_inf,]
+    flag_inf <- which(flag_result$flag_qm_inf)
+    flag_inf <- flag_result[flag_inf[unique(c(which(diff(flag_inf)<=2), 
+                                              which(diff(flag_inf)<=2)+1))],]
     
     # We identify the regions taking into account the direction
     reg_sup <- get_regions(flag_sup, chr, pos, pref = "Rs")
@@ -130,13 +140,14 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, control_medians,
 
 
 # Function used to detect regions of N CpGs closer than window size
-get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") {
+# get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") {
+get_regions <- function(flag_df, window_sz = 1000, N = 3, pref = "R") {
         if (nrow(flag_df) < N) {
             return(data.frame( chr = NA, pos = NA, region = NA ))
         }
         
-        # Order the input first by chromosome and then by position
-        flag_df <- flag_df[with(flag_df, order(chr, pos)),]
+        # # Order the input first by chromosome and then by position
+        # flag_df <- flag_df[with(flag_df, order(chr, pos)),]
         
         x <- do.call(rbind, lapply(unique(flag_df$chr), function(chr) {
             # Subset by chromosome
@@ -212,6 +223,15 @@ get_regions <- function(flag_df, chr, pos, window_sz = 1000, N = 3, pref = "R") 
                 red_df$dist_next <- red_df$pos_next - red_df$pos
                 red_df$dist_next[length(red_df$dist_next)] <- 0
                 red_df <- red_df[red_df$dist_next <= window_sz,]
+                # Drop regions with less than N proves after clean
+                small_reg <- names(which(table(red_df$region)<N))
+                if( length(small_reg) > 0) { # 11/11/2022
+                    red_df <- red_df[-which( red_df$region %in% small_reg),]    
+                }
+                
+                if (nrow(red_df) < N) { # 11/11/2022
+                    return(data.frame( chr = NA, pos = NA, region = NA ))
+                }
                 
                 # We drop the columns with the flags
                 # used for the outlier and region detection

@@ -1,0 +1,15 @@
+url: https://isglobal-brge..github.io/epimutacions
+template:
+  bootstrap: 5
+  bootswatch: sandstone
+  bslib:
+    font_scale: 0.88
+navbar:
+  structure:
+    left:  [intro, reference, news]
+    right: [twitter, github]
+  components:
+    twitter:
+      icon: fa-twitter
+      href: http://twitter.com/brgelab
+      aria-label: Twitter
