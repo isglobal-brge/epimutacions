@@ -40,7 +40,6 @@
 epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, control_medians,
                         window_sz = 1000, N = 3, offset_abs = 0.15) 
 {
-    
     # Check that there is a single proband
     if (ncol(case) != 1) {
         stop("Epimutation detection with 'quantile'
@@ -115,8 +114,8 @@ epi_quantile <- function(case, fd, bctr_pmin, bctr_pmax, control_medians,
                                               which(diff(flag_inf)<=2)+1))],]
     
     # We identify the regions taking into account the direction
-    reg_sup <- get_regions(flag_sup, chr, pos, pref = "Rs")
-    reg_inf <- get_regions(flag_inf, chr, pos, pref = "Ri")
+    reg_sup <- get_regions(flag_sup, window_sz, N, pref = "Rs")
+    reg_inf <- get_regions(flag_inf, window_sz, N, pref = "Ri")
     
     # We add a column indicating the direction of the regions/outliers
     if (nrow(reg_sup) != 0) {
