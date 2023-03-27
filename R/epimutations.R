@@ -315,12 +315,12 @@ epimutations <- function(case_samples, control_panel,
         if (verbose)
             message("Using quantiles ", epi_params$quantile$qinf, " and ",
                         epi_params$quantile$qsup)
-        bctr_prc <- apply( betas_control, 1, quantile, 
+        bctr_prc <- matrixStats::rowQuantiles( betas_control,
                             probs = c(epi_params$quantile$qinf, 
                                         epi_params$quantile$qsup),
                             na.rm = TRUE )
-        bctr_pmin <- bctr_prc[1,]
-        bctr_pmax <- bctr_prc[2,]
+        bctr_pmin <- bctr_prc[, 1]
+        bctr_pmax <- bctr_prc[, 2]
         rm(bctr_prc)
         # Run region detection
         rst <- do.call(rbind, lapply(cas_sam, function(case) {
