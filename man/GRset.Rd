@@ -10,6 +10,9 @@ A GenomicRatioSet object with 4243 CpGs and 11 variables
 \usage{
 data(GRset)
 }
+\value{
+A GenomicRatioSet object with 4243 CpGs and 11 variables
+}
 \description{
 A small GenomicRatioSet object to use in the functions examples
 containing 10 control samples and a case sample.

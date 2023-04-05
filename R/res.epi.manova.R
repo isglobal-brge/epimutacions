@@ -11,4 +11,6 @@
 #' @format A data frame with 16 variables and 6 epimutations. 
 #' @examples
 #' data(res.epi.manova)
+#' 
+#' @return A data frame with 16 variables and 6 epimutations.
 "res.epi.manova"
