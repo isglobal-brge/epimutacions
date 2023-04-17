@@ -10,6 +10,9 @@ A data frame with 16 variables and 6 epimutations.
 \usage{
 data(res.epi.manova)
 }
+\value{
+A data frame with 16 variables and 6 epimutations.
+}
 \description{
 A data frame containing the results of \code{epimutations} function using
 \code{"manova"} methods for \code{GRset} dataset. For more information
@@ -17,5 +20,6 @@ see the example of \code{epimutations} function.
 }
 \examples{
 data(res.epi.manova)
+
 }
 \keyword{datasets}

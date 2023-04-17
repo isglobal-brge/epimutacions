@@ -49,5 +49,4 @@ data(res.epi.manova)
 
 #anno_results <- annotate_epimutations(res.epi.manova)
 
-
 }

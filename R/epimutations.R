@@ -28,6 +28,8 @@
 #' cutoff or below the negative of the 
 #' cutoff will be used as candidate regions. 
 #' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
+#' @param pca_correction logical. If TRUE methylation PCA correction is 
+#' applied to compensate batch effect.
 #' @param verbose logical. If TRUE additional details about 
 #' the procedure will provide to the user. 
 #' The default is TRUE. 
@@ -109,6 +111,7 @@
 #' @importFrom stats model.matrix qchisq
 #' @importFrom bumphunter bumphunter
 #' @importFrom S4Vectors to from
+#' @importFrom matrixStats rowQuantiles
 #' @import ensembldb
 
 #' 
@@ -118,7 +121,9 @@ epimutations <- function(case_samples, control_panel,
                         chr = NULL, start = NULL, end = NULL, 
                         epi_params = epi_parameters(), 
                         maxGap = 1000, bump_cutoff =  0.1, 
-                        min_cpg = 3, verbose = TRUE, quantile_reference = NULL)
+                        min_cpg = 3, quantile_reference = NULL,
+                        pca_correction = FALSE, 
+                        verbose = TRUE)
 {
     
     # 1. Inputs check and data extraction
@@ -155,7 +160,6 @@ epimutations <- function(case_samples, control_panel,
             stop("'start' and 'end' length must be same")
         }
         
-        
         if (isTRUE(any(start > end))) {
             stop("'start' cannot be higher than 'end'")
         }
@@ -179,6 +183,15 @@ epimutations <- function(case_samples, control_panel,
     lapply(pck, function(x)
         if (!requireNamespace(x))
             stop("'", x, "'", " package not avaibale"))
+    
+    # Apply PCA correction
+    if( pca_correction ) {
+        pccorr <- PCA_correction(case_samples, control_samples)
+        case_samples <- pccorr$samples
+        control_samples <- pccorr$controls
+        rm(pccorr)
+    }
+    
     
     ## Extract required data:
     #* feature annotation
@@ -316,12 +329,12 @@ epimutations <- function(case_samples, control_panel,
       if (verbose)
         message("Using quantiles ", epi_params$quantile$qinf, " and ",
                 epi_params$quantile$qsup)
-      bctr_prc <- apply( betas_control, 1, quantile, 
-                         probs = c(epi_params$quantile$qinf, 
-                                   epi_params$quantile$qsup),
-                         na.rm = TRUE )
-      bctr_pmin <- bctr_prc[1,]
-      bctr_pmax <- bctr_prc[2,]
+      bctr_prc <- matrixStats::rowQuantiles( betas_control,
+                                             probs = c(epi_params$quantile$qinf, 
+                                                       epi_params$quantile$qsup),
+                                             na.rm = TRUE )
+      bctr_pmin <- bctr_prc[, 1]
+      bctr_pmax <- bctr_prc[, 2]
       rm(bctr_prc)
       # Run region detection
       rst <- do.call(rbind, lapply(cas_sam, function(case) {
@@ -382,6 +395,7 @@ epimutations <- function(case_samples, control_panel,
         }
         x
       }))
+
     } else if (method == "beta") {
         # Get Beta distribution params
         message("Computing beta distribution parameters")

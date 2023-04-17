@@ -32,6 +32,10 @@
 #' 
 #' #anno_results <- annotate_epimutations(res.epi.manova)
 #' 
+#' @import IlluminaHumanMethylation450kmanifest
+#' @import IlluminaHumanMethylationEPICmanifest
+#' @import IlluminaHumanMethylation450kanno.ilmn12.hg19
+#' @import IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 #' 
 #' @export
 annotate_epimutations <- function(epi_results, 

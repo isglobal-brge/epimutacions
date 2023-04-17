@@ -154,6 +154,7 @@ get_regions <- function(flag_df, window_sz = 1000, N = 3, pref = "R") {
             if (nrow(red_df) < N) {
                 return(data.frame( chr = NA, pos = NA, region = NA ))
             }
+            red_df <- red_df[with(red_df, order(pos)),]
             
             # Get the position of the previous and
             #next probe for each probe in the
