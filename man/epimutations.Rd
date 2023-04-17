@@ -58,7 +58,7 @@ cutoff will be used as candidate regions.}
 \item{min_cpg}{an integer specifying the minimum CpGs number in a DMR.}
 
 \item{pca_correction}{logical. If TRUE methylation PCA correction is
-applied to compensate batch effect.}
+applied to compensate batch effect. The default value if FALSE}
 
 \item{verbose}{logical. If TRUE additional details about
 the procedure will provide to the user.

@@ -322,10 +322,10 @@ The  `epi_preprocess()` function  allows calling the
 | `illumina  `  | `preprocessIllumina`        |  Implements preprocessing for Illumina methylation                   |
 |               |                             |      microarrays as used in Genome Studio                            |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-|`swan`         | `preprocessSWAN `           |Subset-quantile Within Array Normalisation (SWAN). It allows Infinium |
+| `swan`        | `preprocessSWAN `           |Subset-quantile Within Array Normalisation (SWAN). It allows Infinium |
 |               |                             | I and II type probes on a single array to be normalized together     |
 +---------------+-----------------------------+----------------------------------------------------------------------+
-|  `quantile`   |`preprocessQuantile`         |Implements stratified quantile normalization preprocessing for        |                
+| `quantile`    |`preprocessQuantile`         |Implements stratified quantile normalization preprocessing for        |                
 |               |                             |Illumina methylation microarrays                                      |
 +---------------+-----------------------------+----------------------------------------------------------------------+
 | `noob`        | `preprocessNoob`            | Noob (normal-exponential out-of-band) is a background correction     | 
@@ -433,6 +433,9 @@ The function `epimutations()` includes 6 methods for epimutation identification:
 (4) robust mahalanobis distance (`mahdist`) 
 (5) `quantile` and (6) `beta`. 
 
+PCA correction can be applied to compensate batch effect setting 
+`pca_correction = TRUE` in the `epimutations` function .
+
 To illustrate the following examples we are 
 going to use the dataset `methy` (section \@ref(methy)). 
 We need to separate the case and control samples: 
@@ -451,6 +454,14 @@ epi_mvo <- epimutations(case_samples,
                         method = "manova")
 ```
 
+We can apply PCA correcton to compensate batch effect
+
+```{r,  epi_mvo_pca, message=FALSE, warning=FALSE}
+epi_mvo_pca <- epimutations(case_samples, 
+                            control_samples, 
+                            method = "manova",
+                            pca_correction = TRUE)
+```
 
 
 The function `epimutations_one_leave_out()` 
@@ -570,6 +581,10 @@ The following table describes each argument:
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
 | `CRE_type`            | Type of cREs (cis-Regulatory Elements) as defined by ENCODE.                                                          |
 +-----------------------+-----------------------------------------------------------------------------------------------------------------------+
+
+If no outliers are detected in the region, valures for `sz`, `cpg_n`, `cpg_ids`, 
+`outlier_score`, `outlier_direction`, `pvalue`, `adj_pvalue` and `epi_region_id` 
+are set to `NA`
 
 As an example we are going to visualize the obtained 
 results with MANOVA method (`epi_mvo`): 
