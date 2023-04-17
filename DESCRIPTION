@@ -18,7 +18,7 @@ biocViews:
     StatisticalMethod,
     Normalization
 License: MIT + file LICENSE
-Depends: R (>= 4.3.0), epimutacionsData
+Depends: R (>= 4.2.0), epimutacionsData
 Imports:
     minfi,
     bumphunter,
