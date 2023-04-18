@@ -33,10 +33,10 @@ PCA_correction <- function(cases, controls, prange = 40000) {
     beta <- ilogit2(res)
     assay(all_samples) <- beta
     
-    cases <- com[ , colnames(cases)]
-    controls <- com[ , colnames(controls)]
+    gr_cases <- all_samples[ , colnames(cases)]
+    gr_controls <- all_samples[ , colnames(controls)]
     
-    return(list(cases = cases, 
-                controls = controls))
+    return(list(cases = gr_cases, 
+                controls = gr_controls))
     
 }

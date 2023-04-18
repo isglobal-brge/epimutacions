@@ -185,9 +185,11 @@ epimutations <- function(case_samples, control_panel,
     
     # Apply PCA correction
     if( pca_correction ) {
+        if (verbose)
+            message("Applying PCA correction")
         pccorr <- PCA_correction(case_samples, control_samples)
-        case_samples <- pccorr$samples
-        control_samples <- pccorr$controls
+        case_samples <- pccorr$cases
+        control_panel <- pccorr$controls
         rm(pccorr)
     }
     
