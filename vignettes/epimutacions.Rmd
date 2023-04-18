@@ -437,7 +437,7 @@ PCA correction can be applied to compensate batch effect setting
 `pca_correction = TRUE` in the `epimutations` function .
 
 To illustrate the following examples we are 
-going to use the dataset `methy` (section \@ref(methy)). 
+going to use the dataset `methy` (section \@ref(datasets)). 
 We need to separate the case and control samples: 
 
 ```{r}
