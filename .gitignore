@@ -51,3 +51,4 @@ pkgdown/*
 !/pkgdown/template/
 epimutacions.Rproj
 *.dll
+*.yml
