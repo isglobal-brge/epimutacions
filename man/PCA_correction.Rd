@@ -27,5 +27,4 @@ Compute PCA correction
 data(res.epi.manova)
 #Annotate the epimutations
 
-
 }

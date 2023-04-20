@@ -17,6 +17,7 @@
 #' data(res.epi.manova)
 #' #Annotate the epimutations
 #' 
+#' @importFrom stats residuals
 #' 
 PCA_correction <- function(cases, controls, prange = 40000) {
     

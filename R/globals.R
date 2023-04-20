@@ -16,4 +16,5 @@ utils::globalVariables(c("chr", "pos", "cpg_n", "quantile", "start",
                         "TxDb.Hsapiens.UCSC.hg19.knownGene", 
                         "TxDb.Hsapiens.UCSC.hg38.knownGene", 
                         "TxDb.Hsapiens.UCSC.hg18.knownGene", "seqnames",
-                        "Homo.sapiens", "as_tibble", "pmap_dbl"))
+                        "Homo.sapiens", "as_tibble", "pmap_dbl",
+                        "getM", "residuals", "ilogit2", "featureNames"))
