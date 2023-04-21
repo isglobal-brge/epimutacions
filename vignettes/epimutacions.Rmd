@@ -433,8 +433,8 @@ The function `epimutations()` includes 6 methods for epimutation identification:
 (4) robust mahalanobis distance (`mahdist`) 
 (5) `quantile` and (6) `beta`. 
 
-PCA correction can be applied to compensate batch effect setting 
-`pca_correction = TRUE` in the `epimutations` function .
+<!-- PCA correction can be applied to compensate batch effect setting  -->
+<!-- `pca_correction = TRUE` in the `epimutations` function . -->
 
 To illustrate the following examples we are 
 going to use the dataset `methy` (section \@ref(datasets)). 
@@ -454,14 +454,14 @@ epi_mvo <- epimutations(case_samples,
                         method = "manova")
 ```
 
-We can apply PCA correcton to compensate batch effect
+<!-- We can apply PCA correcton to compensate batch effect -->
 
-```{r,  epi_mvo_pca, message=FALSE, warning=FALSE}
-epi_mvo_pca <- epimutations(case_samples, 
-                            control_samples, 
-                            method = "manova",
-                            pca_correction = TRUE)
-```
+<!-- ```{r,  epi_mvo_pca, message=FALSE, warning=FALSE} -->
+<!-- epi_mvo_pca <- epimutations(case_samples,  -->
+<!--                             control_samples,  -->
+<!--                             method = "manova", -->
+<!--                             pca_correction = TRUE) -->
+<!-- ``` -->
 
 
 The function `epimutations_one_leave_out()` 
