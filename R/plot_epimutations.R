@@ -127,6 +127,15 @@ plot_epimutations <- function(dmr,  methy,  genome = "hg19",
     ## * Genomic ranges of each CpG in the DMR
     ## * Beta values 
     gr <- create_GRanges_class(methy, dmr[,"cpg_ids"]) #epi_plot
+    # Remove samples without values
+    emptySamples <- sapply(1:ncol(mcols(gr)), function(x) {
+        if(all(is.na(mcols(gr)[x]))) { return(x) } 
+        else{ return(NA) } 
+    })
+    
+    if( length(emptySamples[!is.na(emptySamples)]) > 0 ) {
+        mcols(gr) <- mcols(gr)[,-which(!is.na(emptySamples))]    
+    }
     betas_sd_mean <- betas_sd_mean(gr) #epi_plot
     
     #Generate variables in 'beta_values' data frame containing:
