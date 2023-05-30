@@ -65,6 +65,7 @@
 #' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
 #' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
 #' @importFrom ggrepel geom_text_repel
+#' @importFrom GenomicRanges mcols
 #' 
 #' @export
 plot_epimutations <- function(dmr,  methy,  genome = "hg19",  
