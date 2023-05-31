@@ -9,8 +9,7 @@ epi_quantile(
   fd,
   bctr_pmin,
   bctr_pmax,
-  controls,
-  betas,
+  control_medians,
   window_sz = 1000,
   N = 3,
   offset_abs = 0.15
@@ -37,11 +36,6 @@ values has to be higher or equal
 to this value to be considered an
 epimutation.}
 
-\item{controls}{control samples names.}
-
-\item{betas}{a matrix containing the
-beta values for all samples.}
-
 \item{window_sz}{Maximum distance
 between a pair of CpGs to defined an
 region of CpGs as epimutation (default: 1000).}
@@ -53,6 +47,11 @@ to defined an epimutation (default: 3).}
 \item{offset_abs}{Extra enforcement
 defining an epimutation based on
 beta values at 0.005 and 0.995 quantiles (default: 0.15).}
+
+\item{betas}{a matrix containing the
+beta values for all samples.}
+
+\item{controls}{control samples names.}
 }
 \value{
 The function returns a data

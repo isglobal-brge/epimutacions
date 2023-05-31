@@ -166,8 +166,8 @@ betas_sd_mean <- function(gr)
     # * Population mean
     # * 1, 1.5, and 2 standard deviations from the mean of the distribution
     betas <- as.data.frame(S4Vectors::values(gr))
-    mean <- rowMeans(betas)
-    sd <- apply(betas, 1, sd)
+    mean <- rowMeans(betas, na.rm=TRUE)
+    sd <- apply(betas, 1, sd, na.rm=TRUE)
     sd_1_lower <- abs(mean - sd)
     sd_1_upper <- mean + sd
     sd_1.5_lower <- mean - 1.5 * sd

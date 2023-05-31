@@ -51,21 +51,35 @@ normalizeQuantile <- function(vals, quantiles){
 
   }
 
+
+
+normalizeBeta <- function(vals, beta_params){
+  
+  ### Select values from quantiles 5-95%
+  center <- vals > quantile(vals, 0.05, na.rm = TRUE) & vals < quantile(vals, 0.95, na.rm = TRUE)
+  valsf <- vals[center]
+  bpars <- getBetaParams(matrix(vals, ncol = 1))
+  
+  ps <- pbeta(vals, bpars[1], bpars[2])
+  vals_pit <- qbeta(ps, beta_params[1], beta_params[2])
+  
+}
+
 #### New distribution higher ####
 vals_high <- simulateData(0.1, 0.2, 5e-4, 1000, 10, 0.1)
 
 qA <- minfi::logit2(quantile(vals_high$A, seq(0.05, 0.95, 0.05)))
-distB_norm <- normalizeQuantile(vals_high$B, qA)
+distB_beta <- normalizeBeta(vals_high$B, getBetaParams(matrix(vals_high$A, ncol = 1)))
 
-data.frame(Distribution = c(vals_high$A, vals_high$B, distB_norm), 
-           Group = rep(c("A", "B", "B normalize"), c(lengths(vals_high), length(distB_norm)))) %>%
+data.frame(Distribution = c(vals_high$A, vals_high$B, distB_beta), 
+           Group = rep(c("A", "B", "B normalize"), c(lengths(vals_high), length(distB_beta)))) %>%
   ggplot(aes(x = Group, y = Distribution)) +
   geom_boxplot() +
   theme_bw()
 
 
-data.frame(Distribution = c(vals_high$A, vals_high$B, distB_norm), 
-           Group = rep(c("A", "B", "B normalize"), c(lengths(vals_high), length(distB_norm)))) %>%
+data.frame(Distribution = c(vals_high$A, vals_high$B, distB_beta), 
+           Group = rep(c("A", "B", "B normalize"), c(lengths(vals_high), length(distB_beta)))) %>%
   ggplot(aes(color = Group, x = Distribution)) +
   geom_density() +
   theme_bw()
@@ -75,7 +89,7 @@ data.frame(Distribution = c(vals_high$A, vals_high$B, distB_norm),
 vals_low <- simulateData(0.2, 0.1, 5e-4, 1000, 10, 0.1)
 
 qA <- minfi::logit2(quantile(vals_low$A, seq(0.05, 0.95, 0.05)))
-distB_norm <- normalizeQuantile(vals_low$B, qA)
+distB_norm <- normalizeBeta(vals_low$B, getBetaParams(matrix(vals_low$A, ncol = 1)))
 
 data.frame(Distribution = c(vals_low$A, vals_low$B, distB_norm), 
            Group = rep(c("A", "B", "B normalize"), c(lengths(vals_low), length(distB_norm)))) %>%
@@ -153,14 +167,16 @@ getBeta(comb[top_cpgs, ]) %>%
   facet_wrap(~ CpG)
 
 ref_quantiles <- rowQuantiles(getBeta(brge_methy), probs =  c(0.005, 0.995, seq(0.05, 0.95, 0.05)))
-mod_methy2 <- integrateReferenceQuantile(getBeta(methy[com_cpgs, ]), ref_quantiles)
+
+beta_params <- getBetaParams(t(getBeta(brge_methy[com_cpgs, ])))
+mod_methy <- integrateReferenceQuantile(getBeta(methy[com_cpgs, ]), beta_params)
 
 
 
 plot(getBeta(methy[top_cpgs[1], ]), mod_methy[1, ])
 
 
-getBeta(comb[top_cpgs, ]) %>%
+getBeta(comb[com_cpgs, ]) %>%
   cbind(mod_methy) %>%
   t() %>%
   data.frame() %>%

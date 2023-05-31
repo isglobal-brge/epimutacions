@@ -28,8 +28,8 @@
 #' cutoff or below the negative of the 
 #' cutoff will be used as candidate regions. 
 #' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
-#' @param pca_correction logical. If TRUE methylation PCA correction is 
-#' applied to compensate batch effect.
+# #' @param pca_correction logical. If TRUE methylation PCA correction is 
+# #' applied to compensate batch effect. The default value if FALSE
 #' @param verbose logical. If TRUE additional details about 
 #' the procedure will provide to the user. 
 #' The default is TRUE. 
@@ -111,7 +111,7 @@
 #' @importFrom stats model.matrix qchisq
 #' @importFrom bumphunter bumphunter
 #' @importFrom S4Vectors to from
-#' @importFrom matrixStats rowQuantiles
+#' @importFrom matrixStats rowQuantiles rowMedians
 #' @import ensembldb
 
 #' 
@@ -184,11 +184,13 @@ epimutations <- function(case_samples, control_panel,
         if (!requireNamespace(x))
             stop("'", x, "'", " package not avaibale"))
     
-    # Apply PCA correction
+    # # Apply PCA correction
     if( pca_correction ) {
+        if (verbose)
+            message("Applying PCA correction")
         pccorr <- PCA_correction(case_samples, control_samples)
-        case_samples <- pccorr$samples
-        control_samples <- pccorr$controls
+        case_samples <- pccorr$cases
+        control_panel <- pccorr$controls
         rm(pccorr)
     }
     
@@ -272,8 +274,8 @@ epimutations <- function(case_samples, control_panel,
                             bump$cpg_ids <- paste(rownames(beta_bump),
                                                     collapse = ",", sep = "")
                             bump$sample <- case
-                            bump$delta_beta <- abs(mean(rowMedians(beta_bump[, ctr_sam]) -
-                                                        rowMedians(beta_bump[, case])))
+                            bump$delta_beta <- abs(mean(rowMedians(beta_bump[, ctr_sam, drop = FALSE]) -
+                                                        rowMedians(beta_bump[, case, drop = FALSE])))
                             
                             if (method == "mahdist") {
                                 dst <- try(epi_mahdist(beta_bump,
@@ -363,8 +365,8 @@ epimutations <- function(case_samples, control_panel,
       if (verbose)
         message("Using quantiles reference")
       
-      com_cpgs <- intersect(rownames(betas_case), rownames(quantile_reference))
-      quant_ref_com <- quantile_reference[com_cpgs, ]
+      com_cpgs <- intersect(rownames(betas_case), rownames(quantile_reference$quantiles))
+      quant_ref_com <- quantile_reference$quantiles[com_cpgs, ]
       
       bctr_pmin <- quant_ref_com[, "0.5%"]
       bctr_pmax <- quant_ref_com[, "99.5%"]
@@ -372,8 +374,8 @@ epimutations <- function(case_samples, control_panel,
       if (verbose)
         message("Integrating cases into reference")
       
-      betas <- cbind(betas_case, betas_control)
-      betas_corrected <- integrateReferenceQuantile(betas[com_cpgs, ], quant_ref_com)
+      # betas <- cbind(betas_case, betas_control)
+      betas_corrected <- integrateReferenceQuantile(betas_case[com_cpgs, ], quantile_reference$beta_params[com_cpgs, ])
       
       if (verbose)
         message("Computing epimutations")
