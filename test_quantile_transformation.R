@@ -266,11 +266,15 @@ lapply(c(1:2, 4), function(i){
 })
 
 
-## Test in simulations
+## Test in simulations ####
 library(ramr)
 load("simulated_GRS.Rdata")
 ref_quantiles <- rowQuantiles(getBeta(sim.refGRS), probs =  c(0.005, 0.995, 0.50), na.rm = TRUE)
 ref_betas <- epimutacions:::getBetaParams(t(getBeta(sim.refGRS)))
+
+epi_pca <- epimutations(sim.refGRS[, 1:10], sim.newGRS[, 1:10], 
+                            method = "quantile", pca_correction = TRUE)
+
 
 epi_refbeta <- epimutations(sim.newGRS, sim.newGRS, 
                                  quantile_reference = list(quantiles = ref_quantiles, beta_params = ref_betas), method = "quantile_reference")
