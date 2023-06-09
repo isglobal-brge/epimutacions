@@ -11,8 +11,9 @@ integrateReferenceQuantile <- function(betas, beta_params){
 normalizeBeta <- function(vals, beta_params){
   
   ### Select values from quantiles 5-95%
-  iqr <- stats::IQR(vals)
-  outs <- vals < quantile(vals, 0.25) - 1.5*iqr | vals > quantile(vals, 0.75) + 1.5*iqr
+  iqr <- stats::IQR(vals, na.rm = TRUE)
+  outs <- vals < quantile(vals, 0.25, na.rm = TRUE) - 1.5*iqr | vals > quantile(vals, 0.75, na.rm = TRUE) + 1.5*iqr
+  outs[is.na(outs)] <- TRUE
   valsf <- vals[!outs]
   bpars <- getBetaParams(matrix(valsf, ncol = 1))
   
