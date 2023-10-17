@@ -1,0 +1,27 @@
+bibentry(
+         bibtype = "article",
+         author = personList( as.person("Ruiz-Arenas, C."),
+                              as.person("Abarrategui, L."),
+                              as.person("Hernandez-Ferrer, C."),
+                              as.person("Escribà-Montagut, X."),
+                              as.person("Pelegrí-Sisó, D."),
+                              as.person("Ryser-Welch, P."),
+                              as.person("Vrijheid, M."),
+                              as.person("Bustamante, M."),
+                              as.person("Grazuleviciene, R."),
+                              as.person("Lepeule, J."),
+                              as.person("Mathai, M."),
+                              as.person("Vafeiadi, M."),
+                              as.person("Beltran, S."),
+                              as.person("Pérez-Jurado, L. A."),
+                              as.person("González, J. R.")),
+         title = "Epimutation detection in the clinical context: guidelines and a use case from a new Bioconductor package",
+         journal = "Epigenetics",
+         year = 2023,
+         volume = 18,
+         doi = "10.1080/15592294.2023.2230670",
+         textVersion = 
+             paste("Ruiz-Arenas, C., Abarrategui, L., Hernandez-Ferrer, C., Escribà-Montagut, X., Pelegrí-Sisó, D., Ryser-Welch, P., Vrijheid, M., Bustamante, M., Grazuleviciene, R., Lepeule, J., Mathai, M., Vafeiadi, M., Beltran, S., Pérez-Jurado, L. A., & González, J. R.", 
+                   "Epimutation detection in the clinical context: guidelines and a use case from a new Bioconductor package",
+                   "Epigenetics, 18(1)(2023)"  ) 
+  )
