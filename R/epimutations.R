@@ -28,8 +28,8 @@
 #' cutoff or below the negative of the 
 #' cutoff will be used as candidate regions. 
 #' @param min_cpg an integer specifying the minimum CpGs number in a DMR.  
-#' @param pca_correction logical. If TRUE methylation PCA correction is 
-#' applied to compensate batch effect. The default value if FALSE
+# #' @param pca_correction logical. If TRUE methylation PCA correction is 
+# #' applied to compensate batch effect. The default value if FALSE
 #' @param verbose logical. If TRUE additional details about 
 #' the procedure will provide to the user. 
 #' The default is TRUE. 
@@ -121,7 +121,8 @@ epimutations <- function(case_samples, control_panel,
                         chr = NULL, start = NULL, end = NULL, 
                         epi_params = epi_parameters(), 
                         maxGap = 1000, bump_cutoff =  0.1, 
-                        min_cpg = 3, pca_correction = FALSE, 
+                        min_cpg = 3, 
+                        # pca_correction = FALSE, 
                         verbose = TRUE)
 {
     
@@ -183,15 +184,15 @@ epimutations <- function(case_samples, control_panel,
         if (!requireNamespace(x))
             stop("'", x, "'", " package not avaibale"))
     
-    # Apply PCA correction
-    if( pca_correction ) {
-        if (verbose)
-            message("Applying PCA correction")
-        pccorr <- PCA_correction(case_samples, control_samples)
-        case_samples <- pccorr$cases
-        control_panel <- pccorr$controls
-        rm(pccorr)
-    }
+    # # Apply PCA correction
+    # if( pca_correction ) {
+    #     if (verbose)
+    #         message("Applying PCA correction")
+    #     pccorr <- PCA_correction(case_samples, control_samples)
+    #     case_samples <- pccorr$cases
+    #     control_panel <- pccorr$controls
+    #     rm(pccorr)
+    # }
     
     
     ## Extract required data:
