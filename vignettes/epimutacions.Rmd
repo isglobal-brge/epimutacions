@@ -667,16 +667,20 @@ plot_epimutations(as.data.frame(epi_mvo[1,]), methy)
 
 If we set the argument `gene_annot == TRUE` the plot includes the gene annotations: 
 
-```{r, plot_mvo_genes_annot}
+```{r, plot_mvo_genes_annot, eval=FALSE}
 p <- plot_epimutations(as.data.frame(epi_mvo[1,]), 
                        methy = methy, 
                        genes_annot = TRUE)
 ```
 
-```{r plot_genes_annot, results='asis', fig.align = "center", fig.height=12 }
+```{r plot_genes_annot, results='asis', fig.align = "center", fig.height=12, eval=FALSE }
 plot(p)
 
 ```
+```{r fig_genes_annot, echo=FALSE, out.width = '90%', fig.align='center'}
+knitr::include_graphics("fig/gvizGenesannot.png")
+```
+
 
 To  plot the chromatin marks H3K4me3, 
 H3K27me3 and H3K27ac we need to specify the argument  `regulation = TRUE`:
@@ -689,15 +693,18 @@ epigenetics to look for inactive genes.
 activation of transcription and therefore defined as an active enhancer mark
 
 
-```{r, plot_mvo_regulation}
+```{r, plot_mvo_regulation, eval=FALSE}
 p <- plot_epimutations(as.data.frame(epi_mvo[1,]), 
                        methy =  methy, 
                        regulation = TRUE)
 ```
 
-```{r plot_genes_regulation, results='asis', fig.align = "center", fig.height=12 }
+```{r plot_genes_regulation, results='asis', fig.align = "center", fig.height=12, eval=FALSE }
 plot(p)
 
+```
+```{r fig_genes_regulation, echo=FALSE, out.width = '90%', fig.align='center'}
+knitr::include_graphics("fig/gvizRegulation.png")
 ```
 
 # Acknowledgements
