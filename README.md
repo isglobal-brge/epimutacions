@@ -34,12 +34,13 @@ BiocManager::install("epimutacionsData")
 
 # Acknowledgements
 
+This project is funded by la Fundació de la Marató de TV3 within the project [iGenCO](https://www.isglobal.org/-/igenco) (Grant number 504/C/2020). 
+
 The authors would like to thank the team who collaborated in the initial 
-design of the package in the European BioHackathon 2020:  
-Lordstrong Akano, James Baye, 
+design of the package in the European BioHackathon 2020:  Lordstrong Akano, James Baye, 
 Alejandro Caceres, Pavlo Hrab, Raquel Manzano and Margherita Mutarelli. 
-The authors also want to thank the 
-organization of European BioHackathon 2020 for its support.
+
+The authors also want to thank the organization of European BioHackathon 2020 for its support.
 
 
 # Contact
