@@ -1,6 +1,6 @@
 Package: epimutacions
 Title: Robust outlier identification for DNA methylation data
-Version: 1.17.1
+Version: 1.17.2
 Authors@R: 
     c(person("Dolors", "Pelegri-Siso", ,"dolors.pelegri@isglobal.org", role = c("aut", "cre"),comment = c(ORCID = "0000-0002-5993-3003")),
       person("Juan R.", "Gonzalez", ,"juanr.gonzalez@isglobal.org", role = "aut", comment = c(ORCID = "0000-0003-3267-2146")),
@@ -33,39 +33,38 @@ Imports:
     matrixStats,
     BiocGenerics,
     S4Vectors,
-    utils, 
+    utils,
     biomaRt,
     BiocParallel,
     GenomeInfoDb,
-    Homo.sapiens,
-    purrr,
-    tibble,
-    Gviz,
-    TxDb.Hsapiens.UCSC.hg19.knownGene,
-    TxDb.Hsapiens.UCSC.hg18.knownGene,
-    TxDb.Hsapiens.UCSC.hg38.knownGene,
-    rtracklayer,
     AnnotationDbi,
-    AnnotationHub,
-    ExperimentHub,
-    reshape2,
-    grid,
-    ensembldb,
-    gridExtra,
-    IlluminaHumanMethylation450kmanifest,
-    IlluminaHumanMethylationEPICmanifest,
-    IlluminaHumanMethylation450kanno.ilmn12.hg19,
-    IlluminaHumanMethylationEPICanno.ilm10b2.hg19,
-    ggrepel
+    tibble,
+    grid
 Suggests:
     testthat,
     knitr,
-    rmarkdown, 
+    rmarkdown,
     BiocStyle,
     a4Base,
-    kableExtra, 
+    kableExtra,
     methods,
-    grDevices
+    grDevices,
+    reshape2,
+    purrr,
+    ggrepel,
+    gridExtra,
+    Gviz,
+    rtracklayer,
+    AnnotationHub,
+    ExperimentHub,
+    Homo.sapiens,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    TxDb.Hsapiens.UCSC.hg18.knownGene,
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    IlluminaHumanMethylation450kmanifest,
+    IlluminaHumanMethylationEPICmanifest,
+    IlluminaHumanMethylation450kanno.ilmn12.hg19,
+    IlluminaHumanMethylationEPICanno.ilm10b2.hg19
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

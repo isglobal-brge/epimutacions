@@ -63,8 +63,7 @@
 #' plot_epimutations(res.epi.manova[1,], GRset)
 #' 
 #' @importFrom ggplot2 ggplot geom_line aes geom_point geom_ribbon geom_line
-#' annotate lims scale_colour_manual theme_bw  ggtitle theme labs 
-#' @importFrom ggrepel geom_text_repel
+#' annotate lims scale_colour_manual theme_bw  ggtitle theme labs
 #' @importFrom GenomicRanges mcols
 #' 
 #' @export

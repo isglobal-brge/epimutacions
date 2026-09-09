@@ -112,7 +112,6 @@
 #' @importFrom bumphunter bumphunter
 #' @importFrom S4Vectors to from
 #' @importFrom matrixStats rowQuantiles
-#' @import ensembldb
 
 #' 
 #' @export
@@ -179,7 +178,7 @@ epimutations <- function(case_samples, control_panel,
     if (verbose)
         message("Selected epimutation detection method '", method, "'")
     
-    pck <- c("methods", "ensembldb")
+    pck <- c("methods")
     lapply(pck, function(x)
         if (!requireNamespace(x))
             stop("'", x, "'", " package not avaibale"))
