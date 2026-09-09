@@ -607,7 +607,18 @@ CpG relative to the CpG island, OMIM accession
 and description number and Ensembl region id, coordinates, type and tissue:
 
 ```{r annot, eval = TRUE}
-rst_mvo <- annotate_epimutations(epi_mvo, omim = TRUE)
+# annotate_epimutations() queries Ensembl/biomaRt over the network. If the
+# service is momentarily unavailable, fall back gracefully so the vignette
+# still builds; the annotation tables below are shown only when it succeeds.
+rst_mvo <- tryCatch(
+    annotate_epimutations(epi_mvo, omim = TRUE),
+    error = function(e) {
+        message("Skipping online annotation (Ensembl not reachable): ",
+                conditionMessage(e))
+        NULL
+    }
+)
+ann_ok <- !is.null(rst_mvo)
 ```
 
 
@@ -631,14 +642,14 @@ rst_mvo <- annotate_epimutations(epi_mvo, omim = TRUE)
 
 As an example we are going to visualize different annotations
 
-```{r annot_relIsland, eval = TRUE}
+```{r annot_relIsland, eval = ann_ok}
 kableExtra::kable(
     rst_mvo[ c(27,32) ,c("epi_id", "cpg_ids", "Relation_to_Island")],
     row.names = FALSE) %>% 
   column_spec(1:3, width = "4cm")
 ```
 
-```{r annot_omim, eval = TRUE}
+```{r annot_omim, eval = ann_ok}
 kableExtra::kable(
     rst_mvo[ c(4,8,22) , c("epi_id", "OMIM_ACC", "OMIM_DESC")],
     row.names = FALSE ) %>% 
@@ -646,7 +657,7 @@ kableExtra::kable(
     
 ```
 
-```{r annot_ensembl, eval = TRUE}
+```{r annot_ensembl, eval = ann_ok}
 kableExtra::kable(
     rst_mvo[ c(1:5), c("epi_id", "ensembl_reg_id", "ensembl_reg_type")],
     row.names = FALSE ) %>% 

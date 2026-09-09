@@ -188,7 +188,11 @@ betas_sd_mean <- function(gr)
         
         beta_values <- reshape2::melt(df, id = c("seqnames", "start", "end",
                                                 "width", "strand"))
-        
+        # reshape2::melt() may return 'value' as character when the molten
+        # columns have heterogeneous types; force it back to numeric so that
+        # downstream operations (e.g. value + 0.05 in plot_epimutations) work.
+        beta_values$value <- as.numeric(as.character(beta_values$value))
+
         mean <- reshape2::melt(mean, id = c("seqnames", "start", "end",
                                             "width", "strand", "mean"))
         

@@ -16,7 +16,7 @@
 #' Note that a single epimutation might overlap with more than one
 #' regulatory region. 
 #' In that case, the different regulatory regions are separated by `///`.
-#' \itemize{
+#' \describe{
 #'  \item{ensembl_reg_id}{Region identifier from ENSEMBL}
 #'  \item{ensembl_reg_coordinates}{Coordinates for 
 #'  the ENSEMBL regulatory regions}
