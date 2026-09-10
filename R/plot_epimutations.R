@@ -128,10 +128,10 @@ plot_epimutations <- function(dmr,  methy,  genome = "hg19",
     ## * Beta values 
     gr <- create_GRanges_class(methy, dmr[,"cpg_ids"]) #epi_plot
     # Remove samples without values
-    emptySamples <- sapply(1:ncol(GenomicRanges::mcols(gr)), function(x) {
-        if(all(is.na(GenomicRanges::mcols(gr)[x]))) { return(x) } 
-        else{ return(NA) } 
-    })
+    emptySamples <- vapply(seq_len(ncol(GenomicRanges::mcols(gr))), function(x) {
+        if (all(is.na(GenomicRanges::mcols(gr)[x]))) { return(x) }
+        else { return(NA_integer_) }
+    }, integer(1))
     
     if( length(emptySamples[!is.na(emptySamples)]) > 0 ) {
         GenomicRanges::mcols(gr) <- GenomicRanges::mcols(gr)[,-which(!is.na(emptySamples))]    

@@ -143,14 +143,14 @@ knitr::include_graphics("fig/implementation.png")
 
 ## Installing the packages
 
-```{r, eval=FALSE}
+```{r ex01, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 BiocManager::install("epimutacions")
 ```
 
-```{r, eval = FALSE}
+```{r ex02, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
@@ -159,7 +159,7 @@ BiocManager::install("epimutacionsData")
 
 ## Loading libraries
 
-```{r, message = FALSE}
+```{r ex03, message = FALSE}
 library(epimutacions)
 ```
 
@@ -213,7 +213,7 @@ The package includes the IDAT files as external data.
 To access the datasets  we need to install the packages 
 by running the following commands: 
 
-```{r eval = FALSE}
+```{r ex04, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
@@ -223,7 +223,7 @@ BiocManager::install("ExperimentHub")
 
 Then, we need to load the package and create an `ExperimentHub` object: 
 
-```{r}
+```{r ex05}
 library(ExperimentHub)
 eh <- ExperimentHub()
 query(eh, c("epimutacionsData"))
@@ -241,7 +241,7 @@ baseDir <- system.file("extdata", package = "epimutacionsData")
 The reference panel and  `methy` dataset can be found in 
 `EH6691` and `EH6690`  record of the  `eh` object: 
 
-```{r message = FALSE, FALSE}
+```{r ex06, message = FALSE}
 reference_panel <- eh[["EH6691"]]
 methy <- eh[["EH6690"]]
 ```
@@ -268,7 +268,7 @@ epimutations using these candidate regions.
 The following is the code used to identify the candidate 
 epimutations in Illumina 450K array: 
 
-```{r eval = FALSE}
+```{r ex07, eval = FALSE}
 library(minfi)
 # Regions 450K
 library("IlluminaHumanMethylation450kanno.ilmn12.hg19")
@@ -303,7 +303,7 @@ bumps.fil <- subset(bumps, L >= 3)
 The candidate regions  can be found  in `EH6692` record of the  `eh` object: 
 
 
-```{r message = FALSE, eval = FALSE}
+```{r ex08, message = FALSE, eval = FALSE}
 candRegsGR <- eh[["EH6692"]]
 ```
 
@@ -343,7 +343,7 @@ Each normalization approach has some unique parameters
 which can be modified through `norm_parameters()` function: 
 
 
-```{r echo = FALSE}
+```{r ex09, echo = FALSE}
 library(kableExtra)
 df <- data.frame(Method = c(rep("illumina",3), 
                             rep("quantile", 7), 
@@ -396,14 +396,14 @@ kable(df[,2:3]) %>%
 We can obtain the default settings for each method by invoking 
 the function `norm_parameters()` with no arguments:
 
-```{r}
+```{r ex10}
 norm_parameters()
 ```
 
 However, we can modify the parameter(s) 
 as the following example for `illumina` approach:
 
-```{r}
+```{r ex11}
 parameters <- norm_parameters(illumina = list("bg.correct" = FALSE))
 parameters$illumina$bg.correct
 ```
@@ -415,7 +415,7 @@ panel in `RGChannelSet` format.
 As a result, we will obtain a `GenomicRatioSet` 
 object containing the control and case samples: 
 
-```{r eval = FALSE}
+```{r ex12, eval = FALSE}
 GRset <- epi_preprocess(baseDir, 
                         reference_panel, 
                         pattern = "SampleSheet.csv")
@@ -440,7 +440,7 @@ To illustrate the following examples we are
 going to use the dataset `methy` (section \@ref(datasets)). 
 We need to separate the case and control samples: 
 
-```{r}
+```{r ex13}
 case_samples <- methy[,methy$status == "case"]
 control_samples <- methy[,methy$status == "control"]
 ```
@@ -472,7 +472,7 @@ To use this function we do not need to split the dataset.
 To ilustrate this example we are going to use 
 the `GRset` dataset available in `epimutacions` package: 
 
-```{r eval = FALSE}
+```{r ex14, eval = FALSE}
 #manova (default method)
 data(GRset)
 epi_mva_one_leave_out<- epimutations_one_leave_out(GRset)
@@ -485,7 +485,7 @@ The `epi_parameters()` function is useful to set the individual
 parameters for each outliers detection approach. 
 The following table describes the arguments: 
 
-```{r echo = FALSE}
+```{r ex15, echo = FALSE}
 df <- data.frame(Method = c("Manova, mlm", 
                             rep("iso.forest", 2), 
                             "mahdist.mcd", 
@@ -518,13 +518,13 @@ kable(df[,2:3]) %>%
 `epi_parameters()` with no arguments, 
 returns a list of the default settings for each method: 
 
-```{r}
+```{r ex16}
 epi_parameters()
 ```
 
 The set up of any parameter can be done as the following example for  `manova`: 
 
-```{r}
+```{r ex17}
 parameters <- epi_parameters(manova = list("pvalue_cutoff" = 0.01))
 parameters$manova$pvalue_cutoff
 ```
@@ -589,7 +589,7 @@ are set to `NA`
 As an example we are going to visualize the obtained 
 results with MANOVA method (`epi_mvo`): 
 
-```{r}
+```{r ex18}
 dim(epi_mvo)
 class(epi_mvo)
 head(as.data.frame(epi_mvo), 1)
@@ -743,7 +743,7 @@ All the team members of *Project #5* for the contribution to this package:
 
 # Session Info
 
-```{r}
+```{r ex19}
 sessionInfo()
 ```
 

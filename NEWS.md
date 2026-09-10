@@ -6,6 +6,10 @@
   Illumina manifest/annotation packages, reshape2, purrr, ggrepel and
   gridExtra) from Imports to Suggests, as they are already used conditionally
   via `requireNamespace()`.
+* Fixed the CITATION file so it can be read without a declared-encoding
+  warning (moved to `bibentry()` with ASCII-escaped author names).
+* Minor BiocCheck NOTE cleanups: labelled all vignette chunks and replaced
+  `sapply()`/`1:n` with `vapply()`/`seq_len()` in `plot_epimutations()`.
 
 # epimutacions v1.17.1
 
